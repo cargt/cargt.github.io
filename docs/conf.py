@@ -11,11 +11,14 @@ extensions = [
     "numpydoc",
     # "notfound.extension",  # enable if you added sphinx-notfound-page
 ]
-
+html_logo = "_static/Cargt-Logo.png"  # Path relative to the docs directory
 templates_path = ["_templates"]
-html_static_path = ["_static"]
+copyright = "2025, Cargt Inc"
 html_theme = "sphinx_rtd_theme"  # ESP‑Docs aligns with Espressif’s theme tooling
-html_title = "Cargt DeveloperDocumentation"
+html_title = "Cargt Developer Documentation"
+html_theme_options = {
+    'style_nav_header_background': "#7b8ea1",  # Deep blue-gray, complements green/yellow in Cargt-Logo.png
+}
 
 html_context = {
     "display_github": True,
