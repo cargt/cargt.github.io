@@ -2,6 +2,10 @@
 # Basic Sphinx config; ESP‑Docs augments defaults behind the scenes.
 import os
 import sys
+html_static_path = ["_static"]
+html_css_files = [
+    "css/custom.css",
+]
 
 project = "Cargt Developer Documentation"
 author = "Cargt"
@@ -14,10 +18,10 @@ extensions = [
 html_logo = "_static/Cargt-Logo.png"  # Path relative to the docs directory
 templates_path = ["_templates"]
 copyright = "2025, Cargt Inc"
-html_theme = "sphinx_rtd_theme"  # ESP‑Docs aligns with Espressif’s theme tooling
+html_theme = "sphinx_rtd_theme" # Read the Docs theme
 html_title = "Cargt Developer Documentation"
 html_theme_options = {
-    'style_nav_header_background': "#7b8ea1",  # Deep blue-gray, complements green/yellow in Cargt-Logo.png
+     'style_nav_header_background': "#F2F2F2",
 }
 
 html_context = {
