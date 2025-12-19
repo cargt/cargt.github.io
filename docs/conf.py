@@ -4,7 +4,7 @@ import os
 import sys
 html_static_path = ["_static"]
 html_css_files = [
-    "css/custom.css",
+    "custom.css",
 ]
 
 project = "Cargt Developer Documentation"
