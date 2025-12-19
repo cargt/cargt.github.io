@@ -36,6 +36,3 @@ html_theme_options = {
 
 # Language options
 language = 'en'
-
-
-
