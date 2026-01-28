@@ -37,6 +37,7 @@ jobs:
 
       # Option 2: ESP‑Docs CLI (uncomment to use)
       - name: Build documentation (ESP‑Docs CLI)
+        working-directory: docs
         run: |
           python -m pip install esp-docs
           build-docs -l en
