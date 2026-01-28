@@ -32,5 +32,5 @@ html_context = {
     # github_version usually ends with a trailing slash and includes the docs path prefix
     # For example, if docs are in /docs, and branch is main:
     "github_version": "main/",
-    "conf_py_path": "/docs/",
+    "conf_py_path": "/docs/en/",
 }
