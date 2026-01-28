@@ -13,6 +13,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_tabs.tabs",
     "numpydoc",
+    "sphinx_design",
     # "notfound.extension",  # enable if you added sphinx-notfound-page
 ]
 html_logo = "_static/Cargt-Logo.png"  # Path relative to the docs directory

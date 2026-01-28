@@ -5,4 +5,5 @@ sphinx-copybutton
 sphinx-tabs
 numpydoc
 sphinx-rtd-theme
+sphinx-design
 ## optional niceties:

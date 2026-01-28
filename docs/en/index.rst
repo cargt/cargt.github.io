@@ -7,14 +7,14 @@ SOMs
 NXP
 ---
 
-**00377 i.MX8M Plus OSM-L with IW612**
+.. dropdown:: **00377 i.MX8M Plus OSM-L with IW612**
 
-- Datasheet
-- Reference Manual
-- Hardware Design Guide
-- Hardware Design Files
-- Software Releases
-- Pre-built Images
+    - Datasheet
+    - Reference Manual
+    - Hardware Design Guide
+    - Hardware Design Files
+    - Software Releases
+    - Pre-built Images
 
 **00363 i.MX91 OSM-L with IW612**
 
@@ -364,23 +364,28 @@ Fact Sheets
 
 Datasheets and Reference Manuals for i.MX 8M Plus
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. dropdown:: 
+    :open:
 
-- `i.MX 8M Plus Applications Processor Family Overview <https://www.nxp.com/docs/en/fact-sheet/IMX8MPLUSFAMFS.pdf>`_ – Key features and block diagram.
-- `i.MX 8M Plus Applications Processor Datasheet (Commercial) <https://www.nxp.com/docs/en/preview/PREVIEW_IMX8MPEC.pdf>`_ – Electrical characteristics and package details.
-- `i.MX 8M Plus Applications Processor Datasheet (Industrial) <https://www.nxp.com/docs/en/preview/PREVIEW_IMX8MPIEC.pdf>`_ – Electrical characteristics and package details.
-- `i.MX 8M Plus Applications Processor Reference Manual <https://www.nxp.com/docs/en/preview/PREVIEW_IMX8MPRM.pdf>`_ – Functional description and register maps.
+    - `i.MX 8M Plus Applications Processor Family Overview <https://www.nxp.com/docs/en/fact-sheet/IMX8MPLUSFAMFS.pdf>`_ – Key features and block diagram.
+    - `i.MX 8M Plus Applications Processor Datasheet (Commercial) <https://www.nxp.com/docs/en/preview/PREVIEW_IMX8MPEC.pdf>`_ – Electrical characteristics and package details.
+    - `i.MX 8M Plus Applications Processor Datasheet (Industrial) <https://www.nxp.com/docs/en/preview/PREVIEW_IMX8MPIEC.pdf>`_ – Electrical characteristics and package details.
+    - `i.MX 8M Plus Applications Processor Reference Manual <https://www.nxp.com/docs/en/preview/PREVIEW_IMX8MPRM.pdf>`_ – Functional description and register maps.
+
 
 Datasheets and Reference Manuals for i.MX 91, i.MX 93, and i.MX 95
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- `i.MX 91 Applications Processors Data Sheet (Commercial) <https://www.nxp.com/docs/en/data-sheet/IMX91CEC.pdf>`_ – Electrical specifications and functional details.
-- `i.MX 91 Applications Processors Data Sheet (Industrial) <https://www.nxp.com/docs/en/data-sheet/IMX91IEC.pdf>`_ – Industrial-grade specifications.
-- `i.MX 93 Applications Processors Data Sheet (Commercial) <https://www.nxp.com/docs/en/data-sheet/IMX93CEC.pdf>`_ – Electrical specifications and functional details.
-- `i.MX 93 Applications Processors Data Sheet (Automotive) <https://www.nxp.com/docs/en/data-sheet/IMX93AEC.pdf>`_ – Automotive-grade specifications.
-- `i.MX 93 Applications Processors Data Sheet (Industrial) <https://www.nxp.com/docs/en/data-sheet/IMX93IEC.pdf>`_ – Industrial-grade specifications.
-- `i.MX 91 Applications Processor Reference Manual <https://www.nxp.com/docs/en/reference-manual/RM12173.pdf>`_ – Functional description and register maps.
-- `i.MX 93 Applications Processor Reference Manual <https://www.nxp.com/docs/en/reference-manual/RM12175.pdf>`_ – Functional description and register maps.
-- `i.MX 95 Product Page <https://www.nxp.com/products/i.MX95>`_ – Detailed product information and resources.
+.. dropdown:: 
+    :open:
+    
+    - `i.MX 91 Applications Processors Data Sheet (Commercial) <https://www.nxp.com/docs/en/data-sheet/IMX91CEC.pdf>`_ – Electrical specifications and functional details.
+    - `i.MX 91 Applications Processors Data Sheet (Industrial) <https://www.nxp.com/docs/en/data-sheet/IMX91IEC.pdf>`_ – Industrial-grade specifications.
+    - `i.MX 93 Applications Processors Data Sheet (Commercial) <https://www.nxp.com/docs/en/data-sheet/IMX93CEC.pdf>`_ – Electrical specifications and functional details.
+    - `i.MX 93 Applications Processors Data Sheet (Automotive) <https://www.nxp.com/docs/en/data-sheet/IMX93AEC.pdf>`_ – Automotive-grade specifications.
+    - `i.MX 93 Applications Processors Data Sheet (Industrial) <https://www.nxp.com/docs/en/data-sheet/IMX93IEC.pdf>`_ – Industrial-grade specifications.
+    - `i.MX 91 Applications Processor Reference Manual <https://www.nxp.com/docs/en/reference-manual/RM12173.pdf>`_ – Functional description and register maps.
+    - `i.MX 93 Applications Processor Reference Manual <https://www.nxp.com/docs/en/reference-manual/RM12175.pdf>`_ – Functional description and register maps.
+    - `i.MX 95 Product Page <https://www.nxp.com/products/i.MX95>`_ – Detailed product information and resources.
 
 SWUpdate
 --------
