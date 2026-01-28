@@ -1,0 +1,4 @@
+WARNING: unknown config value 'docs_to_build' in override, ignoring
+WARNING: unknown config value 'config_dir' in override, ignoring
+WARNING: unknown config value 'doxyfile_dir' in override, ignoring
+WARNING: unknown config value 'project_path' in override, ignoring
