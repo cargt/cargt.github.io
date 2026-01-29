@@ -4,19 +4,28 @@ Cargt Developer Documentation
 SOMs
 ==========
 
+.. dropdown:: **Jump to Product**
+
+    - `00363 i.MX91 OSM-L with IW612 <#i-mx91-osm-l-with-iw612>`__
+    - `00324 i.MX93 SODIMM <#i-mx93-sodimm>`__
+    - `00359 LGA with Murata 2EL <#lga-with-murata-2el>`__
+    - `00363 i.MX93 OSM-L with IW612 <#i-mx93-osm-l-with-iw612>`__
+    - `00408 i.MX95 OSM-L with IW612 <#i-mx95-osm-l-with-iw612>`__
+    - `00377 i.MX8M Plus OSM-L with IW612 <#i-mx8m-plus-osm-l-with-iw612>`__
+    - `00378 STM32MP257F OSM-L with CC3351 <#stm32mp257f-osm-l-with-cc3351>`__
+    - `00395 STM32MP257F OSM-L with IW610 <#stm32mp257f-osm-l-with-iw610>`__
+    - `00364 AM6254 OSM-L SOM with IW612 <#am6254-osm-l-som-with-iw612>`__
+    - `00326 (SODIMM Carrier Board) <#sodimm-carrier-board>`__
+    - `00406 (LGA Carrier Board) <#lga-carrier-board>`__
+    - `00365 (OSM-L Carrier Board) <#osm-l-carrier-board>`__
+
 NXP
 ---
 
-.. dropdown:: **00377 i.MX8M Plus OSM-L with IW612**
+.. _00363a:
 
-    - Datasheet
-    - Reference Manual
-    - Hardware Design Guide
-    - Hardware Design Files
-    - Software Releases
-    - Pre-built Images
-
-**00363 i.MX91 OSM-L with IW612**
+00363 i.MX91 OSM-L with IW612
+-----------------------------
 
 - Datasheet
 - Reference Manual
@@ -25,7 +34,10 @@ NXP
 - Software Releases
 - Pre-built Images
 
-**00324 i.MX93 SODIMM**
+.. _00324:
+
+00324 i.MX93 SODIMM
+-------------------
 
 - Datasheet
 - Reference Manual
@@ -34,7 +46,10 @@ NXP
 - Software Releases
 - Pre-built Images
 
-**00359 LGA with Murata 2EL**
+.. _00359:
+
+00359 LGA with Murata 2EL
+-------------------------
 
 - Datasheet
 - Reference Manual
@@ -43,7 +58,10 @@ NXP
 - Software Releases
 - Pre-built Images
 
-**00363 i.MX93 OSM-L with IW612**
+.. _00363b:
+
+00363 i.MX93 OSM-L with IW612
+------------------------------
 
 - Datasheet
 - Reference Manual
@@ -52,15 +70,33 @@ NXP
 - Software Releases
 - Pre-built Images
 
-**00408 i.MX95 OSM-L with IW612**
+.. _00408:
+
+00408 i.MX95 OSM-L with IW612
+------------------------------
 
 - Coming Soon
+
+.. _00377:
+
+00377 i.MX8M Plus OSM-L with IW612
+----------------------------------
+
+- Datasheet
+- Reference Manual
+- Hardware Design Guide
+- Hardware Design Files
+- Software Releases
+- Pre-built Images
+
 
 STMicroelectronics
 ------------------
 
+.. _00378:
+
 00378 STM32MP257F OSM-L with CC3351
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 - Datasheet
 - Reference Manual
@@ -69,8 +105,10 @@ STMicroelectronics
 - Software Releases
 - Pre-built Images
 
+.. _00395:
+
 00395 STM32MP257F OSM-L with IW610
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
 
 - Datasheet
 - Reference Manual
@@ -82,8 +120,10 @@ STMicroelectronics
 Texas Instruments
 -----------------
 
+.. _00364:
+
 00364 AM6254 OSM-L SOM with IW612
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------
 
 - Datasheet
 - Reference Manual
@@ -95,6 +135,8 @@ Texas Instruments
 Carrier Boards
 ====================
 
+.. _00326:
+
 00326 (SODIMM Carrier Board)
 ----------------------------
 
@@ -104,6 +146,8 @@ Carrier Boards
 - Hardware Design Guide
 - Hardware Design Files
 
+.. _00406:
+
 00406 (LGA Carrier Board)
 -------------------------
 
@@ -112,6 +156,8 @@ Carrier Boards
 - User Guide
 - Hardware Design Guide
 - Hardware Design Files
+
+.. _00365:
 
 00365 (OSM-L Carrier Board)
 ---------------------------
