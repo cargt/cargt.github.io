@@ -22,7 +22,7 @@ NXP
 .. _00363a:
 
 00363 i.MX91 OSM-L with IW612
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
@@ -34,7 +34,7 @@ NXP
 .. _00324:
 
 00324 i.MX93 SODIMM
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
@@ -46,7 +46,7 @@ NXP
 .. _00359:
 
 00359 LGA with Murata 2EL
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
@@ -58,7 +58,7 @@ NXP
 .. _00363b:
 
 00363 i.MX93 OSM-L with IW612
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
@@ -70,14 +70,14 @@ NXP
 .. _00408:
 
 00408 i.MX95 OSM-L with IW612
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Coming Soon
 
 .. _00377:
 
 00377 i.MX8M Plus OSM-L with IW612
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
@@ -93,7 +93,7 @@ STMicroelectronics
 .. _00378:
 
 00378 STM32MP257F OSM-L with CC3351
-------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
@@ -105,7 +105,7 @@ STMicroelectronics
 .. _00395:
 
 00395 STM32MP257F OSM-L with IW610
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
@@ -120,7 +120,7 @@ Texas Instruments
 .. _00364:
 
 00364 AM6254 OSM-L SOM with IW612
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Datasheet
 - Reference Manual
