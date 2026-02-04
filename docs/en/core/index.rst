@@ -385,6 +385,17 @@ Using your Own Package Repository
    If you add each directory as a separate line in the sources list, APT will be able to find more packages.
    Then the package server can be run from the ``<build_dir>/tmp/deploy/deb/`` directory.
 
+   To do it at build time, add the following lines to your ``local.conf`` file on the development machine:
+
+   .. code-block:: bash
+
+      PACKAGE_FEED_URIS += " http://<your_server_ip>:<port_number>/ "
+      PACKAGE_FEED_ARCHS = "all armv8a"
+      Depending on your package repo, you may also need to specify:
+      PACKAGE_FEED_BASE_PATHS = "deb"
+
+   Further information: https://docs.yoctoproject.org/ref-manual/variables.html#term-PACKAGE_FEED_ARCHS
+
 Remote Access
 =============
 
