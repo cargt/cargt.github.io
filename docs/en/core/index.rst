@@ -242,6 +242,7 @@ Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
 
    .. code-block:: bash
 
+      Select the appropriate command based on your target storage:
       uuu -b emmc_all imx-boot-tagged <image_file>.wic.zst
       uuu -b sd_all imx-boot-tagged <image_file>.wic.zst
 
@@ -268,6 +269,7 @@ Extra options for UUU:
 
    .. code-block:: bash
 
+      Select the appropriate command based on your target storage:
       uuu -b emmc imx-boot
       uuu -b sd imx-boot
 
@@ -275,6 +277,7 @@ Extra options for UUU:
 
    .. code-block:: bash
 
+      Select the appropriate command based on your target storage:
       uuu -b emmc_all imx-boot <image_file>.wic[.zst, .gzip, etc.]
       uuu -b sd_all imx-boot <image_file>.wic[.zst, .gzip, etc.]
 
@@ -302,6 +305,14 @@ Understanding Flash Layouts and Partitions
 
 Understanding U-Boot Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+U-Boot variables can be accessed through either the console or ssh session.
+
+   - Console: Interrupt the boot process by pressing any key during the U-Boot countdown.
+      This will drop you to the U-Boot command prompt.
+      U-Boot variables can be viewed and modified using the ``printenv``, ``setenv``, and ``saveenv`` commands in the U-Boot console.
+   - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variablesusing the ``fw_setenv`` and ``fw_printenv`` utilities.
+
 
 Incremental update images compatible with SWUpdate
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
