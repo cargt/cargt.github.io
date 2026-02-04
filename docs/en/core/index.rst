@@ -313,17 +313,47 @@ U-Boot variables can be accessed through either the console or ssh session.
       U-Boot variables can be viewed and modified using the ``printenv``, ``setenv``, and ``saveenv`` commands in the U-Boot console.
    - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variablesusing the ``fw_setenv`` and ``fw_printenv`` utilities.
 
+SWUpdate
+========
 
-Incremental update images compatible with SWUpdate
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Incremental update images compatible with SWUpdate can be found in the `Cargt Package Repository Images`_ or can be built in your Yocto build environment.
+The output file has a ``.swu`` extension.
 
+For reference, the bitbake recipe file used to create SWUpdate images may have a ``-swu.bb`` ending or be called ``swupdate-image.bb``.
+
+Example Usage: ``bitbake <machine-name>-swu`` or ``bitbake swupdate-image``
+
+SWUpdate Methods
+----------------
+
+Web Server - Drag and Drop
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+On a connected host computer, open a web browser and navigate to the SWUpdate web server running on the target device.
+
+.. code-block:: bash
+
+   http://<target_ip>:8080/
+
+Follow the on-screen instructions to upload and install the update file.
+
+Web Server - Command Line
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   swupdate -i <update_file>.swu -e web
+
+USB Flash Drive
+~~~~~~~~~~~~~~~
+TFTP Server
+~~~~~~~~~~~
+
+SWUpdate Concepts
+-----------------
 - How SWUpdate Works
 - Update Script Example
 - Update Image Example
 - U-Boot Environment Hooks and Partition Management
-- Updates via:
-  - Web Server
-  - USB Flash Drive
 
 Package Management on a Cargt design
 ====================================
@@ -331,20 +361,24 @@ Package Management on a Cargt design
 Cargt Package Repository
 ------------------------
 
-- Updating and Installing Packages using the Cargt Package Repository
+Updating and Installing Packages using the Cargt Package Repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    .. code-block:: bash
 
       apt-get update
       apt-get install <package_name>
 
-- Updating using a downloaded ``.deb`` package file
+Updating using a downloaded to target ``.deb`` package file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    .. code-block:: bash
 
       dpkg -i /<path_to_downloaded_package>/<package_file>.deb
 
-- Listing Installed Packages
+Listing Installed Packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
    .. code-block:: bash
 
       apt-get list --installed
@@ -352,7 +386,8 @@ Cargt Package Repository
 Using your Own Package Repository
 ---------------------------------
 
-- Generating a Package Repository
+Generating a Package Repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    In your Yocto build environment, run:
 
@@ -362,7 +397,8 @@ Using your Own Package Repository
 
    Then navigate to ``<build_dir>/tmp/deploy/deb/<machine>/`` to find the generated ``.deb`` repository files.
 
-- Simple Package Repository Hosting using Python HTTP Server
+Simple Package Repository Hosting using Python HTTP Server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    On your development host, navigate to the package repository directory (as above) and start a simple HTTP server:
 
@@ -378,7 +414,8 @@ Using your Own Package Repository
       Choose a port number > 1024 and that is not already in use by another service such as SWUpdate (default port 8080).
       Open example:5678
 
-- Configuring the Target to use your Package Repository
+Configuring the Target to use your Package Repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    On the target device, add your repository to the APT sources list:
 
@@ -388,7 +425,8 @@ Using your Own Package Repository
       apt-get update
       apt-get install <package_name>
 
-- Advanced
+Advanced
+~~~~~~~~
 
    You can list all of the packages in your repository by navigating to ``http://<your_server_ip>:<port_number>/`` in a web browser.
 
@@ -406,6 +444,7 @@ Using your Own Package Repository
       PACKAGE_FEED_BASE_PATHS = "deb"
 
    Further information: https://docs.yoctoproject.org/ref-manual/variables.html#term-PACKAGE_FEED_ARCHS
+
 
 Remote Access
 =============
