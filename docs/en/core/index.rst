@@ -210,8 +210,12 @@ Public Pre-compiled Images
 Running Linux on a Cargt design
 -------------------------------
 
-Flashing a Pre-compiled image to eMMC using UUU on an i.MX design
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+
+   CARGT recommends eMMC for performance and reliability. SD card booting is primarily for development and testing.
 
 #. Put the board into the UUU mode as per the hardware design's user guide.
 
@@ -223,17 +227,26 @@ Flashing a Pre-compiled image to eMMC using UUU on an i.MX design
    .. code-block:: bash
 
       uuu -lsusb
+
+   The output should list the connected device.
 #. Download the appropriate pre-compiled image from the `Cargt Package Repository Images`_.
-#. Use the UUU tool to flash the image to eMMC:
+
+   - This will usually be a ``.wic`` file, possibly compressed (e.g., ``.wic.zst``).
+   - ``.wic`` is a disk image format that includes partitioning and filesystems.
+#. Use the UUU tool to flash both the bootloader and image to eMMC / SD card.
+
+   .. note::
+
+      This will erase all existing data on the eMMC / SD card.
 
    .. code-block:: bash
 
       uuu -b emmc_all imx-boot-tagged <image_file>.wic.zst
+      uuu -b sd_all imx-boot-tagged <image_file>.wic.zst
 
-    - Note: This will erase all existing data on the eMMC.
 #. Reboot the board.
 
-Example UUU Commands Output
+UUU Example
 
 .. figure:: /images/screenshots/img-nxp-uuu-commands.png
 
@@ -257,7 +270,7 @@ Extra options for UUU:
       uuu -b emmc imx-boot
       uuu -b sd imx-boot
 
-- To program the bootloader and .wic to eMMC or SD Card
+- UUU allows multiple compression formats for the ``.wic`` image files, so you can use:
 
    .. code-block:: bash
 
@@ -269,9 +282,6 @@ Flashing a Pre-compiled image to eMMC using STM32Cube on an STM32MP2
 
 Booting from eMMC
 ~~~~~~~~~~~~~~~~~
-
-Flashing a Pre-compiled image to the SD card using UUU on an i.MX design
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Flashing a Pre-compiled image to the SD card using STM32Cube on an STM32MP2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
