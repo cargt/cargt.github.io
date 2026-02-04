@@ -203,6 +203,7 @@ Public Package Repositories
 Public Pre-compiled Images
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+- .. _Cargt Package Repository Images:
 - `Pre-built complete system images <https://yocto.cargt.com/images>`_ for supported Cargt hardware suitable for initial flashing or full system recovery.
 - `Incremental update images <https://yocto.cargt.com/images>`_ compatible with SWUpdate for in-field updates without reflashing the entire system.
 
@@ -211,6 +212,57 @@ Running Linux on a Cargt design
 
 Flashing a Pre-compiled image to eMMC using UUU on an i.MX design
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#. Put the board into the UUU mode as per the hardware design's user guide.
+
+   - Option 1: For OSM-L based designs, this typically involves holding the BOOT button while powering on the board.
+   - Option 2: U-boot Environment Variable Method can be used if BOOT button is not available. See U-Boot Environment Variables section for details.
+
+#. Connect the board to the host computer via USB and check the connection by running:
+
+   .. code-block:: bash
+
+      uuu -lsusb
+#. Download the appropriate pre-compiled image from the `Cargt Package Repository Images`_.
+#. Use the UUU tool to flash the image to eMMC:
+
+   .. code-block:: bash
+
+      uuu -b emmc_all imx-boot-tagged <image_file>.wic.zst
+
+    - Note: This will erase all existing data on the eMMC.
+#. Reboot the board.
+
+Example UUU Commands Output
+
+.. figure:: /images/screenshots/img-nxp-uuu-commands.png
+
+   UUU commands example output
+
+Extra options for UUU:
+
+- To flash only specific partitions, use the corresponding UUU command (e.g., ``-b emmc_boot``, ``-b emmc_rootfs``).
+- For verbose output, add the ``-v`` flag to the UUU command.
+- To log the flashing process, use the ``-l <log_file>`` option.
+- To run the bootloader (SPL and U-Boot) from RAM:
+
+   .. code-block:: bash
+
+      uuu imx-boot
+
+- To program just the bootloader to eMMC or SD Card
+
+   .. code-block:: bash
+
+      uuu -b emmc imx-boot
+      uuu -b sd imx-boot
+
+- To program the bootloader and .wic to eMMC or SD Card
+
+   .. code-block:: bash
+
+      uuu -b emmc_all imx-boot <image_file>.wic[.zst, .gzip, etc.]
+      uuu -b sd_all imx-boot <image_file>.wic[.zst, .gzip, etc.]
 
 Flashing a Pre-compiled image to eMMC using STM32Cube on an STM32MP2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
