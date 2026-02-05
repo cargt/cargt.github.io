@@ -582,6 +582,16 @@ Image Customization
 SBOM Generation
 ---------------
 
+#. Generate SPDX SBOM during image builds:
+
+.. code-block:: bash
+
+   bitbake <image> --generate-spdx
+
+2. Find the generated SBOM in the deploy directory:
+
+   ``<build_dir>/tmp/deploy/images/<machine>/<image>-<machine>.spdx``
+
 Connectivity
 ============
 
