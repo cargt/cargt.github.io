@@ -381,7 +381,7 @@ Listing Installed Packages
 
    .. code-block:: bash
 
-      apt-get list --installed
+      apt list --installed
 
 Using your Own Package Repository
 ---------------------------------
