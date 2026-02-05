@@ -534,64 +534,6 @@ Remote Access
 - Connecting to a Remote Device
 - Using SSH Tunnel for RDP
 
-Yocto Development
-=================
-
-Development Guides
-------------------
-
-- Layers, Recipes, Machines, Distros
-- Adding a New Machine
-- Changes in Meta Layer, U-Boot, Linux, SWUpdate
-- Using VSCode on the Host with Remote-SSH Extension
-
-Using bitbake
--------------
-
-- Building Packages & Images
-- Intermediate Commands: ``listtasks``, ``clean``, ``cleansstate``, ``menuconfig``, ``do_configure``, ``do_deploy``
-
-Using devtool
--------------
-
-- Modify Existing Recipe (``modify``)
-- Add New Recipe (``add``)
-  - CMake Example
-  - Python Example
-  - NodeJS Example
-- Upgrade Recipe (``upgrade``)
-- Build on Host (``build``)
-- Test on Target (``deploy-target``, ``undeploy-target``)
-- Update Meta Layers (``finish``)
-- Other devtool Commands (``reset``, ``status``, ``menuconfig``, ``find-recipe``, ``edit-recipe``, ``ide-sdk``)
-
-Image Customization
--------------------
-
-- Adding/Removing Packages
-- Customizing Bootloader
-- Customizing Kernel
-  - Adding Kernel Modules
-  - Applying Kernel Patches
-  - Configuring Kernel Options
-- Customizing SWUpdate
-- Customizing Device Tree
-- Creating Custom Images
-- Adding systemd Services
-
-SBOM Generation
----------------
-
-#. Generate SPDX SBOM during image builds:
-
-.. code-block:: bash
-
-   bitbake <image> --generate-spdx
-
-2. Find the generated SBOM in the deploy directory:
-
-   ``<build_dir>/tmp/deploy/images/<machine>/<image>-<machine>.spdx``
-
 Connectivity
 ============
 
@@ -659,4 +601,62 @@ Secure Boot (AHAB) with i.MX93
 - Signing Images with the Code Signing Tool (CST)
 - Programming Keys using One-Time Programmable Memory
 - Configuring U-Boot and Linux for Secure Boot
+
+Yocto Development
+=================
+
+Development Guides
+------------------
+
+- Layers, Recipes, Machines, Distros
+- Adding a New Machine
+- Changes in Meta Layer, U-Boot, Linux, SWUpdate
+- Using VSCode on the Host with Remote-SSH Extension
+
+Using bitbake
+-------------
+
+- Building Packages & Images
+- Intermediate Commands: ``listtasks``, ``clean``, ``cleansstate``, ``menuconfig``, ``do_configure``, ``do_deploy``
+
+Using devtool
+-------------
+
+- Modify Existing Recipe (``modify``)
+- Add New Recipe (``add``)
+  - CMake Example
+  - Python Example
+  - NodeJS Example
+- Upgrade Recipe (``upgrade``)
+- Build on Host (``build``)
+- Test on Target (``deploy-target``, ``undeploy-target``)
+- Update Meta Layers (``finish``)
+- Other devtool Commands (``reset``, ``status``, ``menuconfig``, ``find-recipe``, ``edit-recipe``, ``ide-sdk``)
+
+Image Customization
+-------------------
+
+- Adding/Removing Packages
+- Customizing Bootloader
+- Customizing Kernel
+  - Adding Kernel Modules
+  - Applying Kernel Patches
+  - Configuring Kernel Options
+- Customizing SWUpdate
+- Customizing Device Tree
+- Creating Custom Images
+- Adding systemd Services
+
+SBOM Generation
+---------------
+
+#. Generate SPDX SBOM during image builds:
+
+.. code-block:: bash
+
+   bitbake <image> --generate-spdx
+
+2. Find the generated SBOM in the deploy directory:
+
+   ``<build_dir>/tmp/deploy/images/<machine>/<image>-<machine>.spdx``
 
