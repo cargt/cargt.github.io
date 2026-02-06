@@ -504,7 +504,7 @@ Configuring the Target to use your Package Repository
 
    .. code-block:: bash
 
-      echo "deb [trusted=yes] http://<your_server_ip>:<port_number>/ ./" > /etc/apt/sources.list.d/my-custom-repo.list
+      echo "deb [trusted=yes] http://<your_server_ip>:<port_number>/ ./" >> /etc/apt/sources.list.d/my-custom-repo.list
       apt-get update
       apt-get install <package_name>
 
@@ -869,6 +869,7 @@ Build fails
       The build is also a function of available RAM, so if you have 12 cores but only a small amount of RAM, you may want to limit to 10 threads to avoid out of memory issues.
 
       Trial and error may be needed to find the optimal number of threads for your specific build machine and configuration.
+      Monitor the RAM usage during the build to see if it approaches or exceeds the available memory.
 
       For 12 cores, you could set ``<build_dir>/conf/local.conf`` with:
 
@@ -877,3 +878,5 @@ Build fails
          BB_NUMBER_THREADS = "10"
          PARALLEL_MAKE = "-j 10"
 
+         echo BB_NUMBER_THREADS = "10" >> conf/local.conf
+         echo PARALLEL_MAX = "-j 10" >> conf/local.conf
