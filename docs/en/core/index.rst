@@ -660,15 +660,21 @@ Image Customization
 SBOM Generation
 ---------------
 
-#. Generate SPDX SBOM during image builds:
+#. Enable SPDX generation in your ``local.conf`` file:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   bitbake <image> --generate-spdx
+      echo 'INHERIT += "create-spdx"' >> conf/local.conf
 
-2. Find the generated SBOM in the deploy directory:
+#. Build the image:
 
-   ``<build_dir>/tmp/deploy/images/<machine>/<image>-<machine>.spdx``
+   .. code-block:: bash
+
+      bitbake <image_name>
+
+#. Find the generated SBOM in the deploy directory:
+
+   ``<build_dir>/tmp/deploy/spdx/<machine>/recipe-<image>.spdx.json``
 
 Yocto Tutorial
 =================
@@ -878,5 +884,5 @@ Build fails
          BB_NUMBER_THREADS = "10"
          PARALLEL_MAKE = "-j 10"
 
-         echo BB_NUMBER_THREADS = "10" >> conf/local.conf
-         echo PARALLEL_MAX = "-j 10" >> conf/local.conf
+         echo 'BB_NUMBER_THREADS = "10"' >> conf/local.conf
+         echo 'PARALLEL_MAKE = "-j 10"' >> conf/local.conf
