@@ -330,9 +330,9 @@ The SWUpdate client will manage the switching between these partitions during th
 Checking the run partition
 --------------------------
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   lsblk
+      lsblk
 
 Before update example output:
 
@@ -357,23 +357,23 @@ Only needed if the SWUpdate web server is not already running on the target devi
 
 Start the SWUpdate web server to enable browser-based uploads at ``http://<target_ip>:8080/``:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   swupdate -e web
+      swupdate -e web
 
 Optionally specify a different port:
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   swupdate -e web -p 8081
+      swupdate -e web -p 8081
 
 Web Server - Drag and Drop
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 On a connected host computer, open a web browser and navigate to the SWUpdate web server running on the target device.
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   http://<target_ip>:8080/
+      http://<target_ip>:8080/
 
 Follow the on-screen instructions to upload and install the update file.
 
@@ -449,19 +449,22 @@ Updating and Installing Packages using the Cargt Package Repository
       apt-get update
       apt-get install <package_name>
 
-Updating using a downloaded to target ``.deb`` package file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   .. code-block:: bash
-
-      dpkg -i /<path_to_downloaded_package>/<package_file>.deb
-
 Listing Installed Packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    .. code-block:: bash
 
       apt list --installed
+
+Using a Downloaded Package File
+-------------------------------
+
+Updating using a downloaded ``.deb`` package file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   .. code-block:: bash
+
+      dpkg -i /<path_to_downloaded_package>/<package_file>.deb
 
 Using your Own Package Repository
 ---------------------------------
@@ -525,6 +528,13 @@ Advanced
 
    Further information: https://docs.yoctoproject.org/ref-manual/variables.html#term-PACKAGE_FEED_ARCHS
 
+
+Updating using a downloaded to target ``.deb`` package file
+-----------------------------------------------------------
+
+   .. code-block:: bash
+
+      dpkg -i /<path_to_downloaded_package>/<package_file>.deb
 
 Remote Access
 =============
@@ -659,4 +669,179 @@ SBOM Generation
 2. Find the generated SBOM in the deploy directory:
 
    ``<build_dir>/tmp/deploy/images/<machine>/<image>-<machine>.spdx``
+
+Yocto Tutorial
+=================
+
+Setup build machine
+-------------------
+
+The build machine needs to have:
+- ``repo`` tool installed
+- Required packages for Yocto development (e.g., git, tar, python3, etc.)
+
+Download and Install the repo utility from Google
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- To use this manifest repo, the ``repo`` utility must be installed first:
+
+.. code-block:: bash
+
+   mkdir -p ~/bin
+   curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+   chmod a+x ~/bin/repo
+   PATH=${PATH}:~/bin
+
+Install required packages for Yocto development
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- On Ubuntu, you can install the required packages with:
+
+.. code-block:: bash
+
+   sudo apt-get update
+   sudo apt-get install -y gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev python3-subunit mesa-common-dev zstd liblz4-tool file locales
+
+
+On other Linux distributions, the package names may differ.
+Please refer to the Yocto Project documentation for the specific packages required for your distribution.
+
+Set the locale in Ubuntu:
+
+.. code-block:: bash
+
+   sudo locale-gen en_US.UTF-8
+
+Setup the Yocto environment
+---------------------------
+
+Initialize the repo and download the source code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Initialize the repo with the appropriate manifest for your target hardware:
+
+`Cargt GitHub account <https://github.com/cargt>`_ has public repositories for Yocto layers, example applications, and board support packages.
+
+Generic repo commands:
+
+.. code-block:: bash
+
+   repo init -u <manifest_url> -b <branch_name>
+   repo sync
+
+Cargt example for NXP i.MX:
+
+.. code-block:: bash
+
+   mkdir -p ~/yocto
+   cd ~/yocto
+   repo init -u https://github.com/cargt/imx_manifest -b scarthgap -m cargt-imx-6.6.36-2.1.0.xml
+   repo sync
+
+This will download the necessary Yocto layers and source code for building images for Cargt's i.MX91, i.MX93, and i.MX8M Plus hardware designs.
+
+Initialize build environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- To see available scripts:
+
+.. code-block:: bash
+
+   ls
+   # Output:
+   # imx-cargt-setup.sh  imx-setup-release.sh  README  README-IMXBSP  setup-environment  sources
+
+- To see available distributions and machines:
+
+.. code-block:: bash
+
+   ls -1 sources/meta-imx-cargt/conf/distro
+   # Output:
+   # cargt-imx-wayland.conf
+   # cargt-imx-xwayland-ap.conf
+   # cargt-imx-xwayland.conf
+   # cargt-imx-xwayland-connman.conf
+
+   ls -1 sources/meta-imx-cargt/conf/machine/
+   # Output:
+   # imx8mp-cargt-00377-00365.conf
+   # imx93-cargt-00324-00326.conf
+   # imx93-cargt-00359-00406.conf
+   # imx93-cargt-00363-00365.conf
+   # imx93-cargt-00363-osm-som.conf
+
+
+- Setting up the build environment - for the first time:
+
+.. code-block:: bash
+
+   # Generic:
+   DISTRO=<selected-distro> MACHINE=<selected-machine> source ./imx-cargt-setup.sh -b <build_dir>
+   # Example:
+   DISTRO=cargt-imx-xwayland MACHINE=imx93-cargt-00363-00365 source ./imx-cargt-setup.sh -b bld-xwayland
+
+This will set up the environment variables for the build and navigate to the build directory.
+
+- Subsequent builds can be enabled with:
+
+.. code-block:: bash
+
+   # Generic:
+   source setup-environment <build_dir>
+   # Example:
+   source setup-environment bld-xwayland
+
+This will use the previous distro and machine environment variables for the build and navigate to the build directory.
+
+Bitbake the image
+-----------------
+
+Build images
+~~~~~~~~~~~~
+
+.. note::
+
+   This assumes you have already set up the build environment as described above and are in the build directory.
+
+- To find available images to build:
+
+.. code-block:: bash
+
+   bitbake-layers show-recipes | grep image
+   # Output:
+   # Highlighting just the cargt ones:
+   # cargt-image-chrome:
+   # cargt-image-chrome-swu:
+   # cargt-image-core:
+   # cargt-image-core-swu:
+   # cargt-image-demo:
+   # cargt-image-demo-swu:
+   # cargt-image-dev:
+   # cargt-image-dev-swu:
+
+- To build an image:
+
+.. code-block:: bash
+
+   bitbake <image_name>
+   # Example:
+   bitbake cargt-image-demo
+   bitbake cargt-image-demo-swu
+
+This will build the specified image and its dependencies, resulting in a complete system image that can be flashed to the target hardware.
+The output images will be located in the ``<build_dir>/tmp/deploy/images/<machine>/`` directory.
+
+Build Packages
+~~~~~~~~~~~~~~
+
+- To build a specific package:
+
+.. code-block:: bash
+
+   bitbake <package_name>
+   # Example:
+   bitbake linux-imx
+
+This will build the specified package and its dependencies, resulting in a ``.deb`` file that can be installed on the target device.
+The output package will be located in the ``<build_dir>/tmp/deploy/deb/<machine>/`` directory.
 
