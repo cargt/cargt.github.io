@@ -845,3 +845,35 @@ Build Packages
 This will build the specified package and its dependencies, resulting in a ``.deb`` file that can be installed on the target device.
 The output package will be located in the ``<build_dir>/tmp/deploy/deb/<machine>/`` directory.
 
+Deploy to Target
+----------------
+
+- See the `Running Linux on a Cargt design`_ section for instructions on how to flash pre-compiled images to the target hardware using UUU or STM32Cube.
+- See the `SWUpdate`_ section for instructions on how to use SWUpdate to install incremental update images on the target hardware.
+- See the `Package Management on a Cargt design`_ section for instructions on how to use APT or dpkg to install packages on the target hardware.
+
+Advanced Yocto Usage
+--------------------
+
+Build fails
+~~~~~~~~~~~
+
+- Try restarting the build
+- Lockup or exit failure
+
+   - This could be due to a build machine resource issue (e.g., out of memory) or a transient issue with the build process.
+
+   - Try reducing the number of parallel build threads by setting ``BB_NUMBER_THREADS`` and ``PARALLEL_MAKE`` in your ``local.conf`` file to a lower value.
+
+      Use the number of CPU cores (or less) on your build machine as a general guideline.
+      The build is also a function of available RAM, so if you have 12 cores but only a small amount of RAM, you may want to limit to 10 threads to avoid out of memory issues.
+
+      Trial and error may be needed to find the optimal number of threads for your specific build machine and configuration.
+
+      For 12 cores, you could set ``<build_dir>/conf/local.conf`` with:
+
+      .. code-block:: bash
+
+         BB_NUMBER_THREADS = "10"
+         PARALLEL_MAKE = "-j 10"
+
