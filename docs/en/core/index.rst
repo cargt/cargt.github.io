@@ -160,11 +160,19 @@ Carrier Boards
 ---------------------------
 
 - Supported SOMs
+
   - i.MX93 00363 OSM-L SOM
   - i.MX8M Plus 00377 OSM-L SOM
   - STM32MP2 00378 OSM-L SOM
   - STM32MP2 00395 OSM-L SOM
   - AM6254 00364 OSM-L SOM
+
+- Block Diagram - i.MX93 00363 OSM-L SOM on 00365 Carrier Board
+
+.. image:: /images/diagrams/Block-diagram-i.MX93-OSM-L-00365-Rev-B-20260210.png
+   :align: center
+   :alt: Block Diagram - i.MX93 00363 OSM-L SOM on 00365 Carrier Board
+
 - User Guide
 - Hardware Design Guide
 - Hardware Design Files
