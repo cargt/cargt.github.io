@@ -332,6 +332,26 @@ U-Boot variables can be accessed through either the console or ssh session.
       U-Boot variables can be viewed and modified using the ``printenv``, ``setenv``, and ``saveenv`` commands in the U-Boot console.
    - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variablesusing the ``fw_setenv`` and ``fw_printenv`` utilities.
 
+NXP - Enter UUU mode using U-Boot Environment Variable Method
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   - To enter UUU mode without using the BOOT button, you can set the U-Boot environment variable ``bootcmd`` to boot into UUU mode on the next reboot.
+      Use either ``fw_setenv`` or ``setenv`` to set the variable.
+
+   .. code-block:: bash
+
+      # Using fw_setenv (from Linux shell)
+      fw_setenv bootcmd 'fastboot auto'
+      fw_printenv bootcmd  # Verify the change
+      reboot
+
+      # Using setenv (from U-Boot console)
+      setenv bootcmd 'fastboot auto'
+      saveenv
+      printenv bootcmd  # Verify the change
+      reset
+
+
 SWUpdate
 ========
 
