@@ -402,6 +402,12 @@ Electrical Connections
 
 - SPI - The SPI display uses a Cargt MikroBus adapter board and standard MikroBus cable, so the pinout is consistent across different display models and board revisions.
 
+.. figure:: /images/photos/display2.8-1-web.png
+   :alt: 2.8" SPI display with Cargt MikroBus adapter board
+
+   2.8" SPI display with Cargt MikroBus adapter board
+
+
 
 Software Configuration
 ~~~~~~~~~~~~~~~~~~~~~~
