@@ -351,6 +351,60 @@ NXP - Enter UUU mode using U-Boot Environment Variable Method
       printenv bootcmd  # Verify the change
       reset
 
+Connecting Displays on a Cargt design
+-------------------------------------
+
+Electrical Connections
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Identify the display interface supported by your LCD display (e.g., LVDS, MIPI-DSI, SPI).
+
++------------------------+-----------+---------------+
+| Display Part Number    | Interface | Size (inches) |
++========================+===========+===============+
+| GLT1011280800is1       | LVDS      | 10            |
++------------------------+-----------+---------------+
+| GLT0701024600is2       | LVDS      | 7             |
++------------------------+-----------+---------------+
+| GLT0557201280is1       | MIPI-DSI  | 5.5           |
++------------------------+-----------+---------------+
+| GLT028240320is1        | SPI       | 2.8           |
++------------------------+-----------+---------------+
+
+- Identify the corresponding connector on the carrier board or SOM for the display interface.
+- Ensure the display is powered off before making any connections.
+
+- LVDS & MIPI - There are 2 types of flex cables used for these display interfaces
+
+   - Type A: Top-Top
+   - Type B: Top-Bottom
+
+   The flex cable type needed depends on the specific display model and board revision.
+   Always refer to the documentation for your specific display model and board revision to determine the correct flex cable type if unsure.
+
+   .. Warning::
+
+      Pin 1 on display connector MUST connect to Pin 1 on the board.
+      Only rely on the silkscreen PIN markings and documentation to identify Pin 1 on both the display and board.
+      Do NOT rely on the "J" silkscreen marking position as it may not be consistent across different display models or board revisions.
+
+
+   - Identify the CORRECT flex cable needed to connect the display to the board.
+
+
+   Orient the board and display connectors, identifying and aligning Pin 1 on both.
+   Then select the flex cable type (A or B) that matches the orientation of the connectors and allows Pin 1 on the display to connect to Pin 1 on the board.
+   You may have to fold the flex cable in a specific way to achieve the correct orientation.
+
+   .. Warning::
+
+      Do NOT kink the flex cable as it may damage the internal wiring and cause the display to not function properly.
+
+- SPI - The SPI display uses a Cargt MikroBus adapter board and standard MikroBus cable, so the pinout is consistent across different display models and board revisions.
+
+
+Software Configuration
+~~~~~~~~~~~~~~~~~~~~~~
 
 SWUpdate
 ========
