@@ -412,6 +412,56 @@ Electrical Connections
 Software Configuration
 ~~~~~~~~~~~~~~~~~~~~~~
 
+If you bought an evaluation kit with a display, the display should be pre-configured and work out of the box with the pre-compiled images from the `Cargt Package Repository Images`_.
+
+If you are using your own display, you may need to modify the device tree to configure the display correctly.
+Refer to the `Yocto Development`_ section for instructions on how to modify the device tree and build custom images with the necessary display configuration.
+
+If you are using a display that is sold by Cargt, then the necessary device tree configuration should already be included in the pre-compiled images from the `Cargt Package Repository Images`_.
+
+How to check for available device tree overlays for display support:
+
+   - As part of build:
+
+   .. code-block:: bash
+
+      ls <build_dir>/tmp/deploy/images/<machine>/*.dtb
+
+   - On target device:
+
+   .. code-block:: bash
+
+      ls -l /boot/*.dtb
+      # Example output:
+      /boot/imx93-cargt-00363-00365-glt0557201280is1.dtb
+      /boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
+      /boot/imx93-cargt-00363-00365.dtb
+
+Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot environment variable ``fdtfile`` to point to the appropriate DTB file that matches your display model.
+
+   .. code-block:: bash
+
+      # Using fw_setenv (from Linux shell)
+      fw_setenv fdtfile /boot/<dtb_file_name>
+      fw_printenv fdtfile  # Verify the change
+      reboot
+
+      # Using setenv (from U-Boot console)
+      setenv fdtfile /boot/<dtb_file_name>
+      saveenv
+      printenv fdtfile  # Verify the change
+      reset
+
+   - Examples:
+
+   .. code-block:: bash
+
+      # For GLT0557201280is1 5.5"MIPI-DSI display:
+      fw_setenv fdtfile /boot/imx93-cargt-00363-00365-glt0557201280is1.dtb
+
+      # For GLT1011280800is1 10.1" LVDS display:
+      fw_setenv fdtfile /boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
+
 SWUpdate
 ========
 
