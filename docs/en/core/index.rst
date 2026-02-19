@@ -432,10 +432,16 @@ How to check for available device tree overlays for display support:
    .. code-block:: bash
 
       ls -l /boot/*.dtb
-      # Example output:
+      # Example output - NXP:
       /boot/imx93-cargt-00363-00365-glt0557201280is1.dtb
       /boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
       /boot/imx93-cargt-00363-00365.dtb
+      # Example output - STM32MP2:
+      /boot/stm32mp257f-cargt-00395-00365v3-glt0557201280is1.dtb
+      /boot/stm32mp257f-cargt-00395-00365v3-glt0701024600is2.dtb
+      /boot/stm32mp257f-cargt-00395-00365v3-glt1011280800is1.dtb
+      /boot/stm32mp257f-cargt-00395-00365v3.dtb
+
 
 Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot environment variable ``fdtfile`` to point to the appropriate DTB file that matches your display model.
 
@@ -456,7 +462,7 @@ Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot e
 
    .. code-block:: bash
 
-      # For GLT0557201280is1 5.5"MIPI-DSI display:
+      # For GLT0557201280is1 5.5" MIPI-DSI display:
       fw_setenv fdtfile /boot/imx93-cargt-00363-00365-glt0557201280is1.dtb
 
       # For GLT1011280800is1 10.1" LVDS display:
