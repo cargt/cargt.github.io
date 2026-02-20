@@ -898,6 +898,9 @@ Generic repo commands:
 
 .. code-block:: bash
 
+   # Navigate to directory where you want to download the source code
+   mkdir -p ~/yocto
+   cd ~/yocto
    repo init -u <manifest_url> -b <branch_name>
    repo sync
 
@@ -912,8 +915,19 @@ Cargt example for NXP i.MX:
 
 This will download the necessary Yocto layers and source code for building images for Cargt's i.MX91, i.MX93, and i.MX8M Plus hardware designs.
 
-Initialize build environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Cargt example for STM32MP2:
+
+.. code-block:: bash
+
+   mkdir -p ~/yocto
+   cd ~/yocto
+   repo init -u https://github.com/cargt/stm32mp_manifest -b scarthgap -m cargt-stm32mp2.xml
+   repo sync
+
+This will download the necessary Yocto layers and source code for building images for Cargt's STM32MP2 hardware designs.
+
+Initialize build environment for NXP processors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - To see available scripts:
 
@@ -965,6 +979,77 @@ This will set up the environment variables for the build and navigate to the bui
 
 This will use the previous distro and machine environment variables for the build and navigate to the build directory.
 
+Initialize build environment for STM32MP2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See the Readme at the Cargt GitHub repository for STM32MP2 for instructions on how to set up the build environment for STM32MP2 designs:
+https://github.com/cargt/stm32mp_manifest/tree/scarthgap
+
+Initialize the environment and chose the MACHINE and DISTRO using the scripts provided.
+
+.. code-block:: bash
+
+   source ./layers/meta-st/meta-st-cargt/scripts/envsetup.sh
+
+.. note::
+
+   The script may interject with a list of packages that the build machine needs to install.
+   Whether you choose to install those packages or not, you can still proceed with the setup.
+   However, the list will need to be installed at some point to ensure a successful build.
+
+Example:
+
+.. code-block:: bash
+
+   sudo apt-get update
+   sudo apt-get install -y bsdmainutils gcc-multilib git-lfs libgmp-dev libmpc-dev libsdl1.2-dev pylint python3-git socat texinfo xterm
+
+Choose a DISTRO and a MACHINE:
+
+.. image:: /images/screenshots/img-stm32mp2-select-distro.png
+   :alt: STM32MP2 list of distro choices
+
+.. image:: /images/screenshots/img-stm32mp2-select-machine.png
+   :alt: STM32MP2 list of machine choices
+
+You must accept the EULA to use certain packages included those needed by the GPU. See `here <https://wiki.st.com/stm32mpu/wiki/How_to_create_your_own_machine#Create_symbolic_link_for_EULA_with_new_machine_created>`_ for more information.
+
+After accepting the EULA, you should see configuration details similar to this:
+
+.. code-block:: bash
+
+   ===========================================================================
+
+   Configuration files have been created for the following configuration:
+
+      DISTRO            :  cargt-openstlinux-weston
+      DISTRO_CODENAME   :  scarthgap
+      MACHINE           :  stm32mp25-cargt-00395-00365v3
+      BB_NUMBER_THREADS :  <no-custom-config-set>
+      PARALLEL_MAKE     :  <no-custom-config-set>
+
+      BUILDDIR          :  build-cargtopenstlinuxweston-stm32mp25-cargt-00395-00365v3
+      DOWNLOAD_DIR      :  <disable>
+      SSTATE_DIR        :  <disable>
+
+      SOURCE_MIRROR_URL :  <no-custom-config-set>
+      SSTATE_MIRRORS    :  <disable>
+
+      WITH_EULA_ACCEPTED:  YES
+
+   ===========================================================================
+
+.. note::
+
+   It must say "WITH_EULA_ACCEPTED: YES" to ensure the necessary packages for the GPU and other components are included in the build.
+
+
+You can now start a build with a command like this:
+
+.. code-block:: bash
+
+   bitbake cargt-image-dev
+
 Bitbake the image
 -----------------
 
@@ -997,6 +1082,7 @@ Build images
 
    bitbake <image_name>
    # Example:
+   bitbake cargt-image-dev
    bitbake cargt-image-demo
    bitbake cargt-image-demo-swu
 
