@@ -169,7 +169,7 @@ Carrier Boards
 
 - Block Diagram - i.MX93 00363 OSM-L SOM on 00365 Carrier Board
 
-.. figure:: /images/diagrams/Block-diagram-i.MX93-OSM-L-00365-Rev-B-20260210.png
+.. figure:: /_static/images/diagrams/Block-diagram-i.MX93-OSM-L-00365-Rev-B-20260210.png
    :align: center
    :alt: i.MX93 00363 OSM-L SOM on 00365 Carrier Board Block Diagram
 
@@ -177,7 +177,7 @@ Carrier Boards
 
 - Block Diagram - STM32MP257 00395 OSM-L SOM on 00365 Carrier Board
 
-.. figure:: /images/diagrams/Block-diagram-STM32MP2-00395-OSM-L-00365-Rev-D-20260213.png
+.. figure:: /_static/images/diagrams/Block-diagram-STM32MP2-00395-OSM-L-00365-Rev-D-20260213.png
    :align: center
    :alt: STM32MP257 00395 OSM-L SOM on 00365 Carrier Board Block Diagram
 
@@ -268,7 +268,7 @@ Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
 
 UUU Example
 
-.. figure:: /images/screenshots/img-nxp-uuu-commands.png
+.. figure:: /_static/images/screenshots/img-nxp-uuu-commands.png
    :alt: UUU commands example output
 
    UUU commands example output
@@ -402,7 +402,7 @@ Electrical Connections
 
 - SPI - The SPI display uses a Cargt MikroBus adapter board and standard MikroBus cable, so the pinout is consistent across different display models and board revisions.
 
-.. figure:: /images/photos/display2.8-1-web.png
+.. figure:: /_static/images/photos/display2.8-1-web.png
    :alt: 2.8" SPI display with Cargt MikroBus adapter board
 
    2.8" SPI display with Cargt MikroBus adapter board
@@ -491,14 +491,14 @@ Checking the run partition
 
 Before update example output:
 
-.. figure:: /images/screenshots/img-swu-lsblk-before-update.png
+.. figure:: /_static/images/screenshots/img-swu-lsblk-before-update.png
    :alt: lsblk output before SWUpdate
 
    Kernel and root file system are on mmcblk0p1
 
 After update example output:
 
-.. figure:: /images/screenshots/img-swu-lsblk-after-update.png
+.. figure:: /_static/images/screenshots/img-swu-lsblk-after-update.png
    :alt: lsblk output after SWUpdate
 
    Kernel and root file system are on mmcblk0p2
@@ -534,19 +534,19 @@ On a connected host computer, open a web browser and navigate to the SWUpdate we
 
 Follow the on-screen instructions to upload and install the update file.
 
-.. image:: /images/screenshots/img-swu-web-pic1.png
+.. image:: /_static/images/screenshots/img-swu-web-pic1.png
    :alt: SWUpdate web interface drag and drop - picture 1
 
-.. image:: /images/screenshots/img-swu-web-pic2.png
+.. image:: /_static/images/screenshots/img-swu-web-pic2.png
    :alt: SWUpdate web interface drag and drop - picture 2
 
-.. image:: /images/screenshots/img-swu-web-pic3.png
+.. image:: /_static/images/screenshots/img-swu-web-pic3.png
    :alt: SWUpdate web interface drag and drop - picture 3
 
-.. image:: /images/screenshots/img-swu-web-pic4.png
+.. image:: /_static/images/screenshots/img-swu-web-pic4.png
    :alt: SWUpdate web interface drag and drop - picture 4
 
-.. image:: /images/screenshots/img-swu-web-pic5.png
+.. image:: /_static/images/screenshots/img-swu-web-pic5.png
    :alt: SWUpdate web interface drag and drop - picture 5
 
 
@@ -1006,10 +1006,10 @@ Example:
 
 Choose a DISTRO and a MACHINE:
 
-.. image:: /images/screenshots/img-stm32mp2-select-distro.png
+.. image:: /_static/images/screenshots/img-stm32mp2-select-distro.png
    :alt: STM32MP2 list of distro choices
 
-.. image:: /images/screenshots/img-stm32mp2-select-machine.png
+.. image:: /_static/images/screenshots/img-stm32mp2-select-machine.png
    :alt: STM32MP2 list of machine choices
 
 You must accept the EULA to use certain packages included those needed by the GPU. See `here <https://wiki.st.com/stm32mpu/wiki/How_to_create_your_own_machine#Create_symbolic_link_for_EULA_with_new_machine_created>`_ for more information.
