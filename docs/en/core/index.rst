@@ -221,7 +221,8 @@ Public Package Repositories
 Public Pre-compiled Images
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- .. _Cargt Package Repository Images:
+.. _Cargt Package Repository Images: https://yocto.cargt.com/images
+
 - `Pre-built complete system images <https://yocto.cargt.com/images>`_ for supported Cargt hardware suitable for initial flashing or full system recovery.
 - `Incremental update images <https://yocto.cargt.com/images>`_ compatible with SWUpdate for in-field updates without reflashing the entire system.
 
