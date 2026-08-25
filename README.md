@@ -33,6 +33,12 @@ After running the build commands above, the generated HTML documentation will be
 
 Open `index.html` in that directory to view the documentation locally in your browser.
 
+## Release
+
+After testing, push the repo to gitbhub. There is a CI/CD deployment pipeline so it will take a few minutes to go live. Make sure to check that it correctly uploads to dev.cargt.com.
+
+If it fails, then check the errors in the pipeline as a logged in user to the github repo.
+
 ## Troubleshooting
 
 - If you encounter missing dependencies, ensure you are using the correct Python version and that all requirements are installed.
