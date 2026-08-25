@@ -1139,3 +1139,23 @@ Build fails
 
          echo 'BB_NUMBER_THREADS = "10"' >> conf/local.conf
          echo 'PARALLEL_MAKE = "-j 10"' >> conf/local.conf
+
+   - Try using the ``BB_PRESSURE_MAX_MEMORY`` detection setting in the ``<build_dir>/conf/local.conf`` file.
+
+      This monitors the Linux kernel's Pressure Stall Information (PSI) via /proc/pressure/memory. It pauses the start of new tasks until the current memory pressure goes below the threshold. It acts as a last resort to prevent Out-Of-Memory (OOM) errors during heavy builds.
+
+      100,000 has been found to be an acceptable value but adjust it for your setup. A smaller value triggers the throttling faster.
+
+      .. code-block:: bash
+
+         BB_PRESSURE_MAX_MEMORY = "100000"
+
+         echo 'BB_PRESSURE_MAX_MEMORY = "100000"' >> conf/local.conf
+
+      It shows up like this in the build output:
+
+      .. code-block:: bash
+
+         NOTE: Pressure status changed to CPU: None, IO: None, Mem: True (CPU: 945702.0/None, IO: 20.3/None, Mem: 132625.6/100000.0) - using 15/16 bitbake threads
+         NOTE: Pressure status changed to CPU: None, IO: None, Mem: False (CPU: 999309.6/None, IO: 345.9/None, Mem: 0.0/100000.0) - using 13/16 bitbake threads
+
