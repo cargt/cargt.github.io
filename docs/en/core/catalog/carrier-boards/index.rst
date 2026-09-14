@@ -5,5 +5,5 @@ All Carrier Boards
    :maxdepth: 1
 
    00326-sodimm-carrier
-   00406-lga-carrier
    00365-osml-carrier
+   00406-lga-carrier
