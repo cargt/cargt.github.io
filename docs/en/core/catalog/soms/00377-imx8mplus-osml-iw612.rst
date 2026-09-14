@@ -1,6 +1,6 @@
 .. _00377:
 
-00377 — i.MX8M Plus OSM-L with IW612
+00377 — i.MX 8M Plus OSM-L with IW612
 =======================================
 
 .. list-table::
@@ -9,26 +9,26 @@
    * - Vendor
      - NXP
    * - Processor
-     - i.MX8M Plus
+     - i.MX 8M Plus
    * - Form Factor
      - OSM-L
    * - Wireless Module
-     - IW612
+     - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
 .. thumbnail:: /_static/images/photos/soms/00377-1.png
    :group: 00377
    :width: 30%
-   :title: 00377 i.MX8M Plus OSM-L with IW612 - angled
+   :title: 00377 i.MX 8M Plus OSM-L with IW612 - angled
 
 .. thumbnail:: /_static/images/photos/soms/00377-2.png
    :group: 00377
    :width: 30%
-   :title: 00377 i.MX8M Plus OSM-L with IW612 - top
+   :title: 00377 i.MX 8M Plus OSM-L with IW612 - top
 
 .. thumbnail:: /_static/images/photos/soms/00377-3.png
    :group: 00377
    :width: 30%
-   :title: 00377 i.MX8M Plus OSM-L with IW612 - bottom
+   :title: 00377 i.MX 8M Plus OSM-L with IW612 - bottom
 
 Resources
 ---------

@@ -9,7 +9,7 @@
    * - Vendor
      - NXP
    * - Processor
-     - i.MX93
+     - i.MX 93
    * - Form Factor
      - LGA
    * - Wireless Module

@@ -13,7 +13,7 @@
    * - Form Factor
      - OSM-L
    * - Wireless Module
-     - IW610
+     - NXP IW610 Dual-Band Wi-Fi 6 BLE
 
 .. Photo is of the STM32MP257F OSM-L PCB on the 00365 carrier board; the
    CC3351 vs IW610 wireless variant isn't visually distinguishable, so this

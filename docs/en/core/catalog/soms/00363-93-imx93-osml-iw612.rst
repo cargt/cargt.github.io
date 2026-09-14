@@ -1,6 +1,6 @@
 .. _00363-93:
 
-00363-93 — i.MX93 OSM-L with IW612
+00363-93 — i.MX 93 OSM-L with IW612
 =====================================
 
 .. list-table::
@@ -9,11 +9,11 @@
    * - Vendor
      - NXP
    * - Processor
-     - i.MX93
+     - i.MX 93
    * - Form Factor
      - OSM-L
    * - Wireless Module
-     - IW612
+     - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
 .. No bare-SOM cutout photo exists yet for this board - these show the SOM
    mounted on the 00365 OSM-L Carrier Board.
@@ -21,17 +21,17 @@
 .. thumbnail:: /_static/images/photos/soms/00363-93-1.jpg
    :group: 00363-93
    :width: 30%
-   :title: 00363-93 i.MX93 OSM-L with IW612 - on 00365 carrier board
+   :title: 00363-93 i.MX 93 OSM-L with IW612 - on 00365 carrier board
 
 .. thumbnail:: /_static/images/photos/soms/00363-93-2.jpg
    :group: 00363-93
    :width: 30%
-   :title: 00363-93 i.MX93 OSM-L with IW612 - detail
+   :title: 00363-93 i.MX 93 OSM-L with IW612 - detail
 
 .. thumbnail:: /_static/images/photos/soms/00363-93-3.jpg
    :group: 00363-93
    :width: 30%
-   :title: 00363-93 i.MX93 OSM-L with IW612 - detail
+   :title: 00363-93 i.MX 93 OSM-L with IW612 - detail
 
 Resources
 ---------

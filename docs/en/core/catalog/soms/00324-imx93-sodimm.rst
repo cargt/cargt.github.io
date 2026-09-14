@@ -1,6 +1,6 @@
 .. _00324:
 
-00324 — i.MX93 SODIMM
+00324 — i.MX 93 SODIMM
 =======================
 
 .. list-table::
@@ -9,7 +9,7 @@
    * - Vendor
      - NXP
    * - Processor
-     - i.MX93
+     - i.MX 93
    * - Form Factor
      - SODIMM
    * - Wireless Module
@@ -18,17 +18,17 @@
 .. thumbnail:: /_static/images/photos/soms/00324-1.png
    :group: 00324
    :width: 30%
-   :title: 00324 i.MX93 SODIMM - angled
+   :title: 00324 i.MX 93 SODIMM - angled
 
 .. thumbnail:: /_static/images/photos/soms/00324-2.png
    :group: 00324
    :width: 30%
-   :title: 00324 i.MX93 SODIMM - front
+   :title: 00324 i.MX 93 SODIMM - front
 
 .. thumbnail:: /_static/images/photos/soms/00324-3.png
    :group: 00324
    :width: 30%
-   :title: 00324 i.MX93 SODIMM - back
+   :title: 00324 i.MX 93 SODIMM - back
 
 Resources
 ---------

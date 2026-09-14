@@ -1,6 +1,6 @@
 .. _00414:
 
-00414 — i.MX95 OSM-L with IW612
+00414 — i.MX 95 OSM-L with IW612
 ==================================
 
 .. list-table::
@@ -9,21 +9,21 @@
    * - Vendor
      - NXP
    * - Processor
-     - i.MX95
+     - i.MX 95
    * - Form Factor
      - OSM-L
    * - Wireless Module
-     - IW612
+     - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
 .. thumbnail:: /_static/images/photos/soms/00414-1.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX95 OSM-L with IW612 - top
+   :title: 00414 i.MX 95 OSM-L with IW612 - top
 
 .. thumbnail:: /_static/images/photos/soms/00414-2.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX95 OSM-L with IW612 - bottom
+   :title: 00414 i.MX 95 OSM-L with IW612 - bottom
 
 Coming Soon
 -----------

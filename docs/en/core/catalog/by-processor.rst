@@ -1,8 +1,8 @@
 SOMs by Processor
 ===================
 
-i.MX8M Plus
------------
+i.MX 8M Plus
+------------
 
 .. grid:: 1 2 2 3
     :gutter: 3
@@ -13,8 +13,8 @@ i.MX8M Plus
 
         OSM-L · NXP · IW612
 
-i.MX91
-------
+i.MX 91
+-------
 
 .. grid:: 1 2 2 3
     :gutter: 3
@@ -25,8 +25,8 @@ i.MX91
 
         OSM-L · NXP · IW612
 
-i.MX93
-------
+i.MX 93
+-------
 
 .. grid:: 1 2 2 3
     :gutter: 3
@@ -49,8 +49,8 @@ i.MX93
 
         OSM-L · NXP · IW612
 
-i.MX95
-------
+i.MX 95
+-------
 
 .. grid:: 1 2 2 3
     :gutter: 3

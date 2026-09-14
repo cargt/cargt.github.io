@@ -13,7 +13,7 @@
    * - Form Factor
      - OSM-L
    * - Wireless Module
-     - IW612
+     - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
 .. Product photo not yet available - reserved for the photos phase.
    Once the image lands in _static/images/photos/00364-am6254-osml-iw612.png,

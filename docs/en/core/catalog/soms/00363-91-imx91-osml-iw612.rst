@@ -1,6 +1,6 @@
 .. _00363-91:
 
-00363-91 — i.MX91 OSM-L with IW612
+00363-91 — i.MX 91 OSM-L with IW612
 =====================================
 
 .. list-table::
@@ -9,21 +9,21 @@
    * - Vendor
      - NXP
    * - Processor
-     - i.MX91
+     - i.MX 91
    * - Form Factor
      - OSM-L
    * - Wireless Module
-     - IW612
+     - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
 .. thumbnail:: /_static/images/photos/soms/00363-91-1.png
    :group: 00363-91
    :width: 45%
-   :title: 00363-91 i.MX91 OSM-L with IW612 - top
+   :title: 00363-91 i.MX 91 OSM-L with IW612 - top
 
 .. thumbnail:: /_static/images/photos/soms/00363-91-2.png
    :group: 00363-91
    :width: 45%
-   :title: 00363-91 i.MX91 OSM-L with IW612 - bottom
+   :title: 00363-91 i.MX 91 OSM-L with IW612 - bottom
 
 Resources
 ---------

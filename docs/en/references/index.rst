@@ -82,8 +82,8 @@ NXP Documentation for Secure Boot (AHAB) on i.MX Processors
 - `NXP i.MX Secure Boot and Image Authentication (AN5089) <https://www.nxp.com/docs/en/application-note/AN5089.pdf>`_ – Application note detailing secure boot implementation on i.MX processors.
 - `NXP Code Signing Tool User Guide (UG1165) <https://www.nxp.com/docs/en/user-guide/UG1165.pdf>`_ – Instructions for using the Code Signing Tool to sign images for secure boot.
 - `NXP Secure Boot Overview <https://www.nxp.com/docs/en/application-note/AN5337.pdf>`_ – Overview of secure boot concepts and architecture for NXP processors.
-- `NXP i.MX93 Secure Boot Implementation Guide (AN12174) <https://www.nxp.com/docs/en/application-note/AN12174.pdf>`_ – Specific guide for implementing secure boot on i.MX93 processors.
-- `NXP i.MX95 Secure Boot Implementation Guide (AN12175) <https://www.nxp.com/docs/en/application-note/AN12175.pdf>`_ – Specific guide for implementing secure boot on i.MX95 processors.
+- `NXP i.MX 93 Secure Boot Implementation Guide (AN12174) <https://www.nxp.com/docs/en/application-note/AN12174.pdf>`_ – Specific guide for implementing secure boot on i.MX 93 processors.
+- `NXP i.MX 95 Secure Boot Implementation Guide (AN12175) <https://www.nxp.com/docs/en/application-note/AN12175.pdf>`_ – Specific guide for implementing secure boot on i.MX 95 processors.
 - `NXP One-Time Programmable Memory Programming Guide (AN5338) <https://www.nxp.com/docs/en/application-note/AN5338.pdf>`_ – Guide for programming OTP memory on NXP processors.
 - `NXP i.MX U-Boot Secure Boot Integration Guide (AN12176) <https://www.nxp.com/docs/en/application-note/AN12176.pdf>`_ – Instructions for integrating secure boot into U-Boot for i.MX processors.
 - `NXP i.MX Linux Secure Boot Integration Guide (AN12177) <https://www.nxp.com/docs/en/application-note/AN12177.pdf>`_ – Instructions for integrating secure boot into Linux for i.MX processors.
@@ -95,10 +95,10 @@ NXP Documentation for Secure Boot (AHAB) on i.MX Processors
 - `NXP Secure Boot Community Forum <https://community.nxp.com/t5/Security-Trust/Secure-Boot/bd-p/security-trust>`_ – Community discussions and support for secure boot topics on NXP processors.
 - `NXP Secure Boot YouTube Playlist <https://www.youtube.com/playlist?list=PL4fGSI1pDJn5o1kz8D3K0ZlY0bXq6K5jR>`_ – Video tutorials and presentations on secure boot for NXP processors.
 - `NXP Secure Boot GitHub Repository <https://github.com/NXPsecureboot>`_ – Source code and tools related to secure boot implementations on NXP processors.
-- AN12312 – i.MX93 Secure Boot Example Implementation – Step-by-step example of implementing secure boot on the i.MX93 processor.
-- AN12313 – i.MX95 Secure Boot Example Implementation – Step-by-step example of implementing secure boot on the i.MX95 processor.
+- AN12312 – i.MX 93 Secure Boot Example Implementation – Step-by-step example of implementing secure boot on the i.MX 93 processor.
+- AN12313 – i.MX 95 Secure Boot Example Implementation – Step-by-step example of implementing secure boot on the i.MX 95 processor.
 - `NXP Secure Boot Application Notes Index <https://www.nxp.com/docs/en/application-note/AN5337INDEX.pdf>`_ – Comprehensive index of application notes related to secure boot on NXP processors.
 - `NXP Secure Boot Training Videos <https://www.nxp.com/webapp/Download?colCode=AN5337TRAININGVIDEOS>`_ – Video resources for learning about secure boot on NXP processors.
-- i.MX93 Application Processor Security Reference Manual (RM12175) – Detailed reference manual covering security features and secure boot implementation for the i.MX93 processor.
-- i.MX95 Application Processor Security Reference Manual (RM12176) – Detailed reference manual covering security features and secure boot implementation for the i.MX95 processor.
+- i.MX 93 Application Processor Security Reference Manual (RM12175) – Detailed reference manual covering security features and secure boot implementation for the i.MX 93 processor.
+- i.MX 95 Application Processor Security Reference Manual (RM12176) – Detailed reference manual covering security features and secure boot implementation for the i.MX 95 processor.
 - NXP Secure Boot Best Practices Guide (AN12180) – Guidelines and best practices for implementing secure boot on NXP processors.

@@ -7,23 +7,23 @@ OSM-L
 .. grid:: 1 2 2 3
     :gutter: 3
 
-    .. grid-item-card:: 00363-91 – i.MX91
+    .. grid-item-card:: 00363-91 – i.MX 91
         :link: /core/catalog/soms/00363-91-imx91-osml-iw612
         :link-type: doc
 
-        NXP i.MX91 · IW612
+        NXP i.MX 91 · IW612
 
-    .. grid-item-card:: 00363-93 – i.MX93
+    .. grid-item-card:: 00363-93 – i.MX 93
         :link: /core/catalog/soms/00363-93-imx93-osml-iw612
         :link-type: doc
 
-        NXP i.MX93 · IW612
+        NXP i.MX 93 · IW612
 
-    .. grid-item-card:: 00377 – i.MX8M Plus
+    .. grid-item-card:: 00377 – i.MX 8M Plus
         :link: /core/catalog/soms/00377-imx8mplus-osml-iw612
         :link-type: doc
 
-        NXP i.MX8M Plus · IW612
+        NXP i.MX 8M Plus · IW612
 
     .. grid-item-card:: 00378 – STM32MP257F
         :link: /core/catalog/soms/00378-stm32mp257f-osml-cc3351
@@ -43,11 +43,11 @@ OSM-L
 
         TI AM6254 · IW612
 
-    .. grid-item-card:: 00414 – i.MX95
+    .. grid-item-card:: 00414 – i.MX 95
         :link: /core/catalog/soms/00414-imx95-osml-iw612
         :link-type: doc
 
-        NXP i.MX95 · IW612 · Coming Soon
+        NXP i.MX 95 · IW612 · Coming Soon
 
 SODIMM
 ------
@@ -55,11 +55,11 @@ SODIMM
 .. grid:: 1 2 2 3
     :gutter: 3
 
-    .. grid-item-card:: 00324 – i.MX93
+    .. grid-item-card:: 00324 – i.MX 93
         :link: /core/catalog/soms/00324-imx93-sodimm
         :link-type: doc
 
-        NXP i.MX93
+        NXP i.MX 93
 
 LGA
 ---
@@ -67,8 +67,8 @@ LGA
 .. grid:: 1 2 2 3
     :gutter: 3
 
-    .. grid-item-card:: 00359 – i.MX93
+    .. grid-item-card:: 00359 – i.MX 93
         :link: /core/catalog/soms/00359-lga-murata2el
         :link-type: doc
 
-        NXP i.MX93 · Murata 2EL
+        NXP i.MX 93 · Murata 2EL

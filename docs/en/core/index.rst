@@ -11,7 +11,7 @@ SOMs
         :link: catalog/by-processor
         :link-type: doc
 
-        Browse SOMs grouped by processor (i.MX8M Plus, i.MX91, i.MX93, i.MX95,
+        Browse SOMs grouped by processor (i.MX 8M Plus, i.MX 91, i.MX 93, i.MX 95,
         STM32MP2, AM6254).
 
     .. grid-item-card:: By Form Factor
@@ -694,8 +694,8 @@ Java Enablement on i.MX
 Network Booting using NFS and TFTP in U-Boot
 --------------------------------------------
 
-Secure Boot (AHAB) with i.MX93
-==============================
+Secure Boot (AHAB) with i.MX 93
+===============================
 
 - Overview of Secure Boot
 - Generating Keys and Certificates
@@ -838,7 +838,7 @@ Cargt example for NXP i.MX:
    repo init -u https://github.com/cargt/imx_manifest -b scarthgap -m cargt-imx-6.6.36-2.1.0.xml
    repo sync
 
-This will download the necessary Yocto layers and source code for building images for Cargt's i.MX91, i.MX93, and i.MX8M Plus hardware designs.
+This will download the necessary Yocto layers and source code for building images for Cargt's i.MX 91, i.MX 93, and i.MX 8M Plus hardware designs.
 
 Cargt example for STM32MP2:
 
