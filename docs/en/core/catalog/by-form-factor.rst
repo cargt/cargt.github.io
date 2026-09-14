@@ -43,8 +43,8 @@ OSM-L
 
         TI AM6254 · IW612
 
-    .. grid-item-card:: 00408 – i.MX95
-        :link: /core/catalog/soms/00408-imx95-osml-iw612
+    .. grid-item-card:: 00414 – i.MX95
+        :link: /core/catalog/soms/00414-imx95-osml-iw612
         :link-type: doc
 
         NXP i.MX95 · IW612 · Coming Soon

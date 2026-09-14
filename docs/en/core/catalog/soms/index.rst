@@ -15,4 +15,4 @@ or :doc:`/core/catalog/by-form-factor` for grouped views.
    00377-imx8mplus-osml-iw612
    00378-stm32mp257f-osml-cc3351
    00395-stm32mp257f-osml-iw610
-   00408-imx95-osml-iw612
+   00414-imx95-osml-iw612
