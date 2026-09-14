@@ -41,8 +41,30 @@ Resources
 - Reference Manual
 - Hardware Design Guide
 - Hardware Design Files
-- Software Releases
-- Pre-built Images
+
+Software Releases
+------------------
+
+.. grid:: 1 2 2 2
+    :gutter: 2
+
+    .. grid-item-card:: Yocto
+
+        Coming Soon
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 25 25 25
+
+   * - Release
+     - Release Notes
+     - Pre-built Images
+     - Status
+   * - Coming Soon
+     - Coming Soon
+     - Coming Soon
+     - Coming Soon
+
 
 Compatible Carrier Boards
 --------------------------
