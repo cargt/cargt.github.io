@@ -41,6 +41,8 @@ Resources
 Software Releases
 ------------------
 
+See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases. Direct per-release links will replace this once a stable directory structure is in place there.
+
 .. grid:: 1 2 2 2
     :gutter: 2
 
