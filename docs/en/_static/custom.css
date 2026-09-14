@@ -72,6 +72,28 @@ body {
   color: var(--cargt-electronic-mint);
 }
 
+/* Sidebar toctree expand/collapse toggle - default theme grays are too
+   dark to see against the Kaitoke Green sidebar (only visible on hover).
+   Selectors are repeated to match the theme's own specificity so the
+   override actually takes effect at every nesting level. */
+.wy-menu-vertical li button.toctree-expand,
+.wy-menu-vertical li.toctree-l2 button.toctree-expand,
+.wy-menu-vertical li.toctree-l3 button.toctree-expand {
+  color: var(--cargt-mid-gray);
+}
+.wy-menu-vertical li.current > a button.toctree-expand,
+.wy-menu-vertical li.on a button.toctree-expand {
+  color: var(--cargt-kaitoke-green);
+}
+.wy-menu-vertical li.current > a:hover button.toctree-expand,
+.wy-menu-vertical li.on a:hover button.toctree-expand,
+.wy-menu-vertical li.toctree-l2 a:hover button.toctree-expand,
+.wy-menu-vertical li.toctree-l3 a:hover button.toctree-expand,
+.wy-menu-vertical a:hover button.toctree-expand,
+.wy-menu-vertical a:active button.toctree-expand {
+  color: #fff;
+}
+
 /* Fix the theme's hard-coded 45px circular logo crop - the new brand mark
    is a wide lockup (icon + wordmark) and would otherwise be squashed. */
 .wy-side-nav-search img,
