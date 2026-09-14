@@ -16,13 +16,18 @@ extensions = [
     "sphinx_design",
     # "notfound.extension",  # enable if you added sphinx-notfound-page
 ]
-html_logo = "_static/Cargt-Logo.png"  # Path relative to the docs directory
+html_logo = "_static/cargt-logo-full-color.svg"  # Path relative to the docs directory
+html_favicon = "_static/favicon.ico"
 templates_path = ["_templates"]
-copyright = "2025, Cargt Inc"
+copyright = "2026, Cargt Inc"
 html_theme = "sphinx_rtd_theme" # Read the Docs theme
 html_title = "Cargt Developer Documentation"
 html_theme_options = {
-     'style_nav_header_background': "#F2F2F2",
+     'style_nav_header_background': "#F7F9FA",  # Light Gray - keeps the dark-green
+                                                 # logo mark and black wordmark legible;
+                                                 # the nav menu below stays Kaitoke Green
+     'logo_only': True,
+     'style_external_links': True,
 }
 
 html_context = {

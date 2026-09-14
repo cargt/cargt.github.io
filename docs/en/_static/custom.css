@@ -1,4 +1,146 @@
+/* =========================================================
+   Cargt brand skin for sphinx_rtd_theme
+   Brand guidelines: "Cargt Brand Guidelines_RD03", May 2026
+   ========================================================= */
 
-.wy-side-nav-search .wy-dropdown>a,.wy-side-nav-search>a {
-  color: #3f3f3f;
+:root {
+  --cargt-kaitoke-green: #004437;   /* primary */
+  --cargt-emerald: #00ac69;         /* secondary */
+  --cargt-electronic-mint: #39f2ae; /* secondary */
+  --cargt-circuit-green: #26ff91;   /* secondary */
+  --cargt-mid-gray: #9fa4aa;        /* neutral - decorative/secondary text only, fails AA for body copy */
+  --cargt-light-gray: #f7f9fa;      /* neutral */
+  --cargt-electric-blue: #2424ff;   /* accent - links */
+  --cargt-photon-orange: #ff7a00;   /* accent - CTA/buttons */
+  --cargt-photon-orange-hover: #e56e00;
+  --cargt-body-text: #262b28;       /* dark neutral for body copy; not in the brand table, chosen for AA contrast */
+}
+
+/* ===== Typography =====
+   Brand guidelines originally named "Tonos" (a licensed typeface from The
+   Type Founders, LLC.), but the team has moved away from it. Using
+   "Manrope" instead: a free, open-source (SIL OFL 1.1) geometric-humanist
+   sans-serif from Google Fonts, self-hosted below. It's a variable font
+   covering weights 200-800, so it maps directly onto the same
+   Light/Regular/Medium/Semibold/Bold range the guidelines called for.
+   License: see docs/en/_static/fonts/Manrope-OFL.txt */
+@font-face {
+  font-family: "Manrope";
+  src: url("fonts/Manrope-Variable.woff2") format("woff2-variations"), url("fonts/Manrope-Variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+body, .wy-nav-content, .rst-content, .wy-menu-vertical a {
+  font-family: "Manrope", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+h1, h2, h3, h4, h5, h6, legend {
+  font-family: "Manrope", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  color: var(--cargt-kaitoke-green);
+}
+
+body {
+  color: var(--cargt-body-text);
+}
+
+/* ===== Sidebar (nav) ===== */
+.wy-nav-side {
+  background: var(--cargt-kaitoke-green);
+}
+.wy-side-nav-search .wy-dropdown>a, .wy-side-nav-search>a {
+  color: var(--cargt-kaitoke-green);
+}
+.wy-menu-vertical a {
+  color: var(--cargt-light-gray);
+}
+.wy-nav .wy-menu-vertical a { color: var(--cargt-mid-gray); }
+.wy-menu-vertical a:hover,
+.wy-menu-vertical a:active {
+  background-color: var(--cargt-electric-blue);
+  color: #fff;
+}
+.wy-menu-vertical li.current { background: var(--cargt-light-gray); }
+.wy-menu-vertical li.current a:hover { background: #e7ebe9; }
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.on a {
+  color: var(--cargt-kaitoke-green);
+  background: var(--cargt-light-gray);
+}
+.wy-menu-vertical p.caption {
+  color: var(--cargt-electronic-mint);
+}
+
+/* Fix the theme's hard-coded 45px circular logo crop - the new brand mark
+   is a wide lockup (icon + wordmark) and would otherwise be squashed. */
+.wy-side-nav-search img,
+.wy-nav-top img {
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  width: auto !important;
+  height: 48px !important;
+  max-width: 220px !important;
+  max-height: none !important;
+  padding: 8px 0 !important;
+}
+/* .wy-side-nav-search background is set via conf.py's style_nav_header_background
+   (Light Gray) so the logo mark has proper contrast - not overridden here. */
+.wy-nav-top {
+  background: var(--cargt-kaitoke-green);
+}
+
+/* ===== Links (default + hover/focus: Electric Blue) ===== */
+a,
+.rst-content a code, .rst-content a tt {
+  color: var(--cargt-electric-blue);
+}
+a:hover, a:focus {
+  color: var(--cargt-electric-blue);
+  text-decoration: underline;
+}
+
+/* ===== Buttons / CTA ===== */
+.btn {
+  background-color: var(--cargt-photon-orange);
+  border-color: transparent;
+}
+.btn:hover, .btn:focus {
+  background-color: var(--cargt-photon-orange-hover);
+}
+.btn-neutral {
+  background-color: var(--cargt-light-gray) !important;
+  color: var(--cargt-kaitoke-green) !important;
+}
+.btn-neutral:hover {
+  background-color: var(--cargt-mid-gray) !important;
+  color: #fff !important;
+}
+
+/* ===== Code blocks: accent border only, Pygments token colors left default ===== */
+.rst-content div[class^="highlight"], .highlight {
+  border-left: 4px solid var(--cargt-emerald);
+  background: var(--cargt-light-gray);
+}
+
+/* ===== Neutral/secondary text ===== */
+.wy-breadcrumbs-extra,
+footer,
+footer span.commit tt, footer span.commit .rst-content tt, footer span.commit code {
+  color: var(--cargt-mid-gray);
+}
+
+/* ===== Homepage tagline + Contact Us link (see index.rst) ===== */
+.cargt-tagline {
+  color: var(--cargt-emerald);
+  font-weight: 500;
+  font-size: 1.15em;
+  margin-top: -0.4em;
+  margin-bottom: 1em;
+}
+.cargt-contact-link {
+  margin-bottom: 1.5em;
+}
+.cargt-contact-link a {
+  font-weight: 600;
 }
