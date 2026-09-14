@@ -1,5 +1,3 @@
-SOMs
-==========
 
 .. dropdown:: **Jump to Product**
 
@@ -15,6 +13,31 @@ SOMs
     - `00326 (SODIMM Carrier Board) <#sodimm-carrier-board>`__
     - `00406 (LGA Carrier Board) <#lga-carrier-board>`__
     - `00365 (OSM-L Carrier Board) <#osm-l-carrier-board>`__
+
+Documentation
+=============
+
+i.MX8M Plus
+-----------
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx8%20Quick%20Start%20PDF%20v1.pdf>`__ – Quick Start Guide for EVK.
+- `SOM Datasheet <https://downloads.cargt.com/datasheets/IMX8MMRM.pdf>`__ – Datasheet for the SOM.
+
+i.MX91
+------
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx91%20Quick%20Start%20PDF.pdf>`__ – Quick Start Guide for EVK.
+
+i.MX93
+------
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__ – Quick Start Guide for EVK.
+- `SOM Datasheet <https://downloads.cargt.com/datasheets/Datasheet%20-%20i.MX93%20OSM%20PCB-Rev-03_Doc-Ver-05-2026.pdf>`__ – Datasheet for the SOM.
+
+STM32MP2
+--------
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/STM32%20Quick%20Start%20PDF%20v1.pdf>`__ – Quick Start Guide for EVK.
+- `SOM Datasheet <https://downloads.cargt.com/datasheets/Datasheet%20-%20STM32MP257%20OSM%20PCB-Rev-01_Doc-Ver-05-2026.pdf>`__ – Datasheet for the SOM.
+
+SOMs
+====
 
 NXP
 ---
