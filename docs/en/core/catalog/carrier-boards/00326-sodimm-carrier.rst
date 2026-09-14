@@ -1,0 +1,16 @@
+.. _cb-00326:
+
+00326 — SODIMM Carrier Board
+==============================
+
+Supported SOMs
+---------------
+
+- :doc:`/core/catalog/soms/00324-imx93-sodimm` — i.MX93 SODIMM
+
+Resources
+---------
+
+- User Guide
+- Hardware Design Guide
+- Hardware Design Files

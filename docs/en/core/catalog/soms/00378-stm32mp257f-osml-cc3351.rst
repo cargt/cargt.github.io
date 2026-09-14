@@ -1,0 +1,41 @@
+.. _00378:
+
+00378 — STM32MP257F OSM-L with CC3351
+========================================
+
+.. list-table::
+   :widths: 20 80
+
+   * - Vendor
+     - STMicroelectronics
+   * - Processor
+     - STM32MP257F
+   * - Form Factor
+     - OSM-L
+   * - Wireless Module
+     - CC3351
+
+.. Product photo not yet available - reserved for the photos phase.
+   Once the image lands in _static/images/photos/00378-stm32mp257f-osml-cc3351.png,
+   uncomment:
+..
+.. .. figure:: /_static/images/photos/00378-stm32mp257f-osml-cc3351.png
+..    :align: center
+..    :width: 400px
+..    :alt: 00378 STM32MP257F OSM-L with CC3351 module photo
+
+Resources
+---------
+
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/STM32%20Quick%20Start%20PDF%20v1.pdf>`__
+- Datasheet
+- Reference Manual
+- Hardware Design Guide
+- Hardware Design Files
+- Software Releases
+- Pre-built Images
+
+Compatible Carrier Boards
+--------------------------
+
+- :doc:`/core/catalog/carrier-boards/00365-osml-carrier`

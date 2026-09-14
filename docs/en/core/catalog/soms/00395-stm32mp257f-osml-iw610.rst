@@ -1,0 +1,41 @@
+.. _00395:
+
+00395 — STM32MP257F OSM-L with IW610
+=======================================
+
+.. list-table::
+   :widths: 20 80
+
+   * - Vendor
+     - STMicroelectronics
+   * - Processor
+     - STM32MP257F
+   * - Form Factor
+     - OSM-L
+   * - Wireless Module
+     - IW610
+
+.. Product photo not yet available - reserved for the photos phase.
+   Once the image lands in _static/images/photos/00395-stm32mp257f-osml-iw610.png,
+   uncomment:
+..
+.. .. figure:: /_static/images/photos/00395-stm32mp257f-osml-iw610.png
+..    :align: center
+..    :width: 400px
+..    :alt: 00395 STM32MP257F OSM-L with IW610 module photo
+
+Resources
+---------
+
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/STM32%20Quick%20Start%20PDF%20v1.pdf>`__
+- `Datasheet <https://downloads.cargt.com/datasheets/Datasheet%20-%20STM32MP257%20OSM%20PCB-Rev-01_Doc-Ver-05-2026.pdf>`__
+- Reference Manual
+- Hardware Design Guide
+- Hardware Design Files
+- Software Releases
+- Pre-built Images
+
+Compatible Carrier Boards
+--------------------------
+
+- :doc:`/core/catalog/carrier-boards/00365-osml-carrier`

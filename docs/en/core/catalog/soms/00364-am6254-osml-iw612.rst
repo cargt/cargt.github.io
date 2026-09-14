@@ -1,0 +1,40 @@
+.. _00364:
+
+00364 — AM6254 OSM-L SOM with IW612
+======================================
+
+.. list-table::
+   :widths: 20 80
+
+   * - Vendor
+     - Texas Instruments
+   * - Processor
+     - AM6254
+   * - Form Factor
+     - OSM-L
+   * - Wireless Module
+     - IW612
+
+.. Product photo not yet available - reserved for the photos phase.
+   Once the image lands in _static/images/photos/00364-am6254-osml-iw612.png,
+   uncomment:
+..
+.. .. figure:: /_static/images/photos/00364-am6254-osml-iw612.png
+..    :align: center
+..    :width: 400px
+..    :alt: 00364 AM6254 OSM-L SOM with IW612 module photo
+
+Resources
+---------
+
+- Datasheet
+- Reference Manual
+- Hardware Design Guide
+- Hardware Design Files
+- Software Releases
+- Pre-built Images
+
+Compatible Carrier Boards
+--------------------------
+
+- :doc:`/core/catalog/carrier-boards/00365-osml-carrier`

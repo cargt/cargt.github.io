@@ -1,0 +1,21 @@
+.. _00408:
+
+00408 — i.MX95 OSM-L with IW612
+==================================
+
+.. list-table::
+   :widths: 20 80
+
+   * - Vendor
+     - NXP
+   * - Processor
+     - i.MX95
+   * - Form Factor
+     - OSM-L
+   * - Wireless Module
+     - IW612
+
+Coming Soon
+-----------
+
+Documentation for this board is not yet available.

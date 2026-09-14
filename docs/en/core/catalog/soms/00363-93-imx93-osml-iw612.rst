@@ -1,0 +1,41 @@
+.. _00363-93:
+
+00363-93 — i.MX93 OSM-L with IW612
+=====================================
+
+.. list-table::
+   :widths: 20 80
+
+   * - Vendor
+     - NXP
+   * - Processor
+     - i.MX93
+   * - Form Factor
+     - OSM-L
+   * - Wireless Module
+     - IW612
+
+.. Product photo not yet available - reserved for the photos phase.
+   Once the image lands in _static/images/photos/00363-93-imx93-osml-iw612.png,
+   uncomment:
+..
+.. .. figure:: /_static/images/photos/00363-93-imx93-osml-iw612.png
+..    :align: center
+..    :width: 400px
+..    :alt: 00363-93 i.MX93 OSM-L with IW612 module photo
+
+Resources
+---------
+
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__
+- `Datasheet <https://downloads.cargt.com/datasheets/Datasheet%20-%20i.MX93%20OSM%20PCB-Rev-03_Doc-Ver-05-2026.pdf>`__
+- Reference Manual
+- Hardware Design Guide
+- Hardware Design Files
+- Software Releases
+- Pre-built Images
+
+Compatible Carrier Boards
+--------------------------
+
+- :doc:`/core/catalog/carrier-boards/00365-osml-carrier`
