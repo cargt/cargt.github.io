@@ -41,27 +41,38 @@ Resources
 Software Releases
 ------------------
 
-See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases. Direct per-release links will replace this once a stable directory structure is in place there.
+See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases.
 
 .. grid:: 1 2 2 2
     :gutter: 2
 
     .. grid-item-card:: Yocto
 
-        Coming Soon
+        scarthgap (kernel 6.6.78)
 
 .. list-table::
    :header-rows: 1
    :widths: 25 25 25 25
 
    * - Release
-     - Release Notes
+     - Packages
      - Pre-built Images
      - Status
-   * - Coming Soon
+   * - scarthgap (kernel 6.6.78)
      - Coming Soon
      - Coming Soon
      - Coming Soon
+   * - wrynose
+     - Coming Soon
+     - Coming Soon
+     - Coming Soon
+
+Source Code
+------------
+
+- `stm32mp_manifest <https://github.com/cargt/stm32mp_manifest>`__ - Yocto repo manifest
+- `meta-st-cargt <https://github.com/cargt/meta-st-cargt>`__ - Cargt BSP layer
+- `meta-cargt-stm32mp-addons <https://github.com/cargt/meta-cargt-stm32mp-addons>`__ - Additional Cargt layer
 
 
 Compatible Carrier Boards
