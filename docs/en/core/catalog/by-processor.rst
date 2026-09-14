@@ -11,7 +11,7 @@ i.MX8M Plus
         :link: /core/catalog/soms/00377-imx8mplus-osml-iw612
         :link-type: doc
 
-        NXP · OSM-L · IW612
+        OSM-L · NXP · IW612
 
 i.MX91
 ------
@@ -23,7 +23,7 @@ i.MX91
         :link: /core/catalog/soms/00363-91-imx91-osml-iw612
         :link-type: doc
 
-        NXP · OSM-L · IW612
+        OSM-L · NXP · IW612
 
 i.MX93
 ------
@@ -35,19 +35,19 @@ i.MX93
         :link: /core/catalog/soms/00324-imx93-sodimm
         :link-type: doc
 
-        NXP · SODIMM
+        SODIMM · NXP
 
     .. grid-item-card:: 00359 – LGA with Murata 2EL
         :link: /core/catalog/soms/00359-lga-murata2el
         :link-type: doc
 
-        NXP · LGA · Murata 2EL
+        LGA · NXP · Murata 2EL
 
     .. grid-item-card:: 00363-93 – OSM-L with IW612
         :link: /core/catalog/soms/00363-93-imx93-osml-iw612
         :link-type: doc
 
-        NXP · OSM-L · IW612
+        OSM-L · NXP · IW612
 
 i.MX95
 ------
@@ -59,7 +59,7 @@ i.MX95
         :link: /core/catalog/soms/00408-imx95-osml-iw612
         :link-type: doc
 
-        NXP · OSM-L · IW612 · Coming Soon
+        OSM-L · NXP · IW612 · Coming Soon
 
 STM32MP2
 --------
@@ -71,13 +71,13 @@ STM32MP2
         :link: /core/catalog/soms/00378-stm32mp257f-osml-cc3351
         :link-type: doc
 
-        STMicroelectronics · OSM-L · CC3351
+        OSM-L · STMicroelectronics · CC3351
 
     .. grid-item-card:: 00395 – OSM-L with IW610
         :link: /core/catalog/soms/00395-stm32mp257f-osml-iw610
         :link-type: doc
 
-        STMicroelectronics · OSM-L · IW610
+        OSM-L · STMicroelectronics · IW610
 
 AM6254
 ------
@@ -89,4 +89,4 @@ AM6254
         :link: /core/catalog/soms/00364-am6254-osml-iw612
         :link-type: doc
 
-        Texas Instruments · OSM-L · IW612
+        OSM-L · Texas Instruments · IW612
