@@ -15,14 +15,15 @@
    * - Wireless Module
      - IW612
 
-.. Product photo not yet available - reserved for the photos phase.
-   Once the image lands in _static/images/photos/00363-91-imx91-osml-iw612.png,
-   uncomment:
-..
-.. .. figure:: /_static/images/photos/00363-91-imx91-osml-iw612.png
-..    :align: center
-..    :width: 400px
-..    :alt: 00363-91 i.MX91 OSM-L with IW612 module photo
+.. thumbnail:: /_static/images/photos/soms/00363-91-1.png
+   :group: 00363-91
+   :width: 45%
+   :title: 00363-91 i.MX91 OSM-L with IW612 - top
+
+.. thumbnail:: /_static/images/photos/soms/00363-91-2.png
+   :group: 00363-91
+   :width: 45%
+   :title: 00363-91 i.MX91 OSM-L with IW612 - bottom
 
 Resources
 ---------
@@ -34,3 +35,4 @@ Resources
 - Hardware Design Files
 - Software Releases
 - Pre-built Images
+

@@ -62,14 +62,69 @@ Supported Touchscreen Displays
 10” LVDS 1280×800 – GLT1011280800is1
 ------------------------------------
 
+.. thumbnail:: /_static/images/photos/displays/10-lvds-1.png
+   :group: display-10-lvds
+   :width: 22%
+   :title: 10" LVDS 1280x800 - GLT1011280800is1
+
+.. thumbnail:: /_static/images/photos/displays/10-lvds-2.png
+   :group: display-10-lvds
+   :width: 22%
+   :title: 10" LVDS 1280x800 - GLT1011280800is1
+
+.. thumbnail:: /_static/images/photos/displays/10-lvds-3.png
+   :group: display-10-lvds
+   :width: 22%
+   :title: 10" LVDS 1280x800 - GLT1011280800is1
+
+.. thumbnail:: /_static/images/photos/displays/10-lvds-detail.png
+   :group: display-10-lvds
+   :width: 22%
+   :title: 10" LVDS 1280x800 - GLT1011280800is1 detail
+
 7” LVDS 1024×600 – GLT0701024600is2
 -----------------------------------
 
 5.5” MIPI-DSI 720×1280 – GLT0557201280is1
 -----------------------------------------
 
+.. thumbnail:: /_static/images/photos/displays/5.5-mipi-1.png
+   :group: display-5.5-mipi
+   :width: 22%
+   :title: 5.5" MIPI-DSI 720x1280 - GLT0557201280is1
+
+.. thumbnail:: /_static/images/photos/displays/5.5-mipi-2.png
+   :group: display-5.5-mipi
+   :width: 22%
+   :title: 5.5" MIPI-DSI 720x1280 - GLT0557201280is1
+
+.. thumbnail:: /_static/images/photos/displays/5.5-mipi-3.png
+   :group: display-5.5-mipi
+   :width: 22%
+   :title: 5.5" MIPI-DSI 720x1280 - GLT0557201280is1
+
+.. thumbnail:: /_static/images/photos/displays/5.5-mipi-4.png
+   :group: display-5.5-mipi
+   :width: 22%
+   :title: 5.5" MIPI-DSI 720x1280 - GLT0557201280is1
+
 2.8” SPI 240×320 – GLT028240320is1
 ----------------------------------
+
+.. thumbnail:: /_static/images/photos/displays/2.8-spi-1.png
+   :group: display-2.8-spi
+   :width: 30%
+   :title: 2.8" SPI 240x320 - GLT028240320is1
+
+.. thumbnail:: /_static/images/photos/displays/2.8-spi-2.png
+   :group: display-2.8-spi
+   :width: 30%
+   :title: 2.8" SPI 240x320 - GLT028240320is1
+
+.. thumbnail:: /_static/images/photos/displays/2.8-spi-3.png
+   :group: display-2.8-spi
+   :width: 30%
+   :title: 2.8" SPI 240x320 - GLT028240320is1
 
 Getting Started with Embedded Linux
 ===================================

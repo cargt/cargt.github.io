@@ -15,14 +15,20 @@
    * - Wireless Module
      - None
 
-.. Product photo not yet available - reserved for the photos phase.
-   Once the image lands in _static/images/photos/00324-imx93-sodimm.png,
-   uncomment:
-..
-.. .. figure:: /_static/images/photos/00324-imx93-sodimm.png
-..    :align: center
-..    :width: 400px
-..    :alt: 00324 i.MX93 SODIMM module photo
+.. thumbnail:: /_static/images/photos/soms/00324-1.png
+   :group: 00324
+   :width: 30%
+   :title: 00324 i.MX93 SODIMM - angled
+
+.. thumbnail:: /_static/images/photos/soms/00324-2.png
+   :group: 00324
+   :width: 30%
+   :title: 00324 i.MX93 SODIMM - front
+
+.. thumbnail:: /_static/images/photos/soms/00324-3.png
+   :group: 00324
+   :width: 30%
+   :title: 00324 i.MX93 SODIMM - back
 
 Resources
 ---------

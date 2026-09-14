@@ -6,4 +6,5 @@ sphinx-tabs
 numpydoc
 sphinx-rtd-theme
 sphinx-design
+sphinxcontrib-images
 ## optional niceties:

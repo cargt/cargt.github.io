@@ -15,14 +15,20 @@
    * - Wireless Module
      - IW612
 
-.. Product photo not yet available - reserved for the photos phase.
-   Once the image lands in _static/images/photos/00377-imx8mplus-osml-iw612.png,
-   uncomment:
-..
-.. .. figure:: /_static/images/photos/00377-imx8mplus-osml-iw612.png
-..    :align: center
-..    :width: 400px
-..    :alt: 00377 i.MX8M Plus OSM-L with IW612 module photo
+.. thumbnail:: /_static/images/photos/soms/00377-1.png
+   :group: 00377
+   :width: 30%
+   :title: 00377 i.MX8M Plus OSM-L with IW612 - angled
+
+.. thumbnail:: /_static/images/photos/soms/00377-2.png
+   :group: 00377
+   :width: 30%
+   :title: 00377 i.MX8M Plus OSM-L with IW612 - top
+
+.. thumbnail:: /_static/images/photos/soms/00377-3.png
+   :group: 00377
+   :width: 30%
+   :title: 00377 i.MX8M Plus OSM-L with IW612 - bottom
 
 Resources
 ---------

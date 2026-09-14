@@ -15,14 +15,19 @@
    * - Wireless Module
      - CC3351
 
-.. Product photo not yet available - reserved for the photos phase.
-   Once the image lands in _static/images/photos/00378-stm32mp257f-osml-cc3351.png,
-   uncomment:
-..
-.. .. figure:: /_static/images/photos/00378-stm32mp257f-osml-cc3351.png
-..    :align: center
-..    :width: 400px
-..    :alt: 00378 STM32MP257F OSM-L with CC3351 module photo
+.. Photo is of the STM32MP257F OSM-L PCB on the 00365 carrier board; the
+   CC3351 vs IW610 wireless variant isn't visually distinguishable, so this
+   is shared with the 00395 board page.
+
+.. thumbnail:: /_static/images/photos/soms/00378-00395-1.png
+   :group: 00378
+   :width: 45%
+   :title: STM32MP257F OSM-L - detail
+
+.. thumbnail:: /_static/images/photos/soms/00378-00395-2.png
+   :group: 00378
+   :width: 45%
+   :title: STM32MP257F OSM-L - on 00365 carrier board
 
 Resources
 ---------

@@ -14,8 +14,15 @@ extensions = [
     "sphinx_tabs.tabs",
     "numpydoc",
     "sphinx_design",
+    "sphinxcontrib.images",
     # "notfound.extension",  # enable if you added sphinx-notfound-page
 ]
+images_config = {
+    # Use the explicit `.. thumbnail::` directive for product-photo galleries
+    # rather than hijacking every `.. image::`/`.. figure::` on the site.
+    "override_image_directive": False,
+    "default_image_width": "100%",
+}
 html_logo = "_static/cargt-logo-full-color.svg"  # Path relative to the docs directory
 html_favicon = "_static/favicon.ico"
 templates_path = ["_templates"]

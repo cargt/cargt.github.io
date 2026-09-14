@@ -3,6 +3,11 @@
 00365 — OSM-L Carrier Board
 ==============================
 
+.. thumbnail:: /_static/images/photos/carrier-boards/00365-1.png
+   :group: cb-00365
+   :width: 45%
+   :title: 00365 OSM-L Carrier Board (with i.MX91 OSM-L SOM mounted)
+
 Supported SOMs
 ---------------
 

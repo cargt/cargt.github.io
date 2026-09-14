@@ -15,14 +15,23 @@
    * - Wireless Module
      - IW612
 
-.. Product photo not yet available - reserved for the photos phase.
-   Once the image lands in _static/images/photos/00363-93-imx93-osml-iw612.png,
-   uncomment:
-..
-.. .. figure:: /_static/images/photos/00363-93-imx93-osml-iw612.png
-..    :align: center
-..    :width: 400px
-..    :alt: 00363-93 i.MX93 OSM-L with IW612 module photo
+.. No bare-SOM cutout photo exists yet for this board - these show the SOM
+   mounted on the 00365 OSM-L Carrier Board.
+
+.. thumbnail:: /_static/images/photos/soms/00363-93-1.jpg
+   :group: 00363-93
+   :width: 30%
+   :title: 00363-93 i.MX93 OSM-L with IW612 - on 00365 carrier board
+
+.. thumbnail:: /_static/images/photos/soms/00363-93-2.jpg
+   :group: 00363-93
+   :width: 30%
+   :title: 00363-93 i.MX93 OSM-L with IW612 - detail
+
+.. thumbnail:: /_static/images/photos/soms/00363-93-3.jpg
+   :group: 00363-93
+   :width: 30%
+   :title: 00363-93 i.MX93 OSM-L with IW612 - detail
 
 Resources
 ---------
