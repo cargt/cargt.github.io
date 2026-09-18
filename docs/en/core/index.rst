@@ -835,7 +835,7 @@ Cargt example for NXP i.MX:
 
    mkdir -p ~/yocto
    cd ~/yocto
-   repo init -u https://github.com/cargt/imx_manifest -b scarthgap -m cargt-imx-6.6.36-2.1.0.xml
+   repo init -u https://github.com/cargt/imx_manifest -b wrynose -m cargt-imx-6.18.20-2.0.0.xml
    repo sync
 
 This will download the necessary Yocto layers and source code for building images for Cargt's i.MX 91, i.MX 93, and i.MX 8M Plus hardware designs.
