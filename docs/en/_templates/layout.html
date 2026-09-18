@@ -1,0 +1,30 @@
+{#- Adds a "Developer Portal" label under the sidebar logo, signaling this
+   is the technical docs site, not the cargt.com sales/marketing site.
+   Mirrors sphinx_rtd_theme's own sidebartitle block (see its layout.html)
+   with one line inserted after the logo - re-sync this if the theme
+   changes that block. #}
+{%- extends "!layout.html" %}
+
+{%- block sidebartitle %}
+{%- set _logo_url = logo_url|default(pathto('_static/' + (logo or ""), 1)) %}
+{%- set _root_doc = root_doc|default(master_doc) %}
+<a href="{{ pathto(_root_doc) }}"{% if not theme_logo_only %} class="icon icon-home"{% endif %}>
+  {% if not theme_logo_only %}{{ project }}{% endif %}
+  {%- if logo or logo_url %}
+    <img src="{{ _logo_url }}" class="logo" alt="{{ _('Logo') }}"/>
+  {%- endif %}
+</a>
+
+<p class="cargt-developer-portal-label">Developer Portal</p>
+
+{%- if READTHEDOCS or DEBUG %}
+  {%- if theme_version_selector or theme_language_selector %}
+    <div class="switch-menus">
+      <div class="version-switch"></div>
+      <div class="language-switch"></div>
+    </div>
+  {%- endif %}
+{%- endif %}
+
+{%- include "searchbox.html" %}
+{%- endblock %}

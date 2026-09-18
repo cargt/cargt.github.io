@@ -108,6 +108,15 @@ body {
 }
 /* .wy-side-nav-search background is set via conf.py's style_nav_header_background
    (Light Gray) so the logo mark has proper contrast - not overridden here. */
+.cargt-developer-portal-label {
+  text-align: center;
+  color: var(--cargt-kaitoke-green);
+  font-weight: 700;
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.9em;
+}
 /* .wy-nav-top (mobile top bar) gets the same Light Gray background inline
    from conf.py's style_nav_header_background, which beats this class rule
    unless forced with !important - without it, the theme's white nav-top
