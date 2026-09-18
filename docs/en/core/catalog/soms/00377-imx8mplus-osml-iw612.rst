@@ -40,6 +40,7 @@ Software Releases
 ------------------
 
 See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases.
+**wrynose** is recommended for new designs; **scarthgap** remains available for existing designs already qualified on it.
 
 .. grid:: 1 2 2 2
     :gutter: 2
@@ -48,9 +49,13 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
 
         scarthgap (kernel 6.6.36)
 
+        :bdg-secondary:`Existing designs`
+
     .. grid-item-card:: Yocto
 
         wrynose (kernel 6.18.20)
+
+        :bdg-success:`New designs`
 
 .. list-table::
    :header-rows: 1
@@ -60,11 +65,11 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
      - Packages
      - Pre-built Images
      - Status
-   * - scarthgap (kernel 6.6.36)
+   * - scarthgap (kernel 6.6.36) :bdg-secondary:`Existing designs`
      - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx8mp_cargt_00377_00365/>`__
      - `Images <https://yocto.cargt.com/images/scarthgap/imx8mp-cargt-00377-00365/>`__
      - Available
-   * - wrynose (kernel 6.18.20)
+   * - wrynose (kernel 6.18.20) :bdg-success:`New designs`
      - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx8mp_cargt_00377_00365/>`__
      - `Images <https://yocto.cargt.com/images/wrynose/imx8mp-cargt-00377-00365/>`__
      - Available
