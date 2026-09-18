@@ -82,9 +82,6 @@ Supported Touchscreen Displays
    :width: 22%
    :title: 10" LVDS 1280x800 - GLT1011280800is1 detail
 
-7” LVDS 1024×600 – GLT0701024600is2
------------------------------------
-
 5.5” MIPI-DSI 720×1280 – GLT0557201280is1
 -----------------------------------------
 
@@ -289,8 +286,6 @@ Electrical Connections
 +========================+===========+===============+
 | GLT1011280800is1       | LVDS      | 10            |
 +------------------------+-----------+---------------+
-| GLT0701024600is2       | LVDS      | 7             |
-+------------------------+-----------+---------------+
 | GLT0557201280is1       | MIPI-DSI  | 5.5           |
 +------------------------+-----------+---------------+
 | GLT028240320is1        | SPI       | 2.8           |
@@ -363,7 +358,6 @@ How to check for available device tree overlays for display support:
       /boot/imx93-cargt-00363-00365.dtb
       # Example output - STM32MP2:
       /boot/stm32mp257f-cargt-00395-00365v3-glt0557201280is1.dtb
-      /boot/stm32mp257f-cargt-00395-00365v3-glt0701024600is2.dtb
       /boot/stm32mp257f-cargt-00395-00365v3-glt1011280800is1.dtb
       /boot/stm32mp257f-cargt-00395-00365v3.dtb
 
