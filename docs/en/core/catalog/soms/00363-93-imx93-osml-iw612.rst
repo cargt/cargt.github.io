@@ -15,23 +15,18 @@
    * - Wireless Module
      - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
-.. No bare-SOM cutout photo exists yet for this board - these show the SOM
-   mounted on the 00365 OSM-L Carrier Board.
+.. Bare-SOM photos borrowed from 00363-91 (same OSM-L PCB, different
+   processor) - no bare-SOM photo of the i.MX 93 variant exists yet.
 
-.. thumbnail:: /_static/images/photos/soms/00363-93-1.jpg
+.. thumbnail:: /_static/images/photos/soms/00363-91-1.png
    :group: 00363-93
-   :width: 30%
-   :title: 00363-93 i.MX 93 OSM-L with IW612 - on 00365 carrier board
+   :width: 45%
+   :title: 00363-93 i.MX 93 OSM-L with IW612 - top
 
-.. thumbnail:: /_static/images/photos/soms/00363-93-2.jpg
+.. thumbnail:: /_static/images/photos/soms/00363-91-2.png
    :group: 00363-93
-   :width: 30%
-   :title: 00363-93 i.MX 93 OSM-L with IW612 - detail
-
-.. thumbnail:: /_static/images/photos/soms/00363-93-3.jpg
-   :group: 00363-93
-   :width: 30%
-   :title: 00363-93 i.MX 93 OSM-L with IW612 - detail
+   :width: 45%
+   :title: 00363-93 i.MX 93 OSM-L with IW612 - bottom
 
 Resources
 ---------
