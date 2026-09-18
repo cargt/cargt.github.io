@@ -8,9 +8,3 @@ Supported SOMs
 
 - :doc:`/core/catalog/soms/00324-imx93-sodimm` — i.MX 93 SODIMM
 
-Resources
----------
-
-- User Guide
-- Hardware Design Guide
-- Hardware Design Files

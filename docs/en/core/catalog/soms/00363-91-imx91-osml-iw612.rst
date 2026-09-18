@@ -25,11 +25,6 @@
    :width: 45%
    :title: 00363-91 i.MX 91 OSM-L with IW612 - bottom
 
-Resources
----------
-
-- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx91%20Quick%20Start%20PDF.pdf>`__
-
 Software Releases
 ------------------
 
@@ -68,4 +63,10 @@ Source Code
 
 - `imx_manifest <https://github.com/cargt/imx_manifest>`__ - Yocto repo manifest
 - `meta-imx-cargt <https://github.com/cargt/meta-imx-cargt>`__ - Cargt BSP layer
+
+
+Compatible Carrier Boards
+--------------------------
+
+- :doc:`/core/catalog/carrier-boards/00365-osml-carrier`
 

@@ -25,6 +25,11 @@
    :width: 45%
    :title: 00414 i.MX 95 OSM-L with IW612 - bottom
 
+Compatible Carrier Boards
+--------------------------
+
+- :doc:`/core/catalog/carrier-boards/00365-osml-carrier`
+
 Coming Soon
 -----------
 
