@@ -108,8 +108,12 @@ body {
 }
 /* .wy-side-nav-search background is set via conf.py's style_nav_header_background
    (Light Gray) so the logo mark has proper contrast - not overridden here. */
+/* .wy-nav-top (mobile top bar) gets the same Light Gray background inline
+   from conf.py's style_nav_header_background, which beats this class rule
+   unless forced with !important - without it, the theme's white nav-top
+   link text is invisible against Light Gray on mobile. */
 .wy-nav-top {
-  background: var(--cargt-kaitoke-green);
+  background: var(--cargt-kaitoke-green) !important;
 }
 
 /* ===== Links (default + hover/focus: Electric Blue) ===== */
