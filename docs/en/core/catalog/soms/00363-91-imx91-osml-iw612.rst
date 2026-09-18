@@ -25,6 +25,14 @@
    :width: 45%
    :title: 00363-91 i.MX 91 OSM-L with IW612 - bottom
 
+Resources
+---------
+
+.. Shared with 00363-93 for now - the guide itself is still i.MX 93-only
+   content; it's due to be updated to cover both i.MX 91 and i.MX 93.
+
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__
+
 Software Releases
 ------------------
 

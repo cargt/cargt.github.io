@@ -38,5 +38,5 @@ Resources
 ---------
 
 - `Quick Start Guide (i.MX 8M Plus) <https://downloads.cargt.com/datasheets/qsgs/imx8%20Quick%20Start%20PDF%20v1.pdf>`__
-- `Quick Start Guide (i.MX 93) <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__
+- `Quick Start Guide (i.MX 91 / i.MX 93) <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__
 - `Quick Start Guide (STM32MP2) <https://downloads.cargt.com/datasheets/qsgs/STM32%20Quick%20Start%20PDF%20v1.pdf>`__
