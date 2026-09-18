@@ -51,6 +51,10 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
 
         scarthgap (kernel 6.6.36)
 
+    .. grid-item-card:: Yocto
+
+        wrynose (kernel 6.18.20)
+
 .. list-table::
    :header-rows: 1
    :widths: 25 25 25 25
@@ -63,10 +67,10 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
      - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx8mp_cargt_00377_00365/>`__
      - `Images <https://yocto.cargt.com/images/scarthgap/imx8mp-cargt-00377-00365/>`__
      - Available
-   * - wrynose
-     - Coming Soon
-     - Coming Soon
-     - Coming Soon
+   * - wrynose (kernel 6.18.20)
+     - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx8mp_cargt_00377_00365/>`__
+     - `Images <https://yocto.cargt.com/images/wrynose/imx8mp-cargt-00377-00365/>`__
+     - Available
 
 Source Code
 ------------
