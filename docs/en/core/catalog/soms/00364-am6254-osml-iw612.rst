@@ -24,14 +24,6 @@
 ..    :width: 400px
 ..    :alt: 00364 AM6254 OSM-L SOM with IW612 module photo
 
-Resources
----------
-
-- Datasheet
-- Reference Manual
-- Hardware Design Guide
-- Hardware Design Files
-
 Software Releases
 ------------------
 

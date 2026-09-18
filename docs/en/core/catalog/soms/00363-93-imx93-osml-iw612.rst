@@ -38,9 +38,6 @@ Resources
 
 - `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__
 - `Datasheet <https://downloads.cargt.com/datasheets/Datasheet%20-%20i.MX93%20OSM%20PCB-Rev-03_Doc-Ver-05-2026.pdf>`__
-- Reference Manual
-- Hardware Design Guide
-- Hardware Design Files
 
 Software Releases
 ------------------

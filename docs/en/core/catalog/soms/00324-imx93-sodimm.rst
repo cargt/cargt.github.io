@@ -30,14 +30,6 @@
    :width: 30%
    :title: 00324 i.MX 93 SODIMM - back
 
-Resources
----------
-
-- Datasheet
-- Reference Manual
-- Hardware Design Guide
-- Hardware Design Files
-
 Software Releases
 ------------------
 

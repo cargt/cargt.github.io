@@ -24,14 +24,6 @@
 ..    :width: 400px
 ..    :alt: 00359 LGA with Murata 2EL module photo
 
-Resources
----------
-
-- Datasheet
-- Reference Manual
-- Hardware Design Guide
-- Hardware Design Files
-
 Software Releases
 ------------------
 

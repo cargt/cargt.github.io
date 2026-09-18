@@ -33,10 +33,6 @@ Resources
 ---------
 
 - `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/STM32%20Quick%20Start%20PDF%20v1.pdf>`__
-- Datasheet
-- Reference Manual
-- Hardware Design Guide
-- Hardware Design Files
 
 Software Releases
 ------------------
