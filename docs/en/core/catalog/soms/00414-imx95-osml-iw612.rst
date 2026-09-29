@@ -12,8 +12,6 @@
      - i.MX 95
    * - Form Factor
      - OSM-L
-   * - Wireless Module
-     - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
 .. thumbnail:: /_static/images/photos/soms/00414-1.png
    :group: 00414
