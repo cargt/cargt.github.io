@@ -44,7 +44,7 @@ OSM-L
         AM6254 · IW612
 
     .. grid-item-card:: 00414 – i.MX 95
-        :link: /core/catalog/soms/00414-imx95-osml-iw612
+        :link: /core/catalog/soms/00414-imx95-osml
         :link-type: doc
 
         i.MX 95 · IW612 · Coming Soon

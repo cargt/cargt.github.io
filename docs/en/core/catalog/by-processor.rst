@@ -55,11 +55,11 @@ i.MX 95
 .. grid:: 1 2 2 3
     :gutter: 3
 
-    .. grid-item-card:: 00414 – OSM-L with IW612
-        :link: /core/catalog/soms/00414-imx95-osml-iw612
+    .. grid-item-card:: 00414 – OSM-L
+        :link: /core/catalog/soms/00414-imx95-osml
         :link-type: doc
 
-        OSM-L · i.MX 95 · IW612 · Coming Soon
+        OSM-L · i.MX 95 · Coming Soon
 
 STM32MP2
 --------

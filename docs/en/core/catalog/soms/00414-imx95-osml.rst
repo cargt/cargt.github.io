@@ -1,7 +1,7 @@
 .. _00414:
 
-00414 — i.MX 95 OSM-L with IW612
-==================================
+00414 — i.MX 95 OSM-L
+=====================
 
 .. list-table::
    :widths: 20 80
@@ -16,12 +16,12 @@
 .. thumbnail:: /_static/images/photos/soms/00414-1.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX 95 OSM-L with IW612 - top
+   :title: 00414 i.MX 95 OSM-L - top
 
 .. thumbnail:: /_static/images/photos/soms/00414-2.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX 95 OSM-L with IW612 - bottom
+   :title: 00414 i.MX 95 OSM-L - bottom
 
 Compatible Carrier Boards
 --------------------------
