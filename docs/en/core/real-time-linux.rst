@@ -68,7 +68,8 @@ The real-time build is a separate Yocto distro, ``cargt-imx-rt``, in
        open62541 (OPC UA), libmodbus and CANopen tools
    * - Cargt additions
      - ``cargt-rt-check`` (an on-target check and latency test) and
-       ``cargt-rt-config`` (real-time system defaults)
+       ``cargt-rt-config`` (real-time defaults: deep CPU idle states disabled,
+       EtherCAT drivers not autoloaded)
 
 Supported hardware
 ~~~~~~~~~~~~~~~~~~
@@ -249,6 +250,7 @@ the full ``cyclictest`` histograms and logs alongside it. Example output:
      PASS  uname reports PREEMPT_RT
      PASS  /sys/kernel/realtime = 1
      info  cpufreq governors: 6 performance
+     PASS  deep CPU idle states disabled (6/6)
    == System
      PASS  no failed systemd units
      PASS  no RT locking splats in dmesg
@@ -369,26 +371,39 @@ down) in addition to the light ``WFI`` state:
 
 A CPU that wakes up from ``cpu-pd-wait`` adds **hundreds of microseconds** of
 latency. In our tests, a 1 ms periodic loop measured a 264 µs worst case with
-the deep state allowed and 37 µs without it.
+the deep state allowed and 37–49 µs without it.
 
-``cyclictest`` and ``cargt-rt-check`` block deep idle states for as long as
-they run, so their results (including the reference results above) assume
-this. **Your application must block them as well.** Use one of these methods:
+**The cargt-imx-rt image disables deep idle states by default.**
+``cargt-rt-config`` installs ``/usr/lib/tmpfiles.d/cargt-rt-cpuidle.conf``,
+which disables every idle state above ``WFI`` on all CPUs at boot. Check it
+with:
 
-- **In the application (recommended).** Open ``/dev/cpu_dma_latency``, write
-  ``0`` and keep the file open for as long as the real-time loop runs. Closing
-  the file (or exiting) allows deep idle states again. The example in
-  `Writing a real-time application`_ does this.
-- **For the whole system, until reboot:**
+.. code-block:: bash
+
+   grep . /sys/devices/system/cpu/cpu*/cpuidle/state1/disable
+   # .../cpu0/cpuidle/state1/disable:1  (1 = disabled)
+
+This costs some idle power on every CPU. If your design needs the power saving
+and only some workloads are real-time:
+
+- Allow deep idle again until reboot:
 
   .. code-block:: bash
 
-     for s in /sys/devices/system/cpu/cpu*/cpuidle/state1/disable; do echo 1 > $s; done
+     for s in /sys/devices/system/cpu/cpu*/cpuidle/state[1-9]*/disable; do echo 0 > $s; done
 
-- **For the whole system, permanently:** add ``cpuidle.off=1`` to
-  ``mcore_args`` (see `Isolating a CPU`_).
+- Allow it permanently by masking the configuration file:
 
-The system-wide methods increase idle power consumption on every CPU.
+  .. code-block:: bash
+
+     ln -s /dev/null /etc/tmpfiles.d/cargt-rt-cpuidle.conf
+
+With deep idle allowed, a real-time application must block deep idle states
+itself for as long as it runs. Open ``/dev/cpu_dma_latency``, write ``0`` and
+keep the file open; closing the file allows deep idle states again.
+``cyclictest`` does this automatically. The example in
+`Writing a real-time application`_ also does it, so it works with either
+setting.
 
 Isolating a CPU
 ~~~~~~~~~~~~~~~
@@ -493,7 +508,9 @@ A real-time application should:
 - lock its memory (``mlockall``) and pre-fault its stack, so that page faults
   cannot occur in the real-time loop,
 - keep the CPU out of deep idle states by holding ``/dev/cpu_dma_latency`` at
-  ``0`` (see `CPU idle states`_),
+  ``0``. The cargt-imx-rt image already disables them by default, but holding
+  the request keeps the application correct if that default is changed (see
+  `CPU idle states`_),
 - wait for an absolute time (``clock_nanosleep`` with ``TIMER_ABSTIME``), so
   that wake-up times do not drift,
 - avoid system calls that can block for an unbounded time inside the loop
