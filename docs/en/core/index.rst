@@ -852,7 +852,7 @@ Cargt example for NXP i.MX:
    repo init -u https://github.com/cargt/imx_manifest -b wrynose -m cargt-imx-6.18.20-2.0.0.xml
    repo sync
 
-This will download the necessary Yocto layers and source code for building images for Cargt's i.MX 91, i.MX 93, and i.MX 8M Plus hardware designs.
+This will download the necessary Yocto layers and source code for building images for Cargt's i.MX 91, i.MX 93, i.MX 95, and i.MX 8M Plus hardware designs.
 
 Cargt example for STM32MP2:
 
@@ -882,6 +882,7 @@ Initialize build environment for NXP processors
 
    ls -1 sources/meta-imx-cargt/conf/distro
    # Output:
+   # cargt-imx-rt.conf
    # cargt-imx-wayland.conf
    # cargt-imx-xwayland-ap.conf
    # cargt-imx-xwayland.conf
@@ -890,11 +891,20 @@ Initialize build environment for NXP processors
    ls -1 sources/meta-imx-cargt/conf/machine/
    # Output:
    # imx8mp-cargt-00377-00365.conf
+   # imx91-cargt-00363-00365.conf
+   # imx91-cargt-00363-osm-som.conf
    # imx93-cargt-00324-00326.conf
    # imx93-cargt-00359-00406.conf
    # imx93-cargt-00363-00365.conf
+   # imx93-cargt-00363-00428.conf
    # imx93-cargt-00363-osm-som.conf
+   # imx95-cargt-00414-00365.conf
+   # imx95-cargt-00414-00428.conf
+   # imx95-cargt-00414-osm-som.conf
 
+
+``cargt-imx-rt`` is the real-time (``PREEMPT_RT``) distro for i.MX 95 designs. Build it in its own
+build directory. See :doc:`real-time-linux`.
 
 - Setting up the build environment - for the first time:
 
