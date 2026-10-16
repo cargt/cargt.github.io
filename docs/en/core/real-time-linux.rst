@@ -59,9 +59,15 @@ The real-time build is a separate Yocto distro, ``cargt-imx-rt``, in
    * - Bootloader, System Manager, DDR init
      - The same Cargt U-Boot, System Manager and OEI as the standard Cargt
        build
-   * - Base distro
-     - ``cargt-imx-xwayland``: the same graphics, multimedia, camera,
-       NetworkManager and SWUpdate support as the standard image
+   * - Distro
+     - ``cargt-imx-rt`` is built on ``cargt-imx-xwayland`` (Wayland/Weston with
+       XWayland, systemd, NetworkManager). It only adds the real-time kernel
+       and the Real-time Edge package configuration.
+   * - Image
+     - ``cargt-image-rt`` is ``cargt-image-dev`` plus the real-time packages
+       below. That includes GStreamer multimedia, camera support on machines
+       with a camera, the SWUpdate client, package management, and development
+       and debug tools.
    * - Real-time userspace
      - ``rt-tests`` (``cyclictest``), ``rteval``, ``stress-ng``, ``linuxptp``
        (``ptp4l``, ``phc2sys``), ``isochron``, the IgH EtherCAT master,
