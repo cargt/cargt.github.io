@@ -147,6 +147,8 @@ Public Pre-compiled Images
 - `Pre-built complete system images <https://yocto.cargt.com/images>`_ for supported Cargt hardware suitable for initial flashing or full system recovery.
 - `Incremental update images <https://yocto.cargt.com/images>`_ compatible with SWUpdate for in-field updates without reflashing the entire system.
 
+.. _running-linux:
+
 Running Linux on a Cargt design
 -------------------------------
 
@@ -386,6 +388,8 @@ Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot e
 
       # For GLT1011280800is1 10.1" LVDS display:
       fw_setenv fdtfile /boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
+
+.. _swupdate:
 
 SWUpdate
 ========
@@ -688,6 +692,18 @@ Java Enablement on i.MX
 Network Booting using NFS and TFTP in U-Boot
 --------------------------------------------
 
+Real-Time Linux (PREEMPT_RT)
+----------------------------
+
+Cargt provides a ``PREEMPT_RT`` real-time Linux build for i.MX 95 designs,
+based on NXP Real-time Edge Software. See :doc:`real-time-linux` to build it,
+measure latency and tune a system for deterministic applications.
+
+.. toctree::
+    :hidden:
+
+    real-time-linux
+
 Secure Boot (AHAB) with i.MX 93
 ===============================
 
@@ -696,6 +712,8 @@ Secure Boot (AHAB) with i.MX 93
 - Signing Images with the Code Signing Tool (CST)
 - Programming Keys using One-Time Programmable Memory
 - Configuring U-Boot and Linux for Secure Boot
+
+.. _yocto-development:
 
 Yocto Development
 =================
@@ -760,6 +778,8 @@ SBOM Generation
 #. Find the generated SBOM in the deploy directory:
 
    ``<build_dir>/tmp/deploy/spdx/<machine>/recipe-<image>.spdx.json``
+
+.. _yocto-tutorial:
 
 Yocto Tutorial
 =================
