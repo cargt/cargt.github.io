@@ -47,6 +47,7 @@ The real-time build is a separate Yocto distro, ``cargt-imx-rt``, in
 ``meta-imx-cargt``.
 
 .. list-table::
+   :class: wrap-cells
    :header-rows: 1
    :widths: 30 70
 
@@ -81,13 +82,14 @@ Supported hardware
 ~~~~~~~~~~~~~~~~~~
 
 .. list-table::
+   :class: wrap-cells
    :header-rows: 1
    :widths: 45 55
 
    * - ``MACHINE``
      - Hardware
    * - ``imx95-cargt-00414-00365``
-     - :ref:`00414` i.MX 95 OSM-L SOM on the 00365 carrier board
+     - :ref:`00414 i.MX 95 OSM-L SOM <00414>` on the 00365 carrier board
    * - ``imx95-cargt-00414-00428``
      - 00414 SOM on the 00428 carrier board
    * - ``imx95-cargt-00414-osm-som``
@@ -179,6 +181,7 @@ you have already followed the :ref:`yocto-tutorial`, you have everything you nee
 #. The output is in ``bld-rt/tmp/deploy/images/<machine>/``:
 
    .. list-table::
+      :class: wrap-cells
       :header-rows: 1
       :widths: 55 45
 
@@ -314,6 +317,7 @@ reflect the SoC and kernel configuration rather than the carrier board. Use
 them as a guide, not as a specification.
 
 .. list-table::
+   :class: wrap-cells
    :header-rows: 1
    :widths: 52 12 12 12 12
 

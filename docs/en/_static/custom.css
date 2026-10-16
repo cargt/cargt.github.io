@@ -179,3 +179,12 @@ footer span.commit tt, footer span.commit .rst-content tt, footer span.commit co
 .cargt-contact-link a {
   font-weight: 600;
 }
+
+/* ===== Tables =====
+   sphinx_rtd_theme keeps table cells on one line (white-space: nowrap) and
+   scrolls wide tables sideways. Tables with sentences in their cells opt in
+   to wrapping with ":class: wrap-cells" on the list-table. */
+.rst-content table.docutils.wrap-cells td,
+.rst-content table.docutils.wrap-cells th {
+  white-space: normal;
+}
