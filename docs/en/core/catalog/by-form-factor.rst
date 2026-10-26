@@ -25,23 +25,11 @@ OSM-L
 
         i.MX 8M Plus · IW612
 
-    .. grid-item-card:: 00378 – STM32MP257F
-        :link: /core/catalog/soms/00378-stm32mp257f-osml-cc3351
-        :link-type: doc
-
-        MP257F · CC3351
-
     .. grid-item-card:: 00395 – STM32MP257F
         :link: /core/catalog/soms/00395-stm32mp257f-osml-iw610
         :link-type: doc
 
         MP257F · IW610
-
-    .. grid-item-card:: 00364 – AM6254
-        :link: /core/catalog/soms/00364-am6254-osml-iw612
-        :link-type: doc
-
-        AM6254 · IW612
 
     .. grid-item-card:: 00414 – i.MX 95
         :link: /core/catalog/soms/00414-imx95-osml

@@ -13,10 +13,8 @@ Supported SOMs
 
 - :doc:`/core/catalog/soms/00363-91-imx91-osml-iw612` — i.MX 91 OSM-L
 - :doc:`/core/catalog/soms/00363-93-imx93-osml-iw612` — i.MX 93 OSM-L
-- :doc:`/core/catalog/soms/00364-am6254-osml-iw612` — AM6254 OSM-L
 - :doc:`/core/catalog/soms/00377-imx8mplus-osml-iw612` — i.MX 8M Plus OSM-L
-- :doc:`/core/catalog/soms/00378-stm32mp257f-osml-cc3351` — STM32MP2 OSM-L
-- :doc:`/core/catalog/soms/00395-stm32mp257f-osml-iw610` — STM32MP2 OSM-L
+- :doc:`/core/catalog/soms/00395-stm32mp257f-osml-iw610` — STM32MP257F OSM-L
 - :doc:`/core/catalog/soms/00414-imx95-osml` — i.MX 95 OSM-L
 
 Block Diagrams

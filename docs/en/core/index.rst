@@ -12,7 +12,7 @@ SOMs
         :link-type: doc
 
         Browse SOMs grouped by processor (i.MX 8M Plus, i.MX 91, i.MX 93, i.MX 95,
-        STM32MP2, AM6254).
+        STM32MP2).
 
     .. grid-item-card:: By Form Factor
         :link: catalog/by-form-factor
@@ -49,7 +49,7 @@ Carrier Boards
         :link: /core/catalog/carrier-boards/00365-osml-carrier
         :link-type: doc
 
-        Supports 7 SOMs
+        Supports 5 SOMs
 
     .. grid-item-card:: 00428 – OSM-L Carrier Board
         :link: /core/catalog/carrier-boards/00428-osml-carrier
