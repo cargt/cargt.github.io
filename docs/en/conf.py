@@ -23,7 +23,19 @@ images_config = {
     "override_image_directive": False,
     "default_image_width": "100%",
 }
-html_logo = "_static/cargt-logo-full-color.svg"  # Path relative to the docs directory
+# Weekly link check (.github/workflows/linkcheck.yml). These hosts reject
+# automated requests, so their links must be checked by hand.
+linkcheck_ignore = [
+    r"https?://<",  # placeholder URLs such as http://<target_ip>:8080/
+    r"https://www\.nxp\.(com|jp)/",
+    r"https://community\.nxp\.com/",
+    r"https://wiki\.linuxfoundation\.org/",
+    r"https://(www|wiki)\.st\.com/",
+]
+linkcheck_timeout = 30
+linkcheck_retries = 2
+
+html_logo ="_static/cargt-logo-full-color.svg"  # Path relative to the docs directory
 html_favicon = "_static/favicon.ico"
 templates_path = ["_templates"]
 copyright = "2026, Cargt Inc"
