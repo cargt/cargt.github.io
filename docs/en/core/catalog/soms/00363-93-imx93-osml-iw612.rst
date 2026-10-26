@@ -81,6 +81,9 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
      - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx93_cargt_00363_00428/>`__
      - `Images <https://yocto.cargt.com/images/scarthgap/imx93-cargt-00363-00428/>`__
 
+**Tested:** with wrynose on the 00365 carrier: flashing eMMC, booting, networking,
+and a full SWUpdate update (October 2026).
+
 Source Code
 ------------
 
