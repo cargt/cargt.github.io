@@ -39,6 +39,7 @@ Software Releases
 ------------------
 
 See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases.
+Software updates use RAUC A/B bundles; see :doc:`/core/rauc-ota-updates`.
 
 .. grid:: 1 2 2 2
     :gutter: 2
