@@ -785,6 +785,15 @@ Enclosure (Polycase WA Series WA-42\*16), passive heatsink
      - 1752, 48 / 45
      - UI 48 fps, video 30 fps, NPU 216 inferences/s
    * - CPU + GPU + memory + NPU (performance)
+     - 1404 / 1000
+     - 52
+     - 24.3 / 29.2
+     - 73.9 / 74.3
+     - 49.6
+     - 45
+     - 1404, 94 / 79
+     - cpu 44 ops/s, vm 15691 ops/s, glmark2 70 fps, NPU 671 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
      - 1800 / 1000
      - 46
      - 23.7 / 29.2

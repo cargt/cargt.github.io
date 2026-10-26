@@ -62,8 +62,9 @@ For the i.MX 95 (00414):
 
 - **With the passive heatsink, the SOM suits indoor products in a sealed
   plastic enclosure**, even at full load. The worst case we tested, CPU, GPU,
-  memory and NPU all fully loaded at 1.8 GHz, still allows 39 °C room air.
-  A touchscreen UI with video playback allows about 64 °C.
+  memory and NPU all fully loaded at 1.8 GHz, still allows 39 °C room air
+  (45 °C with the CPU capped at 1.4 GHz). A touchscreen UI with video
+  playback allows about 64 °C.
 - **Without a heatsink, the worst case allows only 37 °C** air in open air at
   1.8 GHz (45 °C at 1.4 GHz). That is enough for light loads but not for
   sustained full load in an enclosure.
@@ -290,6 +291,10 @@ All with the passive heatsink, CPU capped at 1800 MHz unless stated.
      - 55.9
      - **39 °C**
      - all at full load
+   * - CPU + GPU + memory + NPU, CPU at 1404 MHz
+     - 49.7
+     - **45 °C**
+     - CPU −16 %, memory −20 %, NPU −4 %, GPU unchanged
 
 - **Video playback costs almost nothing:** the VPU adds about 1 °C to ΔT.
 - **For a UI, 1404 MHz costs nothing:** the UI keeps its frame rate and the
@@ -300,6 +305,9 @@ All with the passive heatsink, CPU capped at 1800 MHz unless stated.
 - **CPU + GPU + memory + NPU is the worst case tested.** It allows 39 °C room
   air in the enclosure, against about 47 °C for the same load without the
   NPU.
+- **A 1404 MHz CPU cap recovers 6 °C** of that worst case, to 45 °C. It costs
+  16 % of CPU and 20 % of memory throughput; the NPU loses only 4 % and the
+  GPU nothing.
 
 Throttling behavior
 ~~~~~~~~~~~~~~~~~~~
