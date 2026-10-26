@@ -81,6 +81,12 @@ Source Code
 - `meta-imx-cargt <https://github.com/cargt/meta-imx-cargt>`__ - Cargt BSP layer
 
 
+Thermal Performance
+-------------------
+
+Thermal testing of this SOM is in progress. Results will be published in
+:doc:`/core/thermal-characterization`.
+
 Compatible Carrier Boards
 --------------------------
 

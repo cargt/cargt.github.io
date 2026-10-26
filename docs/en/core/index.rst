@@ -123,6 +123,20 @@ Supported Touchscreen Displays
    :width: 30%
    :title: 2.8" SPI 240x320 - GLT028240320is1
 
+Thermal Characterization
+========================
+
+Will your product need a heatsink? :doc:`thermal-characterization` gives the
+warmest air each Cargt SOM can run in for a range of loads, CPU frequency caps
+and cooling options, in open air and in a sealed enclosure. Results are
+available for the 00414 i.MX 95; the 00377 i.MX 8M Plus and 00363 i.MX 93
+follow.
+
+.. toctree::
+    :hidden:
+
+    thermal-characterization
+
 Getting Started with Embedded Linux
 ===================================
 

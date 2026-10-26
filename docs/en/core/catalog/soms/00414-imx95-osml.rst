@@ -23,6 +23,12 @@
    :width: 45%
    :title: 00414 i.MX 95 OSM-L - bottom
 
+Thermal Performance
+-------------------
+
+See :doc:`/core/thermal-characterization` for how much air temperature and
+load this SOM handles with and without a heatsink.
+
 Compatible Carrier Boards
 --------------------------
 
