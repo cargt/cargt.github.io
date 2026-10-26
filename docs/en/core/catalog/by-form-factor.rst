@@ -47,7 +47,7 @@ OSM-L
         :link: /core/catalog/soms/00414-imx95-osml
         :link-type: doc
 
-        i.MX 95 · IW612 · Coming Soon
+        i.MX 95
 
 SODIMM
 ------

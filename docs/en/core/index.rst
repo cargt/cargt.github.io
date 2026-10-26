@@ -49,7 +49,13 @@ Carrier Boards
         :link: /core/catalog/carrier-boards/00365-osml-carrier
         :link-type: doc
 
-        Supports 5 SOMs
+        Supports 7 SOMs
+
+    .. grid-item-card:: 00428 – OSM-L Carrier Board
+        :link: /core/catalog/carrier-boards/00428-osml-carrier
+        :link-type: doc
+
+        Supports 2 SOMs
 
 .. toctree::
     :maxdepth: 1
@@ -61,3 +67,12 @@ Displays
 
 Cargt sells LVDS, MIPI-DSI and SPI touchscreen displays for its carrier boards. See
 :doc:`displays` for photos, wiring and device tree selection.
+
+Other Supported Boards
+======================
+
+The Cargt i.MX BSP also builds for the NXP FRDM i.MX 95
+development board (machine ``imx95-15x15-lpddr4x-frdm``), which is useful for
+evaluating software before Cargt hardware is available:
+`wrynose images <https://yocto.cargt.com/images/wrynose/imx95-15x15-lpddr4x-frdm/>`__,
+`real-time images <https://yocto.cargt.com/images/wrynose-rt/imx95-15x15-lpddr4x-frdm/>`__.

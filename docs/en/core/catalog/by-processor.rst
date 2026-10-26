@@ -59,7 +59,7 @@ i.MX 95
         :link: /core/catalog/soms/00414-imx95-osml
         :link-type: doc
 
-        OSM-L · i.MX 95 · Coming Soon
+        OSM-L · i.MX 95
 
 STM32MP2
 --------

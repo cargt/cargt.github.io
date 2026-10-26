@@ -56,21 +56,30 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
         :bdg-success:`New designs`
 
 .. list-table::
+   :class: wrap-cells
    :header-rows: 1
-   :widths: 25 25 25 25
+   :widths: 25 35 20 20
 
    * - Release
+     - Machine
      - Packages
      - Pre-built Images
-     - Status
-   * - scarthgap (kernel 6.6.36) :bdg-secondary:`Existing designs`
-     - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx93_cargt_00363_00365/>`__
-     - `Images <https://yocto.cargt.com/images/scarthgap/imx93-cargt-00363-00365/>`__
-     - Available
    * - wrynose (kernel 6.18.20) :bdg-success:`New designs`
+     - ``imx93-cargt-00363-00365``
      - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx93_cargt_00363_00365/>`__
      - `Images <https://yocto.cargt.com/images/wrynose/imx93-cargt-00363-00365/>`__
-     - Available
+   * - wrynose (kernel 6.18.20) :bdg-success:`New designs`
+     - ``imx93-cargt-00363-00428``
+     - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx93_cargt_00363_00428/>`__
+     - `Images <https://yocto.cargt.com/images/wrynose/imx93-cargt-00363-00428/>`__
+   * - scarthgap (kernel 6.6.36) :bdg-secondary:`Existing designs`
+     - ``imx93-cargt-00363-00365``
+     - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx93_cargt_00363_00365/>`__
+     - `Images <https://yocto.cargt.com/images/scarthgap/imx93-cargt-00363-00365/>`__
+   * - scarthgap (kernel 6.6.36) :bdg-secondary:`Existing designs`
+     - ``imx93-cargt-00363-00428``
+     - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx93_cargt_00363_00428/>`__
+     - `Images <https://yocto.cargt.com/images/scarthgap/imx93-cargt-00363-00428/>`__
 
 Source Code
 ------------
@@ -83,3 +92,4 @@ Compatible Carrier Boards
 --------------------------
 
 - :doc:`/core/catalog/carrier-boards/00365-osml-carrier`
+- :doc:`/core/catalog/carrier-boards/00428-osml-carrier`
