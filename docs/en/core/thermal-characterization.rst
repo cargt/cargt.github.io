@@ -28,7 +28,8 @@ without the processor reaching its design limit.
      - i.MX 93
      - Planned
 
-Results for each SOM are added here as testing completes.
+Results for each SOM are added here as testing completes. Every test, with
+its full measurements, is listed in :doc:`thermal-test-data`.
 
 How to read the results
 -----------------------
@@ -372,3 +373,15 @@ board. A different carrier, enclosure, mounting orientation or airflow
 changes them. Treat them as a starting point and verify your final design.
 For help choosing cooling for your product,
 `contact Cargt <https://www.cargt.com/contact/>`__.
+
+Test data
+---------
+
+:doc:`thermal-test-data` lists every test behind this page, with its
+temperatures, clock frequencies, loads and performance, and has them as a
+CSV file to download.
+
+.. toctree::
+    :hidden:
+
+    thermal-test-data
