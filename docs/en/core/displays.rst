@@ -112,12 +112,7 @@ Electrical Connections
 
       Do NOT kink the flex cable as it may damage the internal wiring and cause the display to not function properly.
 
-- SPI - The SPI display uses a Cargt MikroBus adapter board and standard MikroBus cable, so the pinout is consistent across different display models and board revisions.
-
-.. figure:: /_static/images/photos/display2.8-1-web.png
-   :alt: 2.8" SPI display with Cargt MikroBus adapter board
-
-   2.8" SPI display with Cargt MikroBus adapter board
+- SPI - The SPI display uses a Cargt MikroBus adapter board and standard MikroBus cable, so the pinout is consistent across different display models and board revisions. The adapter board is shown in the 2.8" photos above.
 
 Software Configuration
 ~~~~~~~~~~~~~~~~~~~~~~

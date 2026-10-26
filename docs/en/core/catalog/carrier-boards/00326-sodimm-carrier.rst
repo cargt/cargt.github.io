@@ -3,6 +3,16 @@
 00326 — SODIMM Carrier Board
 ==============================
 
+.. thumbnail:: /_static/images/photos/carrier-boards/00326-1.jpg
+   :group: cb-00326
+   :width: 45%
+   :title: 00326 SODIMM Carrier Board - top
+
+.. thumbnail:: /_static/images/photos/carrier-boards/00326-2.jpg
+   :group: cb-00326
+   :width: 45%
+   :title: 00326 SODIMM Carrier Board - angled
+
 Supported SOMs
 ---------------
 

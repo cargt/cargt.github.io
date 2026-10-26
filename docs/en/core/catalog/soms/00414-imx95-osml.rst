@@ -16,12 +16,12 @@
 .. thumbnail:: /_static/images/photos/soms/00414-1.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX 95 OSM-L - top
+   :title: 00414 i.MX 95 OSM-L - top (render)
 
 .. thumbnail:: /_static/images/photos/soms/00414-2.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX 95 OSM-L - bottom
+   :title: 00414 i.MX 95 OSM-L - bottom (render)
 
 Software Releases
 ------------------

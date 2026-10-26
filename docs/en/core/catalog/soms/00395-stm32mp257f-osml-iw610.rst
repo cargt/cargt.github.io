@@ -15,15 +15,25 @@
    * - Wireless Module
      - NXP IW610 Dual-Band Wi-Fi 6 BLE
 
-.. thumbnail:: /_static/images/photos/soms/00395-1.png
+.. thumbnail:: /_static/images/photos/soms/00395-top.png
    :group: 00395
    :width: 45%
-   :title: STM32MP257F OSM-L - detail
+   :title: 00395 STM32MP257F OSM-L with IW610 - top
+
+.. thumbnail:: /_static/images/photos/soms/00395-bottom.png
+   :group: 00395
+   :width: 45%
+   :title: 00395 STM32MP257F OSM-L with IW610 - bottom
+
+.. thumbnail:: /_static/images/photos/soms/00395-angled.png
+   :group: 00395
+   :width: 45%
+   :title: 00395 STM32MP257F OSM-L with IW610 - angled
 
 .. thumbnail:: /_static/images/photos/soms/00395-2.png
    :group: 00395
    :width: 45%
-   :title: STM32MP257F OSM-L - on 00365 carrier board
+   :title: 00395 on the 00365 OSM-L carrier board
 
 Resources
 ---------

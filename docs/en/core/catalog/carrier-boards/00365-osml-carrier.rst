@@ -8,6 +8,16 @@
    :width: 45%
    :title: 00365 OSM-L Carrier Board (with i.MX 91 OSM-L SOM mounted)
 
+.. thumbnail:: /_static/images/photos/carrier-boards/00365-top.jpg
+   :group: cb-00365
+   :width: 45%
+   :title: 00365 OSM-L Carrier Board - top, no SOM
+
+.. thumbnail:: /_static/images/photos/carrier-boards/00365-bottom.jpg
+   :group: cb-00365
+   :width: 45%
+   :title: 00365 OSM-L Carrier Board - bottom
+
 Supported SOMs
 ---------------
 

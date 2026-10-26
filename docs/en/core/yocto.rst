@@ -180,8 +180,23 @@ Choose a DISTRO and a MACHINE:
 .. image:: /_static/images/screenshots/img-stm32mp2-select-distro.png
    :alt: STM32MP2 list of distro choices
 
-.. image:: /_static/images/screenshots/img-stm32mp2-select-machine.png
-   :alt: STM32MP2 list of machine choices
+The MACHINE menu lists the Cargt machines together with ST's own boards. Select
+the one for your SOM:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 45 55
+
+   * - Machine
+     - Hardware
+   * - ``stm32mp25-cargt-00395-01-00365``
+     - 00395-01 SOM on the 00365 carrier
+   * - ``stm32mp25-cargt-00395-02-00365``
+     - 00395-02 SOM on the 00365 carrier
+   * - ``stm32mp25-cargt-00395-00365v3``
+     - 00395 SOM on the older 00365 revision 3 carrier (single-bank layout,
+       no RAUC A/B updates)
 
 You must accept the EULA to use certain packages included those needed by the GPU. See `here <https://wiki.st.com/stm32mpu/wiki/How_to_create_your_own_machine#Create_symbolic_link_for_EULA_with_new_machine_created>`_ for more information.
 
