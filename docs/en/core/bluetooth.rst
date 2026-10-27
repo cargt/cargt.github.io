@@ -73,7 +73,8 @@ the controller uses depends on which firmware brought Bluetooth up:
   downloads ``nxp/uartspi_n61x_v1.bin.se`` itself (``FW Download Complete``
   in ``dmesg``), and the controller reports the placeholder address
   ``88:88:88:88:88:88``. Every board then has the same address, so two of
-  them cannot work near each other.
+  them cannot work near each other. This was seen on an older image; newer
+  Cargt BSP builds make the Wi-Fi driver load first.
 
 .. code-block:: text
 
@@ -209,16 +210,31 @@ characteristic and descriptor the server offers.
 Pairing
 -------
 
+To pair and bond with an LE device that needs it (for example one whose
+characteristics require encryption), use an agent and ``pair``:
+
+.. code-block:: text
+
+   [bluetoothctl]> agent NoInputNoOutput
+   [bluetoothctl]> default-agent
+   [bluetoothctl]> pair <address>
+   [bluetoothctl]> trust <address>
+
+``agent NoInputNoOutput`` selects "just works" pairing for devices without
+a display or keyboard; use ``agent KeyboardDisplay`` to confirm passkeys.
+
 .. warning::
 
-   LE pairing does not complete on current Cargt images (October 2026).
-   ``pair`` connects, but the kernel never starts the pairing exchange
-   and logs ``Bluetooth: hci0: security requested but not available``;
-   ``bluetoothctl`` reports
+   LE pairing does not complete on Cargt images published up to October
+   2026. ``pair`` connects, but the kernel never starts the pairing
+   exchange and logs ``Bluetooth: hci0: security requested but not
+   available``; ``bluetoothctl`` reports
    ``Failed to pair: org.bluez.Error.AuthenticationCanceled``. Connections
    and GATT access that do not need encryption, as in the example above,
-   work. Characteristics that require encryption fail with
-   ``Insufficient Encryption``.
+   work; characteristics that require encryption fail with
+   ``Insufficient Encryption``. Cargt has fixed this in the BSP, and pairing
+   works in both directions on the fixed builds, but the fix is not yet in
+   the published images.
 
 Debugging with btmon
 --------------------

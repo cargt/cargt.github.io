@@ -222,16 +222,18 @@ starts its own dnsmasq instance to hand out addresses and answer DNS on that
 port, and routes the devices on it to the board's other connections through
 NAT.
 
-The images also enable a standalone ``dnsmasq`` service, which by default
-only forwards DNS queries for the board itself. It listens on DNS port 53
-on every address, so NetworkManager's dnsmasq cannot start while it runs,
-and the connection fails with this in ``journalctl -u NetworkManager``:
+Images published up to October 2026 also enable a standalone ``dnsmasq``
+service, which by default only forwards DNS queries for the board itself.
+It listens on DNS port 53 on every address, so NetworkManager's dnsmasq
+cannot start while it runs, and the connection fails with this in
+``journalctl -u NetworkManager``:
 
 .. code-block:: text
 
    dnsmasq: failed to create listening socket for 192.168.50.1: Address already in use
 
-Stop and disable the standalone service first:
+On those images, stop and disable the standalone service first (newer Cargt
+BSP builds leave it disabled):
 
 .. code-block:: bash
 
@@ -256,14 +258,16 @@ gateway and DNS server. Without ``ipv4.addresses``, NetworkManager uses
 
 .. warning::
 
-   Current Cargt i.MX images (wrynose, October 2026) build the kernel
-   without ``CONFIG_NFT_REJECT``, which NetworkManager's NAT rules need.
+   Cargt i.MX images published up to October 2026 (wrynose) build the
+   kernel without ``CONFIG_NFT_REJECT``, which NetworkManager's NAT rules
+   need. Cargt has fixed this in the BSP, but the fix is not yet in the
+   published images.
    Shared mode still gives the port its address and runs the DHCP and DNS
    server, so devices on it can reach the board, but they cannot reach the
    network beyond it. NetworkManager logs
    ``firewall: nft ... Error: Could not process rule`` when this happens.
-   To get NAT, add these options to the kernel in your layer with a
-   configuration fragment:
+   To get NAT on those images, add these options to the kernel in your layer
+   with a configuration fragment:
 
    .. code-block:: text
 
@@ -414,7 +418,8 @@ interface, rather than on ``mlan0``, the client interface.
 
 ``ipv4.method shared`` makes NetworkManager give ``uap0`` an address and
 run a DHCP and DNS server for the devices that connect. As for Ethernet
-shared mode, stop the standalone ``dnsmasq`` service first:
+shared mode, stop the standalone ``dnsmasq`` service first on images that
+enable it:
 
 .. code-block:: bash
 
