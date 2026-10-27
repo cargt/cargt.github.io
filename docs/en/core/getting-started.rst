@@ -167,7 +167,7 @@ U-Boot variables can be accessed through either the console or ssh session.
    - Console: Interrupt the boot process by pressing any key during the U-Boot countdown.
       This will drop you to the U-Boot command prompt.
       U-Boot variables can be viewed and modified using the ``printenv``, ``setenv``, and ``saveenv`` commands in the U-Boot console.
-   - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variablesusing the ``fw_setenv`` and ``fw_printenv`` utilities.
+   - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variables using the ``fw_setenv`` and ``fw_printenv`` utilities.
 
 NXP - Enter UUU mode using U-Boot Environment Variable Method
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
