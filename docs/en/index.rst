@@ -18,6 +18,8 @@ Modern Electronics. Confidence at Every Step.
   core/networking
   core/bluetooth
   core/rtc
+  core/secure-boot
+  core/key-storage
   core/displays
   core/software-updates
   core/production

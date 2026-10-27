@@ -18,8 +18,8 @@ if you need one of them sooner.
   testing, eMMC boot partitions and pseudo-SLC mode
 - **Debug and development:** debugging with Lauterbach, Java on i.MX,
   network boot with NFS and TFTP
-- **Secure boot (AHAB) on i.MX 93:** keys and certificates, signing with the
-  NXP Code Signing Tool, fusing keys, U-Boot and Linux configuration
+- **Secure boot:** a complete worked example of signing a Cargt image with
+  the NXP Code Signing Tool, and kernel (OS container) signing
 - **Yocto development:** layers, recipes, machines and distros; adding a
   machine; bitbake tasks (``listtasks``, ``clean``, ``cleansstate``,
   ``menuconfig``); devtool (``modify``, ``add``, ``upgrade``,
