@@ -23,8 +23,9 @@ the full procedure.
 Checking the Lifecycle
 ----------------------
 
-``ahab_status`` needs ``CONFIG_AHAB_BOOT``, but the lifecycle it reports can
-be read on any Cargt U-Boot. On i.MX 93, bits 9:0 of the FSB register at
+Current Cargt U-Boot builds do not include ``ahab_status`` (see the
+warning in step 2), but the lifecycle it reports can be read on any Cargt
+U-Boot. On i.MX 93, bits 9:0 of the FSB register at
 ``0x4751041c`` hold the lifecycle (on i.MX 95 the register is at
 ``0x47510414``). This only reads the register. From an i.MX 93 00363 on the
 00428 carrier:
@@ -127,7 +128,9 @@ Steps
 
       Current Cargt U-Boot builds (wrynose, October 2026) do not enable
       ``CONFIG_AHAB_BOOT``, so the ``ahab_*`` and ``auth_cntr`` commands are
-      not available in them.
+      not available in them. The ``ahab_status`` output in step 7 is from a
+      Cargt test build that adds only the read-only ``ahab_status`` and
+      ``ahab_dump`` commands.
 
 3. **Build the boot image.** ``imx-mkimage``, run by the ``imx-boot``
    recipe, prints the container and signature block offsets that the CST
@@ -173,20 +176,30 @@ Steps
    per word. Check every value twice before running these commands.
 
 7. **Check for AHAB events.** Boot the signed image and run ``ahab_status``
-   at the U-Boot prompt (this needs ``CONFIG_AHAB_BOOT``). It prints the
-   lifecycle and the ELE's event log, which records every authentication
-   failure since power-on. With the SRK hash fused and a correctly signed
-   image, it reports no events. U-Boot's AHAB guide shows:
+   at the U-Boot prompt. It prints the lifecycle and the ELE's event log,
+   which records authentication problems since power-on. With the SRK hash
+   fused and a correctly signed image, it reports ``No Events Found!``.
+
+   For comparison, this is an unsigned Cargt image on an i.MX 93 00363
+   (00428 carrier) in the OEM Open lifecycle. The board boots, but the ELE
+   logs an event for the OEM container authentication request
+   (``ELE_OEM_CNTN_AUTH_REQ``):
 
    .. code-block:: text
 
-      => ahab_status
+      u-boot=> ahab_status
       Lifecycle: 0x00000008, OEM Open
 
-              No Events Found!
 
-   Any event means the device would not boot once closed. Do not continue
-   until there are none.
+              0x0287eed6
+              IPC = MU APD (0x2)
+              CMD = ELE_OEM_CNTN_AUTH_REQ (0x87)
+              IND = ELE_NO_AUTHENTICATION_FAILURE_IND (0xEE)
+              STA = ELE_SUCCESS_IND (0xD6)
+
+   Any event means the device might not boot once closed. Do not continue
+   until there are none. ``ahab_dump`` prints the ELE firmware's raw debug
+   log, which NXP support can interpret.
 
 8. **Close the device** (permanent, optional for development): run
    ``ahab_close`` at the U-Boot prompt and reboot. ``ahab_status`` then
