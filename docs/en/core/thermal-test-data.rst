@@ -794,6 +794,15 @@ Enclosure (Polycase WA Series WA-42\*16), passive heatsink
      - 1404, 94 / 79
      - cpu 44 ops/s, vm 15691 ops/s, glmark2 70 fps, NPU 671 inferences/s
    * - CPU + GPU + memory + NPU (performance)
+     - 1404 / 1000
+     - 240
+     - 23.2 / 28.6
+     - 73.8 / 74.3
+     - 50.6
+     - 44
+     - 1404, 94 / 83
+     - cpu 44 ops/s, vm 14913 ops/s, glmark2 70 fps, NPU 667 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
      - 1800 / 1000
      - 46
      - 23.7 / 29.2
@@ -802,6 +811,15 @@ Enclosure (Polycase WA Series WA-42\*16), passive heatsink
      - 39
      - 1800, 93 / 77
      - cpu 52 ops/s, vm 19665 ops/s, glmark2 70 fps, NPU 699 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1800 / 1000
+     - 240
+     - 23.5 / 29.2
+     - 80.2 / 81.2
+     - 56.7
+     - 38
+     - 1800, 93 / 88
+     - cpu 53 ops/s, vm 19730 ops/s, glmark2 71 fps, NPU 694 inferences/s
 
 
 Throttle tests (throttle point lowered): enclosure (Polycase WA Series WA-42\*16), passive heatsink
