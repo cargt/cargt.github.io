@@ -66,45 +66,83 @@ To customize an update, copy the ``-swu`` recipe and its per-machine
 ``sw-description`` and ``update.sh`` files from
 ``meta-imx-cargt/recipes-support/swupdate`` into your own layer.
 
-Checking the Running Partition
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+An Update, Step by Step
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This example is from an i.MX 93 00363 on the 00428 carrier, installing the
+published ``cargt-image-dev`` update from a file in ``/data``.
+
+Before the update, the board runs from partition 1:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# cat /proc/cmdline
+   console=ttyLP0,115200 earlycon root=/dev/mmcblk0p1 rootwait rw
+   root@imx93-cargt-00363-00428:~# fw_printenv mmcpart
+   mmcpart=1
+
+Install the update. The end of the output:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# swupdate -v -i /data/cargt-image-dev-swu-imx93-cargt-00363-00428.rootfs.swu
+   ...
+   [TRACE] : SWUPDATE running :  [check_hw_compatibility] : Hardware compatibility verified
+   ...
+   [TRACE] : SWUPDATE running :  [install_raw_file] : Installing file cargt-image-dev-imx93-cargt-00363-00428.rootfs.tar.zst on /data/swupdate/update.tar.zst
+   ...
+   [INFO ] : SWUPDATE running :  Installation in progress
+   [TRACE] : SWUPDATE running :  [__run_cmd] : /tmp/scripts/update.sh   command returned 0
+   [INFO ] : SWUPDATE successful ! SWUPDATE successful !
+
+``update.sh`` logged each step:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# cat /data/swupdate/log.txt
+   ******Update started*********
+   get_current_root_device=/dev/mmcblk0p1
+   get_current_part=1
+   get_update_part=2
+   get_update_device=/dev/mmcblk0p2
+   format_update_device=/dev/mmcblk0p2
+   tar --zstd -xf /data/swupdate/update.tar.zst -C /data/swupdate/mnt
+   ******Update complete*********
+   root@imx93-cargt-00363-00428:~# fw_printenv mmcpart
+   mmcpart=2
+
+After a reboot, the board runs from partition 2, and partition 1 is mounted
+under ``/run/media``:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# cat /proc/cmdline
+   console=ttyLP0,115200 earlycon root=/dev/mmcblk0p2 rootwait rw
+   root@imx93-cargt-00363-00428:~# lsblk | grep mmcblk0p
+   |-mmcblk0p1  179:1    0    6G  0 part /run/media/mmcblk0p1
+   |-mmcblk0p2  179:2    0    6G  0 part /
+   `-mmcblk0p3  179:3    0    2G  0 part /data
+
+To go back to the previous root file system, select it and reboot:
 
 .. code-block:: bash
 
-   lsblk
-   fw_printenv mmcpart
+   fw_setenv mmcpart 1
+   reboot
 
-Before an update, the root file system (``/``) is on ``mmcblk0p1``. This
-output is from an i.MX 93 00324 on the 00326 carrier with an earlier image
-that used 4 GiB root partitions:
+Things to know after an update:
 
-.. code-block:: text
+- **SSH host keys change.** The board's SSH host keys are part of the root
+  file system, so each root partition has its own. SSH clients warn that
+  the host key has changed after an update (and after going back). To
+  keep the same keys, store them in ``/data`` from your own layer.
+- **The update archive stays in /data.** ``update.sh`` leaves the root file
+  system archive in ``/data/swupdate/update.tar.zst`` (about 440 MB for
+  ``cargt-image-dev``). Delete it once the new root file system works:
 
-   root@imx93-cargt-00326:~# lsblk
-   NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-   mmcblk0      179:0    0 28.8G  0 disk
-   |-mmcblk0p1  179:1    0    4G  0 part /
-   |-mmcblk0p2  179:2    0    4G  0 part /run/media/mmcblk0p2
-   `-mmcblk0p3  179:3    0    2G  0 part /data
-   mmcblk0boot0 179:32   0 31.5M  1 disk
-   mmcblk0boot1 179:64   0 31.5M  1 disk
+  .. code-block:: bash
 
-After the update and a reboot, ``/`` is on ``mmcblk0p2``:
-
-.. code-block:: text
-
-   root@imx93-cargt-00326:~# lsblk
-   NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-   mmcblk0      179:0    0 28.8G  0 disk
-   |-mmcblk0p1  179:1    0    4G  0 part /run/media/mmcblk0p1
-   |-mmcblk0p2  179:2    0    4G  0 part /
-   `-mmcblk0p3  179:3    0    2G  0 part /data
-   mmcblk0boot0 179:32   0 31.5M  1 disk
-   mmcblk0boot1 179:64   0 31.5M  1 disk
-
-The inactive root partition is mounted under ``/run/media`` automatically.
-On current images the root partitions are 6 GiB and ``/data`` fills the rest
-of the eMMC.
+     rm -rf /data/swupdate
 
 SWUpdate Methods
 ~~~~~~~~~~~~~~~~

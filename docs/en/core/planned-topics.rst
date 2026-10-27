@@ -10,9 +10,9 @@ if you need one of them sooner.
   STM32MP2 flash layout
 - **Remote access:** reverse SSH with Teleport, provisioning, connecting to
   a remote device, SSH tunnels for RDP
-- **Connectivity:** Bluetooth, NFC, cellular
-- **IP networking:** IP forwarding, DHCP (dnsmasq, Kea), DNS (dnsmasq),
-  firewalls (nftables), remote packet capture
+- **Connectivity:** Bluetooth audio, NFC
+- **IP networking:** Kea DHCP server, firewalls (nftables), remote packet
+  capture
 - **Production configuration:** programming MAC address eFuses (i.MX and
   STM32MP2), reading the SOM EEPROM from Linux, limiting RAM size for
   testing, eMMC boot partitions and pseudo-SLC mode

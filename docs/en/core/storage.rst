@@ -67,10 +67,94 @@ Checking the Layout
    cat /proc/cmdline      # root= shows the running root partition
    fw_printenv mmcpart    # partition U-Boot boots next
 
+On an i.MX 93 00363 on the 00428 carrier with a 32 GB eMMC, running from
+partition 1:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# lsblk
+   NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+   mmcblk0      179:0    0 28.8G  0 disk
+   |-mmcblk0p1  179:1    0    6G  0 part /
+   |-mmcblk0p2  179:2    0    6G  0 part /run/media/mmcblk0p2
+   `-mmcblk0p3  179:3    0    2G  0 part /data
+   mmcblk0boot0 179:32   0 31.5M  1 disk
+   mmcblk0boot1 179:64   0 31.5M  1 disk
+
+   root@imx93-cargt-00363-00428:~# sfdisk -l /dev/mmcblk0
+   ...
+   Device         Boot    Start      End  Sectors Size Id Type
+   /dev/mmcblk0p1         16384 12599295 12582912   6G 83 Linux
+   /dev/mmcblk0p2      12599296 25182207 12582912   6G 83 Linux
+   /dev/mmcblk0p3      25182208 29376511  4194304   2G 83 Linux
+
+The inactive root partition is mounted under ``/run/media`` automatically.
+This board's image predates ``grow-data-part``, so ``/data`` is still 2 GiB;
+see `The /data Partition`_.
+
 ``mmcblk0`` is the device U-Boot calls MMC 0; on most Cargt boards that is the
 eMMC, and the microSD card is ``mmcblk1``. ``mmcblk0boot0`` and
 ``mmcblk0boot1`` are the eMMC hardware boot partitions. Cargt images do not
 use them, and Linux keeps them read-only by default.
+
+Boot Sequence
+~~~~~~~~~~~~~
+
+The default ``bootcmd`` is ``run distro_bootcmd;run bsp_bootcmd``. U-Boot
+first tries the standard distro boot methods (``extlinux.conf``, boot
+scripts and EFI) on the eMMC, the microSD card and USB. Cargt images
+provide none of these, so it then runs ``bsp_bootcmd``, which loads the
+kernel and device tree from the root partition selected by ``mmcpart``.
+Stopping autoboot and running ``boot`` on an i.MX 93 00363 on the 00428
+carrier, with no microSD card or USB drive:
+
+.. code-block:: text
+
+   u-boot=> boot
+   switch to partitions #0, OK
+   mmc0(part 0) is current device
+   Scanning mmc 0:1...
+   ...
+   Error: Cannot initialize UEFI sub-system, r = 3
+   MMC Device 1 not found
+   no mmc device at slot 1
+   starting USB...
+   ...
+          scanning usb for storage devices... 0 Storage Device(s) found
+   Running BSP bootcmd ...
+   switch to partitions #0, OK
+   mmc0(part 0) is current device
+   Failed to load 'boot.scr'
+   35748352 bytes read in 725 ms (47 MiB/s)
+   Booting from mmc ...
+   40106 bytes read in 2 ms (19.1 MiB/s)
+   ## Flattened Device Tree blob at 83000000
+      Booting using the fdt blob at 0x83000000
+   ...
+   Starting kernel ...
+
+The UEFI, MMC device 1 and USB messages come from the distro boot scan and
+are harmless. ``bsp_bootcmd`` first looks for a U-Boot script ``boot.scr``
+in the root partition and runs it if present (``Failed to load 'boot.scr'``
+when there is none), then loads ``boot/Image`` (about 36 MB) and the device
+tree named by ``fdtfile``.
+
+U-Boot lists the MMC devices and the partition table with:
+
+.. code-block:: text
+
+   u-boot=> mmc list
+   FSL_SDHC: 0 (eMMC)
+   FSL_SDHC: 2
+   u-boot=> mmc dev 0
+   u-boot=> mmc part
+
+   Partition Map for mmc device 0  --   Partition Type: DOS
+
+   Part    Start Sector    Num Sectors     UUID            Type
+     1     16384           12582912        076c4a2a-01     83
+     2     12599296        12582912        076c4a2a-02     83
+     3     25182208        4194304         076c4a2a-03     83
 
 Using a Different Layout
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,8 +175,10 @@ automatically.
 The ``/data`` Partition
 -----------------------
 
-The ``grow-data-part`` service (in ``cargt-image-core``, ``cargt-image-dev``
-and the other Cargt images) runs at every boot, before SWUpdate starts. It:
+Images built from the ``wrynose`` branch of ``meta-imx-cargt`` from
+October 23, 2026 include the ``grow-data-part`` service (in
+``cargt-image-core``, ``cargt-image-dev`` and the other Cargt images). It runs
+at every boot, before SWUpdate starts, and:
 
 1. Finds the disk that holds ``root=`` (the eMMC or the microSD card,
    whichever the board booted from).
@@ -114,6 +200,14 @@ it did:
 image is inserted in a board that booted from eMMC, both disks have a
 partition labelled ``data``, and only the one on the boot disk is mounted on
 ``/data``.
+
+**Older images** mount ``/data`` from ``/etc/fstab`` (``LABEL=data``) and
+leave it at 2 GiB. To check which you have:
+
+.. code-block:: bash
+
+   systemctl status grow-data-part     # "could not be found" on older images
+   grep data /etc/fstab
 
 U-Boot Environment
 ------------------
@@ -157,7 +251,20 @@ Reading and changing variables from Linux:
    fw_setenv fdtfile <name>.dtb
    fw_setenv ethaddr           # no value: delete the variable
 
-From the U-Boot prompt, use ``printenv``, ``setenv`` and ``saveenv``. To go
+From the U-Boot prompt, use ``printenv``, ``setenv`` and ``saveenv``. Press a
+key during the two-second ``Hit any key to stop autoboot`` countdown to get
+the ``u-boot=>`` prompt. Some of the values ``printenv`` shows on the i.MX 93
+00363 on the 00428 carrier:
+
+.. code-block:: text
+
+   bootcmd=run distro_bootcmd;run bsp_bootcmd
+   mmcdev=0
+   mmcpart=1
+   fdtfile=boot/imx93-cargt-00363-00428-glt0557201280is1.dtb
+
+The whole environment uses about 7 KB of the 16 KB available
+(``Environment size: 7135/16380 bytes`` at the end of ``printenv``). To go
 back to the built-in defaults:
 
 .. code-block:: bash

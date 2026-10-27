@@ -78,25 +78,48 @@ The record starts at offset 0. Multi-byte fields are big-endian.
 Reading the EEPROM in U-Boot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Cargt U-Boot prints the record at boot. To print it again, use
-``cargt_eeprom read`` at the U-Boot prompt:
+On i.MX 8M Plus, i.MX 91 and i.MX 93 SOMs, SPL prints the record on the
+console at every boot, followed by the DDR timing it selected from it. From
+an i.MX 93 00363 (2 GB, two ranks) on the 00428 carrier:
 
 .. code-block:: text
 
-   => cargt_eeprom read
+   U-Boot SPL 2026.04-lf_v2026.04+g6eeef838dac+p0 (Jun 02 2026 - 15:03:39 +0000)
+   ...
+   Reading Cargt EEPROM over I2C...
+   Cargt EEPROM read complete.
+   ...
    Cargt EEPROM Production Information:
-           Part number: <part number>
-           Production date: <YYYYMMDD>
+           Part number: 012-00363-FE
+           Production date: 20260929
            Serial number: <decimal> (0x<hex>)
-           EEPROM struct version: 0x3
-           DRAM rank: 1
+           EEPROM struct version: 0x2
+           DRAM rank: 2
            DRAM size: 2048 MB
-           DRAM speed: 6400 MT/s
-           DDR config ID: 0x01
+           DRAM speed: 3733 MT/s
+           CRC32: 0x<crc> (OK)
+           Selected board timing: 2048MB @ 3733 MT/s (rank 2)
+   DDR: 3733MTS
+
+To print it again, stop autoboot and run ``cargt_eeprom read`` at the U-Boot
+prompt:
+
+.. code-block:: text
+
+   u-boot=> cargt_eeprom read
+   Cargt EEPROM Production Information:
+           Part number: 012-00363-FE
+           Production date: 20260929
+           Serial number: <decimal> (0x<hex>)
+           EEPROM struct version: 0x2
+           DRAM rank: 2
+           DRAM size: 2048 MB
+           DRAM speed: 3733 MT/s
            CRC32: 0x<crc> (OK)
 
-Older U-Boot builds print the serial number in hexadecimal only, and omit
-the DDR configuration ID and CRC lines.
+Version 3 records (i.MX 95) add a ``DDR config ID`` line. Older U-Boot
+builds print the serial number in hexadecimal only and leave out the CRC
+line.
 
 How the DRAM Fields Are Used
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

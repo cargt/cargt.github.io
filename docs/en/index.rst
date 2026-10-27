@@ -15,6 +15,9 @@ Modern Electronics. Confidence at Every Step.
   core/index
   core/getting-started
   core/storage
+  core/networking
+  core/bluetooth
+  core/rtc
   core/displays
   core/software-updates
   core/production
