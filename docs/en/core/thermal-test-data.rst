@@ -900,3 +900,188 @@ Throttle tests (throttle point lowered): enclosure (Polycase WA Series WA-42\*16
      - throttled after 6 s (100 %)
      - 631, 46 / 30
      - UI 25 fps, video 30 fps
+
+
+i.MX 8M Plus (00377)
+--------------------
+
+
+Open air, no heatsink
+~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1600 / –
+     - 20
+     - 23.2
+     - 42.2 / 43.0
+     - 18.9
+     - 66
+     - 1221, 1 / 0
+     - –
+   * - Idle (no load) (ondemand)
+     - 1600 / –
+     - 20
+     - 22.6
+     - 40.3 / 42.0
+     - 17.7
+     - 67
+     - 1213, 1 / 0
+     - –
+   * - Idle (no load) (performance)
+     - 1600 / –
+     - 21
+     - 23.3
+     - 42.3 / 44.0
+     - 19.0
+     - 66
+     - 1600, 1 / 0
+     - –
+   * - CPU, all cores at 50% (ondemand)
+     - 1200 / –
+     - 20
+     - 22.7
+     - 45.4 / 48.0
+     - 22.6
+     - 62
+     - 1200, 53 / 0
+     - cpu 21 ops/s
+   * - CPU, all cores at 50% (ondemand)
+     - 1600 / –
+     - 20
+     - 23.0
+     - 48.1 / 52.0
+     - 25.1
+     - 60
+     - 1481, 52 / 0
+     - cpu 27 ops/s
+   * - CPU, all cores at 50% (performance)
+     - 1200 / –
+     - 20
+     - 23.1
+     - 45.6 / 48.0
+     - 22.5
+     - 62
+     - 1200, 53 / 0
+     - cpu 21 ops/s
+   * - CPU, all cores at 50% (performance)
+     - 1600 / –
+     - 20
+     - 23.1
+     - 48.3 / 52.0
+     - 25.2
+     - 60
+     - 1600, 52 / 0
+     - cpu 27 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1200 / –
+     - 20
+     - 23.2
+     - 49.0 / 49.0
+     - 25.8
+     - 59
+     - 1200, 100 / 0
+     - cpu 40 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1600 / –
+     - 20
+     - 23.2
+     - 53.8 / 54.0
+     - 30.6
+     - 54
+     - 1600, 100 / 0
+     - cpu 52 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1600 / –
+     - 20
+     - 23.0
+     - 48.0 / 49.0
+     - 25.1
+     - 60
+     - 1208, 3 / 10
+     - glmark2 19 fps
+   * - CPU + GPU + memory (performance)
+     - 1200 / –
+     - 20
+     - 23.2
+     - 52.8 / 54.0
+     - 29.6
+     - 55
+     - 1200, 78 / 9
+     - cpu 20 ops/s, vm 13298 ops/s, glmark2 17 fps
+   * - CPU + GPU + memory (performance)
+     - 1600 / –
+     - 20
+     - 23.1
+     - 56.5 / 58.0
+     - 33.4
+     - 52
+     - 1600, 78 / 10
+     - cpu 25 ops/s, vm 16529 ops/s, glmark2 17 fps
+   * - Video playback, 1080p30 H.264 (VPU) (ondemand)
+     - 1600 / –
+     - 20
+     - 22.9
+     - 41.7 / 42.0
+     - 18.7
+     - 66
+     - 1205, 4 / 0
+     - video 30 fps
+   * - Video decode, max rate, 1080p H.264 (VPU) (ondemand)
+     - 1600 / –
+     - 20
+     - 22.5
+     - 42.7 / 44.0
+     - 20.3
+     - 65
+     - 1219, 10 / 0
+     - video 249 fps
+   * - Chromium kiosk HMI + 1080p30 video (ondemand)
+     - 1200 / –
+     - 20
+     - 22.6
+     - 46.2 / 47.0
+     - 23.6
+     - 61
+     - 1200, 48 / 29
+     - UI 30 fps, video 30 fps
+   * - Chromium kiosk HMI + 1080p30 video (ondemand)
+     - 1600 / –
+     - 20
+     - 22.8
+     - 48.2 / 50.0
+     - 25.3
+     - 60
+     - 1595, 45 / 24
+     - UI 33 fps, video 30 fps
+   * - NPU inference, MobileNet v1 (VIP8000) (ondemand)
+     - 1600 / –
+     - 20
+     - 22.9
+     - 51.8 / 52.0
+     - 28.9
+     - 56
+     - 1227, 10 / 0
+     - NPU 289 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1600 / –
+     - 20
+     - 22.3
+     - 62.7 / 64.0
+     - 40.4
+     - 45
+     - 1600, 88 / 10
+     - cpu 23 ops/s, vm 15943 ops/s, glmark2 16 fps, NPU 209 inferences/s

@@ -23,7 +23,8 @@ without the processor reaching its design limit.
        stress, application and NPU loads
    * - :ref:`00377 <00377>`
      - i.MX 8M Plus
-     - Testing in progress
+     - Tested: open air, no heatsink, stress, application and NPU loads.
+       Enclosure testing in progress
    * - :ref:`00363-93 <00363-93>`
      - i.MX 93
      - Planned
@@ -46,7 +47,8 @@ Each test runs one load until the die temperature is steady, which takes
 The **design limit** is 10 °C below the temperature at which the processor
 starts to throttle (its passive trip point). Below it, the SOM runs at full
 speed with margin to spare. For the i.MX 95 the passive trip is 105 °C, so
-the design limit is **95 °C**.
+the design limit is **95 °C**. For the i.MX 8M Plus the passive trip is
+95 °C, so the design limit is **85 °C**.
 
 .. note::
 
@@ -78,6 +80,18 @@ For the i.MX 95 (00414):
 - **When the SOM does throttle, it degrades gracefully.** The kernel holds
   the die 1–3 °C under the throttle point by lowering the CPU and then the GPU
   frequency; video playback keeps its frame rate.
+
+For the i.MX 8M Plus (00377):
+
+- **In open air, the SOM needs no heatsink.** The worst case we tested, CPU,
+  GPU, memory and NPU all fully loaded at 1.6 GHz, allows 45 °C room air;
+  without the NPU, 52 °C. A touchscreen UI with video playback allows about
+  60 °C.
+- **It runs much cooler than the i.MX 95.** Under the same full CPU, GPU and
+  memory load it rises 33 °C above the room, against 58 °C for the i.MX 95
+  without a heatsink, so it allows 7–15 °C warmer air despite its lower
+  design limit.
+- **The NPU is again the largest single heat source**, adding 7–10 °C of ΔT.
 
 i.MX 95 (00414) results
 -----------------------
@@ -361,8 +375,132 @@ Long-term stability
   0.2 °C in open air. Over the 36 hours the room varied by 3 °C while ΔT
   stayed within 1 °C.
 
-Choosing cooling for an i.MX 95 product
----------------------------------------
+.. _thermal-00377:
+
+i.MX 8M Plus (00377) results
+----------------------------
+
+Test setup
+~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :widths: 25 75
+
+   * - Hardware
+     - 00377 i.MX 8M Plus OSM-L SOM on the 00365 carrier board, open air on a
+       desk, no heatsink. For the UI and video tests the HDMI output was
+       enabled with no monitor connected.
+   * - Software
+     - Cargt Linux BSP (NXP lf-6.18.20). CPU governor: performance for the
+       full-load tests, ondemand for the others.
+   * - CPU frequency caps
+     - 1200 and 1600 MHz, the two Cortex-A53 operating points of this part.
+       The GC7000UL GPU has no frequency levels to cap.
+   * - Die temperature
+     - The higher of the i.MX 8M Plus CPU and SoC thermal sensors, which
+       report whole degrees
+   * - Ambient
+     - A Dracal USB-PTH450 sensor in the room, 22–23 °C
+
+The loads are those used for the i.MX 95, with the NPU loads running on the
+VIP8000 NPU through the TensorFlow Lite VX delegate. Every test ran to a
+steady die temperature and none throttled.
+
+Open air, no heatsink
+~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 34 12 12 14 28
+
+   * - Load
+     - CPU cap MHz
+     - ΔT °C
+     - Max ambient
+     - Performance
+   * - CPU + GPU + memory + NPU
+     - 1600
+     - 40.4
+     - **45 °C**
+     - 209 inferences/s, CPU 23 ops/s, GPU 16 fps
+   * - CPU + GPU + memory
+     - 1600
+     - 33.4
+     - **52 °C**
+     - CPU 25 ops/s, GPU 17 fps
+   * - CPU + GPU + memory
+     - 1200
+     - 29.6
+     - 55 °C
+     - CPU −19 %, memory −20 %, GPU unchanged
+   * - CPU, all cores
+     - 1600
+     - 30.6
+     - 54 °C
+     - 52 ops/s
+   * - CPU, all cores
+     - 1200
+     - 25.8
+     - 59 °C
+     - 40 ops/s (−22 %)
+   * - Image classification on the NPU
+     - 1600
+     - 29.0
+     - 56 °C
+     - 289 inferences/s
+   * - CPU at 50 %
+     - 1600
+     - 25.2
+     - 60 °C
+     - –
+   * - GPU only
+     - 1600
+     - 25.1
+     - 60 °C
+     - 19 fps
+   * - Touchscreen UI + 1080p30 video
+     - 1600
+     - 25.3
+     - 60 °C
+     - UI 33 fps, video 30 fps
+   * - Touchscreen UI + 1080p30 video
+     - 1200
+     - 23.6
+     - 61 °C
+     - UI 30 fps, video 30 fps
+   * - 1080p video decode, maximum rate
+     - 1600
+     - 20.3
+     - 65 °C
+     - 249 fps
+   * - 1080p30 video playback
+     - 1600
+     - 18.7
+     - 66 °C
+     - 30 fps, no dropped frames
+   * - Idle
+     - 1600
+     - 18–19
+     - 66 °C
+     - –
+
+- **No heatsink is needed in open air**, even at full load: the hottest die
+  reading in any test was 64 °C.
+- **The NPU adds 7–10 °C of ΔT**, about as on the i.MX 95. With everything
+  running, the NPU rate drops 28 % against the NPU alone.
+- **Capping the CPU at 1200 MHz saves 4–5 °C** under CPU load and costs about
+  20 % of CPU and memory throughput. For the UI it costs 8 % of the frame
+  rate for under 2 °C.
+- **Video costs almost nothing:** the VPU adds about 1 °C at 30 fps.
+- **The UI is limited by the GPU, not temperature:** the touchscreen UI runs
+  at 30–33 fps on the GC7000UL, against 49 fps on the i.MX 95.
+- **The governor makes no difference:** ondemand and performance give the
+  same temperature within 0.3 °C at the same cap and load.
+
+Choosing cooling for your product
+---------------------------------
 
 To estimate the cooling a product needs:
 
@@ -372,12 +510,12 @@ To estimate the cooling a product needs:
    inside of your enclosure being warmer than the room: 3–5 °C in the sealed
    enclosure tested here.
 
-For example, an indoor product in a sealed plastic enclosure, with the CPU
-capped at 1404 MHz and the passive heatsink, allows 52 °C room air at the
-worst-case stress load. That is a margin of about 20 °C over a 30 °C room.
+For example, an indoor i.MX 95 product in a sealed plastic enclosure, with
+the CPU capped at 1404 MHz and the passive heatsink, allows 52 °C room air at
+the worst-case stress load. That is a margin of about 20 °C over a 30 °C room.
 
-These results come from one SOM in one orientation on the 00365 carrier
-board. A different carrier, enclosure, mounting orientation or airflow
+These results come from one SOM of each type in one orientation on the
+00365 carrier board. A different carrier, enclosure, mounting orientation or airflow
 changes them. Treat them as a starting point and verify your final design.
 For help choosing cooling for your product,
 `contact Cargt <https://www.cargt.com/contact/>`__.
