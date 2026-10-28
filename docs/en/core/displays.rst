@@ -170,3 +170,112 @@ Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot e
 
       # For GLT1011280800is1 10.1" LVDS display:
       fw_setenv fdtfile /boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
+
+Taking Screenshots with Weston
+------------------------------
+
+Cargt images with a display run the Weston compositor, which includes
+``weston-screenshooter``. It saves the whole screen as a PNG file named
+``wayland-screenshot-<date>_<time>.png``. Weston only lets clients it trusts
+take screenshots, so how you take one depends on where you start it.
+
+With a Keyboard on the Board
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+With a USB keyboard connected to the board, press :kbd:`Super+S` (the
+Windows key and :kbd:`S`). Weston starts ``weston-screenshooter`` itself and
+allows it. The file is saved in Weston's working directory, ``/home/weston``
+on Cargt images, or in the directory set by ``XDG_PICTURES_DIR`` in Weston's
+environment (for example in ``/etc/default/weston``).
+
+Over SSH or the Serial Console
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A ``weston-screenshooter`` started from a shell is only allowed when Weston
+runs with ``--debug``.
+
+.. warning::
+
+   Without ``--debug``, ``weston-screenshooter`` prints
+   ``Output capture error: unauthorized`` but still exits with status 0
+   and writes a PNG file of the right size that is completely black. Check
+   for the error message rather than the file.
+
+To enable it, add a systemd drop-in that starts Weston with ``--debug``, and
+restart Weston:
+
+.. code-block:: bash
+
+   mkdir -p /etc/systemd/system/weston.service.d
+   cat > /etc/systemd/system/weston.service.d/screenshots.conf << 'END'
+   [Service]
+   ExecStart=
+   ExecStart=/usr/bin/weston --debug --log=${XDG_RUNTIME_DIR}/weston.log --modules=systemd-notify.so
+   END
+   systemctl daemon-reload
+   systemctl restart weston
+
+Then take a screenshot. ``WAYLAND_DISPLAY`` tells it where Weston's socket
+is, and ``XDG_PICTURES_DIR`` where to save the file (the current directory
+if it is not set):
+
+.. code-block:: bash
+
+   WAYLAND_DISPLAY=/run/wayland-0 XDG_PICTURES_DIR=/tmp weston-screenshooter
+
+Copy the file to your computer with ``scp``:
+
+.. code-block:: bash
+
+   scp root@<board-ip>:/tmp/wayland-screenshot-*.png .
+
+.. warning::
+
+   ``--debug`` also enables Weston's debug protocol, which lets any Wayland
+   client on the board capture the screen and read Weston's debug output.
+   Use it only during development, and remove the drop-in afterwards:
+
+   .. code-block:: bash
+
+      rm /etc/systemd/system/weston.service.d/screenshots.conf
+      systemctl daemon-reload
+      systemctl restart weston
+
+Rotated Displays
+~~~~~~~~~~~~~~~~
+
+Screenshots show the framebuffer as it is sent to the panel, without the
+display's rotation. The 5.5" MIPI-DSI display is a 720×1280 portrait panel
+mounted in landscape: its device tree sets the panel orientation, Weston
+draws the desktop rotated to match, and screenshots come out 720×1280 with
+the desktop on its side. ``modetest -c`` shows the orientation as the
+connector's ``panel orientation`` property:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00365:~# modetest -c
+   ...
+   	38 panel orientation:
+   		flags: immutable enum
+   		enums: Normal=0 Upside Down=1 Left Side Up=2 Right Side Up=3
+   		value: 3
+
+For ``Right Side Up``, rotate the file 90° counter-clockwise on your
+computer, for example with ImageMagick (for ``Left Side Up``, use ``90``):
+
+.. code-block:: bash
+
+   convert wayland-screenshot-<date>_<time>.png -rotate -90 screenshot.png
+
+A screenshot taken with :kbd:`Super+S` on an i.MX 93 00363 on the 00365
+carrier with the 5.5" display, after rotating it:
+
+.. image:: /_static/images/screenshots/img-weston-screenshot.png
+   :width: 60%
+   :alt: Weston desktop with the Cargt wallpaper, 1280 by 720 pixels
+
+Other Options
+~~~~~~~~~~~~~
+
+``weston-screenshooter --help`` lists further options, for example
+``--format`` to save raw YUV data instead of a PNG.
