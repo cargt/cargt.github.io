@@ -52,8 +52,8 @@ This gives an MBR partition table and the following layout:
      - Persistent data, mounted on ``/data``. Not touched by software
        updates.
 
-There is no FAT boot partition. U-Boot loads ``boot/Image`` and
-``boot/<fdtfile>`` from the ext4 root partition selected by the ``mmcpart``
+There is no FAT boot partition. U-Boot loads ``boot/Image`` and the
+device tree named by ``fdtfile`` (``boot/<name>.dtb``) from the ext4 root partition selected by the ``mmcpart``
 variable, and passes ``root=/dev/mmcblk<mmcdev>p<mmcpart>`` to the kernel.
 Software updates write the inactive root partition and change ``mmcpart``;
 see :ref:`swupdate`.
@@ -234,8 +234,9 @@ Variables Cargt images use:
    * - ``mmcpart``
      - Root partition to boot, ``1`` or ``2``. Set by software updates.
    * - ``fdtfile``
-     - Device tree loaded from ``/boot``. Change it to select the device tree
-       for a display; see :doc:`displays`.
+     - Device tree to load, relative to the root partition, for example
+       ``boot/<name>.dtb``. Change it to select the device tree for a
+       display; see :doc:`displays`.
    * - ``ethaddr``, ``eth1addr``
      - MAC addresses, when set. See :ref:`mac-addresses`.
    * - ``bootcmd``
@@ -248,7 +249,7 @@ Reading and changing variables from Linux:
 
    fw_printenv                 # all variables
    fw_printenv mmcpart         # one variable
-   fw_setenv fdtfile <name>.dtb
+   fw_setenv fdtfile boot/<name>.dtb
    fw_setenv ethaddr           # no value: delete the variable
 
 From the U-Boot prompt, use ``printenv``, ``setenv`` and ``saveenv``. Press a

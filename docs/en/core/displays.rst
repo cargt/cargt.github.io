@@ -147,16 +147,17 @@ How to check for available device tree overlays for display support:
       /boot/stm32mp257f-cargt-00395-02-00365.dtb
 
 Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot environment variable ``fdtfile`` to point to the appropriate DTB file that matches your display model.
+Write the new value in the same form as the current one (``fw_printenv fdtfile``). On i.MX the path is relative to the root partition, for example ``boot/imx93-cargt-00363-00428-glt0557201280is1.dtb``.
 
    .. code-block:: bash
 
       # Using fw_setenv (from Linux shell)
-      fw_setenv fdtfile /boot/<dtb_file_name>
+      fw_setenv fdtfile boot/<dtb_file_name>
       fw_printenv fdtfile  # Verify the change
       reboot
 
       # Using setenv (from U-Boot console)
-      setenv fdtfile /boot/<dtb_file_name>
+      setenv fdtfile boot/<dtb_file_name>
       saveenv
       printenv fdtfile  # Verify the change
       reset
@@ -166,10 +167,10 @@ Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot e
    .. code-block:: bash
 
       # For GLT0557201280is1 5.5" MIPI-DSI display:
-      fw_setenv fdtfile /boot/imx93-cargt-00363-00365-glt0557201280is1.dtb
+      fw_setenv fdtfile boot/imx93-cargt-00363-00365-glt0557201280is1.dtb
 
       # For GLT1011280800is1 10.1" LVDS display:
-      fw_setenv fdtfile /boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
+      fw_setenv fdtfile boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
 
 Taking Screenshots with Weston
 ------------------------------
