@@ -1167,6 +1167,15 @@ Enclosure (Polycase WA Series WA-42\*16), no heatsink
      - 42
      - 1600, 79 / 10
      - cpu 25 ops/s, vm 16310 ops/s, glmark2 17 fps
+   * - CPU + GPU + memory (performance)
+     - 1600 / –
+     - 40
+     - 23.7 / 27.4
+     - 65.8 / 67.0
+     - 42.1
+     - 43
+     - 1600, 79 / –
+     - cpu 25 ops/s, vm 16483 ops/s, glmark2 16 fps
    * - Video playback, 1080p30 H.264 (VPU) (ondemand)
      - 1600 / –
      - 41
