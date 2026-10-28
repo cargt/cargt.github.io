@@ -90,6 +90,54 @@ Interface names:
    over. For products, install your connection files from your own Yocto
    layer; see `Including Connections in Your Image`_.
 
+NetworkManager and systemd-networkd
+-----------------------------------
+
+Both NetworkManager and ``systemd-networkd`` are installed and running.
+Each interface must be managed by only one of them, so Cargt images divide
+the work:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Service
+     - Manages
+   * - NetworkManager
+     - Ethernet, Wi-Fi and cellular. Configure it with ``nmcli`` or
+       ``nmtui``.
+   * - ``systemd-networkd``
+     - The CAN interfaces, from ``/etc/systemd/network/80-can0.network`` and
+       ``81-can1.network``. ``50-eth0.network`` and ``51-eth1.network`` in the
+       same directory mark the Ethernet ports ``Unmanaged=yes`` so that it
+       leaves them to NetworkManager.
+   * - ``systemd-resolved``
+     - DNS. NetworkManager passes it the DNS servers of each connection
+       (``resolvectl dns`` lists them). ``/etc/resolv.conf`` links to
+       ``/run/systemd/resolve/resolv.conf``, which ``systemd-resolved``
+       writes with those servers.
+
+``networkctl`` lists the interfaces as ``systemd-networkd`` sees them. All
+but the CAN interfaces show as ``unmanaged`` there, which is expected.
+
+The CAN interfaces are brought up at 250 kbit/s. To use another bit rate,
+change ``BitRate=`` in their ``.network`` files and reboot. For a product,
+install your own versions of the files from your layer. ``ip link`` can
+also change the bit rate until the next boot:
+
+.. code-block:: bash
+
+   ip link set can0 down
+   ip link set can0 type can bitrate 500000
+   ip link set can0 up
+
+To manage an Ethernet port with ``systemd-networkd`` instead, remove the
+``Unmanaged=yes`` file for it, add a ``.network`` file with its
+configuration, and tell NetworkManager to leave the port alone with
+``unmanaged-devices`` (see `Keeping a Wi-Fi Link Up`_ for the file
+format).
+
 Using nmtui
 -----------
 
@@ -600,8 +648,17 @@ enable it:
        ipv6.method disabled
    nmcli connection up cargt-ap
 
-The access point starts at boot from then on. For a 5 GHz network, use
-``wifi.band a`` and a 5 GHz channel such as ``36``.
+The access point starts at boot from then on.
+
+.. note::
+
+   Use 2.4 GHz for the access point on current Cargt images. Their
+   regulatory domain is the world default (``iw reg get`` shows
+   ``country 00``), which does not allow an access point on 5 GHz. With
+   ``wifi.band a`` and ``wifi.channel 36``, the activation fails, and the
+   log shows ``uap0: Failed to start AP functionality``. ``iw reg set``
+   does not change the domain on the IW612; the country has to be set in
+   the Wi-Fi driver's configuration.
 
 Checking it, on an i.MX 93 00363 with an IW612 on the 00365 carrier:
 
@@ -677,6 +734,106 @@ To stop the access point, or remove it:
 
    nmcli connection down cargt-ap
    nmcli connection delete cargt-ap
+
+Keeping a Wi-Fi Link Up
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Wi-Fi modules such as the IW610 and IW612 have a single radio (1x1) shared
+by ``mlan0``, ``uap0`` and ``wfd0``. Whenever any of these interfaces
+scans, the radio leaves the operating channel to listen on the others, and
+traffic on the connected interface is delayed or lost until it returns. A
+full scan covers 39 channels on 2.4 and 5 GHz and takes about 7.5 seconds.
+For a control link that must respond quickly, prevent scans while connected.
+
+**Unmanage the Wi-Fi interfaces you do not use.** NetworkManager treats
+``uap0`` and ``wfd0`` as Wi-Fi devices, and while they are disconnected it
+scans on them in the background, every 20 seconds to 2 minutes. These
+scans disrupt ``mlan0`` even though nothing uses those interfaces. Tell
+NetworkManager to leave them alone with a configuration file, for example
+``/etc/NetworkManager/conf.d/90-unmanaged-wifi.conf``:
+
+.. code-block:: ini
+
+   [keyfile]
+   unmanaged-devices=interface-name:uap0;interface-name:wfd0
+
+Apply it with ``nmcli general reload conf`` or a reboot; ``nmcli device``
+then shows the two interfaces as ``unmanaged``. On a board that runs an
+access point on ``uap0`` and does not use the client interface, unmanage
+``mlan0`` and ``wfd0`` instead. For a product, install the file from your
+own layer.
+
+**Lock the connection to one access point.** While connected,
+wpa_supplicant scans for better access points to roam to. NetworkManager
+configures it to scan every 30 seconds when the signal is weaker than
+−70 dBm (−65 dBm when it has seen more than one access point for the
+network), and once a day otherwise. Setting the access point's BSSID turns
+these scans off completely:
+
+.. code-block:: bash
+
+   nmcli connection modify <connection> 802-11-wireless.bssid <access point MAC address>
+   nmcli connection up <connection>
+
+The board then no longer roams to another access point with the same SSID,
+and the BSSID has to be updated if the access point is replaced.
+
+Scans that something asks for still happen: ``nmcli device wifi list``,
+``nmcli device wifi rescan`` and the ``nmtui`` **Activate a connection**
+screen all scan. Avoid running them on a board that is in use.
+
+Measured on two i.MX 93 00363 boards on the 00428 carrier, one running an
+access point on ``uap0`` (2.4 GHz, channel 6) and the other connected to it
+on ``mlan0`` at −21 dBm. One board sent a UDP packet every 10 ms and the
+other echoed it, for 2 minutes per test. Because both boards have an IW612,
+the change was made on both:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 40 15 25 20
+
+   * - Configuration
+     - Lost
+     - Round trip over 50 ms
+     - Longest round trip
+   * - Default
+     - 72 of 12,001
+     - 5,062 (42%)
+     - 2,044 ms
+   * - Unused interfaces unmanaged
+     - 0
+     - 8
+     - 83 ms
+   * - Unused interfaces unmanaged, BSSID locked, power saving off
+       (three runs)
+     - 0
+     - 4 to 23
+     - 80 to 136 ms
+
+With the default configuration, ``iw event -t`` on the client showed scans
+on ``uap0`` and ``wfd0`` for most of the test, and none on ``mlan0``: at
+this signal strength wpa_supplicant's own scans did not start. A single
+requested scan on ``mlan0`` took 7.4 seconds, during which 40% of the packets
+were delayed by more than 50 ms (up to 194 ms) and 4 were lost.
+
+To see whether scans happen on your board, watch for them while it runs:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# iw event -t
+   1793204657.559765: uap0 (phy #0): scan started
+   1793204664.136950: uap0 (phy #0): scan finished: 2412 2417 2422 ... 5825, ""
+
+Other settings worth considering for a control link:
+
+- Turn off Wi-Fi power saving with
+  ``nmcli connection modify <connection> 802-11-wireless.powersave 2``. In
+  the tests above, at short range, it made no measurable difference.
+- Keep the signal stronger than about −65 dBm.
+- Make the control protocol detect a lost link, for example with
+  heartbeats and a safe stop on timeout. No setting prevents every gap: the
+  link can still drop and reconnect.
 
 Including Connections in Your Image
 -----------------------------------
