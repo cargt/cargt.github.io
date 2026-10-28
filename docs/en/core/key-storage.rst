@@ -196,11 +196,15 @@ another board.
 
 .. warning::
 
-   - ``/var/lib/tee`` is on the root file system. A full software update
-     (SWUpdate on i.MX) installs a new root file system in the other
-     partition, so tokens and keys created before the update are not there
-     afterwards. Plan key provisioning around updates, or configure
-     ``tee-supplicant`` to keep its files on ``/data`` in your own layer.
+   - On images published up to October 2026, ``/var/lib/tee`` is on the
+     root file system. A full software update (SWUpdate on i.MX) installs a
+     new root file system in the other partition, so tokens and keys created
+     before the update are not there afterwards. Cargt has a BSP change that
+     moves the storage to ``/data/tee``, shared by both root partitions, but
+     it is not yet in the published images. Until then, plan key
+     provisioning around updates, or start ``tee-supplicant`` with
+     ``--fs-parent-path=/data/tee`` from your own layer. Keys created in
+     ``/var/lib/tee`` are not moved automatically.
    - REE FS has no rollback protection: someone with access to the file
      system can restore an older copy of the files. OP-TEE's RPMB storage on
      the eMMC protects against this but is not enabled in Cargt images.

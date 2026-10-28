@@ -8,8 +8,9 @@ images, for both i.MX and STM32MP2. ``systemd-networkd`` is also installed,
 but it is told to leave the Ethernet interfaces alone, and it only sets up
 the CAN interfaces.
 
-Use ``nmcli`` to configure NetworkManager. The images do not include
-``nmtui``.
+Use ``nmcli`` to configure NetworkManager from the command line or from
+scripts. ``nmtui`` is a menu-driven alternative for configuring a board by
+hand; see `Using nmtui`_.
 
 .. contents:: On this page
    :local:
@@ -88,6 +89,170 @@ Interface names:
    system, so connections created on the board with ``nmcli`` do not carry
    over. For products, install your connection files from your own Yocto
    layer; see `Including Connections in Your Image`_.
+
+Using nmtui
+-----------
+
+``nmtui`` edits the same connections as ``nmcli``, through text menus. It
+is convenient for setting a static address or joining a Wi-Fi network on a
+single board. ``nmcli`` is better for scripts and for instructions others
+will follow.
+
+.. note::
+
+   Cargt is adding ``nmtui`` to ``cargt-image-dev``. Images published up to
+   October 2026 do not include it. To add it to your own image:
+
+   .. code-block:: bash
+
+      IMAGE_INSTALL:append = " networkmanager-nmtui"
+
+Run ``nmtui`` from an SSH session or the serial console. Use the arrow keys
+and :kbd:`Tab` to move, :kbd:`Enter` to select and :kbd:`Space` to toggle a
+check box. :kbd:`Esc` goes back one screen, and quits from the main menu.
+The screens below are from an i.MX 93 00363 on the 00428 carrier, over SSH
+in an 80 × 24 terminal.
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# nmtui
+
+                              ┌─┤ NetworkManager TUI ├──┐
+                              │                         │
+                              │ Please select an option │
+                              │                         │
+                              │ Edit a connection       │
+                              │ Activate a connection   │
+                              │ Set system hostname     │
+                              │ Radio                   │
+                              │                         │
+                              │ Quit                    │
+                              │                         │
+                              │                    <OK> │
+                              │                         │
+                              └─────────────────────────┘
+
+Each menu item can also be opened directly: ``nmtui-edit``,
+``nmtui-connect`` and ``nmtui-hostname``. ``nmtui-edit <name>`` and
+``nmtui-connect <name>`` go straight to one connection.
+
+Setting a Static Address with nmtui
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This creates the same connection as `Static IP Address`_ does with
+``nmcli``.
+
+1. Select **Edit a connection**. The list shows the saved connections,
+   including the temporary ``Wired connection 1``:
+
+   .. code-block:: text
+
+      ┌───────────────────────────────────────┐
+      │                                       │
+      │ ┌─────────────────────────┐           │
+      │ │ Ethernet              ↑ │ <Add>     │
+      │ │   Wired connection 1  ▒ │           │
+      │ │ Loopback              ▒ │ <Edit...> │
+      │ │   lo                  ▒ │           │
+      │ │                       ▒ │ <Delete>  │
+      ...
+
+2. Select **<Add>**, then **Ethernet** and **<Create>**.
+
+3. Enter a **Profile name** and the **Device** (``eth0``). Set
+   **IPv4 CONFIGURATION** to **<Manual>**, select **<Show>** next to it,
+   and fill in the address with its prefix length, the gateway and the DNS
+   servers. Use **<Add...>** to add each address or DNS server:
+
+   .. code-block:: text
+
+      ┌───────────────────────────┤ Edit Connection ├───────────────────────────┐
+      │                                                                        ↑│
+      │         Profile name static-eth0_____________________________          ▮│
+      │               Device eth0____________________________________          ▒│
+      │                                                                        ▒│
+      │ ═ ETHERNET                                                    <Show>   ▒│
+      │ ═ 802.1X SECURITY                                             <Show>   ▒│
+      │                                                                        ▒│
+      │ ╤ IPv4 CONFIGURATION <Manual>                                 <Hide>   ▒│
+      │ │          Addresses 192.168.1.50/24__________ <Remove>                ▒│
+      │ │                    <Add...>                                          ▒│
+      │ │            Gateway 192.168.1.1______________                         ▒│
+      │ │        DNS servers 192.168.1.1______________ <Remove>                ▒│
+      │ │                    <Add...>                                          ▒│
+      │ │     Search domains <Add...>                                          ▒│
+      ...
+
+4. Scroll down and select **<OK>** to save the connection.
+
+5. The new connection does not replace the active one straight away. Go
+   back to the main menu, select **Activate a connection**, and activate
+   the new connection, or run ``nmcli connection up static-eth0``.
+
+.. warning::
+
+   If you are connected over SSH through the port you are changing, the
+   session drops when the new address takes effect. Reconnect to the new
+   address, or make the change from the serial console.
+
+Joining a Wi-Fi Network with nmtui
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Activate a connection** lists the saved connections and the Wi-Fi
+networks in range. ``*`` marks the active connections. Select a network and
+**<Activate>**; ``nmtui`` asks for the password and saves a connection for
+the network. With example network names:
+
+.. code-block:: text
+
+   ┌───────────────────────────────────────────────────────────┐
+   │                                                           │
+   │ ┌──────────────────────────────────────────┐              │
+   │ │ Wired                                  ↑ │ <Deactivate> │
+   │ │ * Wired connection 1                   ▮ │              │
+   │ │                                        ▒ │              │
+   │ │ Wi-Fi (mlan0)                          ▒ │              │
+   │ │   office                         ▂▄▆█  ▒ │              │
+   │ │   office-5G                      ▂▄▆█  ▒ │              │
+   │ │   guest                          ▂▄▆_  ▒ │              │
+   │ │   lab-ap                         ▂▄__  ▒ │              │
+   ...
+
+The same screen deactivates a connection. Deactivating the connection your
+SSH session uses disconnects you.
+
+Hostname and Radios
+~~~~~~~~~~~~~~~~~~~
+
+**Set system hostname** changes the board's hostname, the same as
+``hostnamectl hostname <name>``:
+
+.. code-block:: text
+
+   ┌─────────────────┤ Set Hostname ├──────────────────┐
+   │                                                   │
+   │ Hostname imx93-cargt-00363-00428_________________ │
+   │                                                   │
+   │                                     <Cancel> <OK> │
+   │                                                   │
+   └───────────────────────────────────────────────────┘
+
+**Radio** turns Wi-Fi and cellular (WWAN) on or off, the same as
+``nmcli radio``:
+
+.. code-block:: text
+
+   ┌────┤ Set the radio switches status ├────┐
+   │                                         │
+   │ Wi-Fi                                   │
+   │ Hardware: Enabled   Software: <Enabled> │
+   │                                         │
+   │ WWAN                                    │
+   │ Hardware: Missing   Software: <Enabled> │
+   │                                         │
+   │                                  <Back> │
+   │                                         │
+   └─────────────────────────────────────────┘
 
 DHCP Client
 -----------
