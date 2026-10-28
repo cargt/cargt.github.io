@@ -424,8 +424,10 @@ Running a DHCP Server on a Port
 -------------------------------
 
 A common setup is a board with ``eth0`` on the plant or office network and
-``eth1`` serving addresses to equipment behind it. There are two ways to do
-this.
+``eth1`` serving addresses to equipment behind it. NetworkManager's shared
+mode and the standalone ``dnsmasq`` service cover most cases. For full
+control over the firewall and the DHCP server, run nftables and Kea
+yourself; see `Routing with nftables and Kea`_.
 
 Shared Mode (DHCP Server and NAT)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -529,6 +531,171 @@ Then restart dnsmasq and check its log:
 
    systemctl restart dnsmasq
    journalctl -u dnsmasq -f
+
+Routing with nftables and Kea
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To write your own firewall rules, or to use the ISC Kea DHCP server, give
+the inside port a static address with NetworkManager and set up forwarding,
+NAT and DHCP yourself. Masquerading with your own nftables rules does not
+need ``CONFIG_NFT_REJECT``, so it also works on images where shared mode
+cannot route (see the warning above).
+
+The example below is from an i.MX 93 00363 on the 00428 carrier with
+``cargt-image-dev`` (wrynose). The board has one Ethernet port, so the inside
+network is a Wi-Fi access point on ``uap0`` (see `Access Point Mode`_),
+created with ``ipv4.method manual ipv4.addresses 192.168.70.1/24`` instead
+of ``shared``. A second 00428 joined it as a client. With a second Ethernet
+port, use ``eth1`` in place of ``uap0``.
+
+.. warning::
+
+   Run a DHCP server only on a port whose network you control. A second DHCP
+   server on an office or plant network hands out wrong addresses to other
+   devices.
+
+**Turn on IP forwarding.** Linux does not forward packets between
+interfaces by default:
+
+.. code-block:: bash
+
+   sysctl -w net.ipv4.ip_forward=1                         # until reboot
+   echo "net.ipv4.ip_forward = 1" > /etc/sysctl.d/90-router.conf  # at every boot
+
+**Add the firewall and NAT rules.** Save them in a file, for example
+``/etc/nftables-router.nft``. The ``forward`` chain lets the inside network
+reach ``eth0`` and lets only replies back in; the ``postrouting`` chain
+translates the inside addresses to the board's ``eth0`` address:
+
+.. code-block:: text
+
+   #!/usr/sbin/nft -f
+   destroy table ip router
+   table ip router {
+       chain forward {
+           type filter hook forward priority filter; policy drop;
+           ct state established,related accept
+           iifname "uap0" oifname "eth0" accept
+       }
+       chain postrouting {
+           type nat hook postrouting priority srcnat; policy accept;
+           oifname "eth0" masquerade
+       }
+   }
+
+``destroy table`` removes an earlier copy of the table, so loading the file
+again does not duplicate the rules. Load it with ``nft -f
+/etc/nftables-router.nft`` and check it with ``nft list ruleset``.
+
+Cargt images do not include an ``nftables`` service, so add a small unit,
+``/etc/systemd/system/router-nftables.service``, to load the rules at boot:
+
+.. code-block:: ini
+
+   [Unit]
+   Description=Router firewall and NAT rules
+   Before=network-pre.target
+   Wants=network-pre.target
+
+   [Service]
+   Type=oneshot
+   ExecStart=/usr/sbin/nft -f /etc/nftables-router.nft
+   RemainAfterExit=yes
+
+   [Install]
+   WantedBy=multi-user.target
+
+.. code-block:: bash
+
+   systemctl daemon-reload
+   systemctl enable --now router-nftables
+
+**Run Kea on the inside port.** Kea is in the Cargt package feed (see
+:doc:`package-management`); for a product, add ``kea`` to your image
+instead:
+
+.. code-block:: bash
+
+   apt-get update
+   apt-get install kea
+
+Replace ``/etc/kea/kea-dhcp4.conf`` with a configuration for the inside
+network:
+
+.. code-block:: json
+
+   {
+     "Dhcp4": {
+       "interfaces-config": { "interfaces": [ "uap0" ] },
+       "lease-database": { "type": "memfile", "persist": true, "name": "/var/lib/kea/kea-leases4.csv" },
+       "valid-lifetime": 3600,
+       "subnet4": [
+         {
+           "id": 1,
+           "subnet": "192.168.70.0/24",
+           "pools": [ { "pool": "192.168.70.100 - 192.168.70.199" } ],
+           "option-data": [
+             { "name": "routers", "data": "192.168.70.1" },
+             { "name": "domain-name-servers", "data": "1.1.1.1, 8.8.8.8" }
+           ]
+         }
+       ],
+       "loggers": [ { "name": "kea-dhcp4", "output-options": [ { "output": "stdout" } ], "severity": "INFO" } ]
+     }
+   }
+
+Check the file, then start the server and enable it at boot:
+
+.. code-block:: bash
+
+   kea-dhcp4 -t /etc/kea/kea-dhcp4.conf
+   mkdir -p /var/lib/kea
+   systemctl enable --now kea-dhcp4
+
+When a device connects, Kea logs the lease and writes it to its lease
+file (the client's MAC address is replaced here):
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# journalctl -u kea-dhcp4 | grep LEASE_ALLOC
+   ... DHCP4_LEASE_ALLOC [hwtype=1 <client MAC>], cid=[01:<client MAC>], tid=0x48bcbd2: lease 192.168.70.100 has been allocated for 3600 seconds
+   root@imx93-cargt-00363-00428:~# cat /var/lib/kea/kea-leases4.csv
+   address,hwaddr,client_id,valid_lifetime,expire,subnet_id,fqdn_fwd,fqdn_rev,hostname,state,user_context,pool_id
+   192.168.70.100,<client MAC>,01:<client MAC>,3600,1793221540,1,0,0,imx93-cargt-00363-00428,0,,0
+
+**Check the routing.** On the client, the default route over Wi-Fi points
+at the router, and pings to the internet get answers:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# ip route get 1.1.1.1 oif mlan0
+   1.1.1.1 via 192.168.70.1 dev mlan0 src 192.168.70.100 uid 0
+   root@imx93-cargt-00363-00428:~# ping -I mlan0 -c 3 1.1.1.1
+   PING 1.1.1.1 (1.1.1.1): 56 data bytes
+   64 bytes from 1.1.1.1: seq=0 ttl=56 time=5.944 ms
+   ...
+   3 packets transmitted, 3 packets received, 0% packet loss
+
+On the router, ``tcpdump`` shows the same pings on both sides: from the
+client's address on ``uap0``, and from the router's own address on ``eth0``
+after NAT:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# tcpdump -n -i uap0 icmp
+   20:05:57.963729 IP 192.168.70.100 > 1.1.1.1: ICMP echo request, id 793, seq 0, length 64
+   20:05:57.966107 IP 1.1.1.1 > 192.168.70.100: ICMP echo reply, id 793, seq 0, length 64
+   root@imx93-cargt-00363-00428:~# tcpdump -n -i eth0 icmp and host 1.1.1.1
+   20:05:57.963828 IP <eth0 address> > 1.1.1.1: ICMP echo request, id 793, seq 0, length 64
+   20:05:57.966070 IP 1.1.1.1 > <eth0 address>: ICMP echo reply, id 793, seq 0, length 64
+
+``tcpdump`` is in the package feed (``apt-get install tcpdump``).
+
+With a Wi-Fi access point as the inside network, unmanage the Wi-Fi
+interfaces you do not use on both the router and the clients (see
+`Keeping a Wi-Fi Link Up`_). In this test, their background scans caused
+up to 60% packet loss over a few seconds; with them unmanaged, there was
+none.
 
 Cellular Modems with ModemManager
 ---------------------------------
@@ -896,3 +1063,27 @@ Troubleshooting
 ``nmcli device`` shows ``unavailable`` for an Ethernet port with no cable or
 no link partner, and ``unmanaged`` for an interface NetworkManager has been
 told to ignore.
+
+Capturing Packets
+~~~~~~~~~~~~~~~~~
+
+Install ``tcpdump`` from the package feed (``apt-get install tcpdump``) and
+capture on the board, or stream the capture to Wireshark on your computer
+over SSH. ``-U -w -`` writes each packet to the SSH connection as it
+arrives, and ``not port 22`` leaves out the SSH traffic itself:
+
+.. code-block:: bash
+
+   ssh root@<board-ip> tcpdump -i uap0 -U -w - not port 22 | wireshark -k -i -
+
+The same pipe works with ``tshark -i -`` for a text view, or redirected to a
+file (``> capture.pcap``) to open later. From a Linux computer, streaming
+pings that crossed the router above:
+
+.. code-block:: text
+
+   $ ssh root@<board-ip> tcpdump -i uap0 -U -w - not port 22 | tshark -i -
+       1   0.000000 192.168.70.100 → 1.1.1.1      ICMP 98 Echo (ping) request  id=0x0339, seq=0/0, ttl=64
+       2   0.002490      1.1.1.1 → 192.168.70.100 ICMP 98 Echo (ping) reply    id=0x0339, seq=0/0, ttl=56 (request in 1)
+       3   0.991422 192.168.70.100 → 1.1.1.1      ICMP 98 Echo (ping) request  id=0x0339, seq=1/256, ttl=64
+       4   0.993351      1.1.1.1 → 192.168.70.100 ICMP 98 Echo (ping) reply    id=0x0339, seq=1/256, ttl=56 (request in 3)

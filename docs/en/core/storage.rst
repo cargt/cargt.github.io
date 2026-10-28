@@ -38,6 +38,8 @@ This gives an MBR partition table and the following layout:
      - no partition
      - Boot container (SPL, ATF, U-Boot and, on i.MX 95, OEI and System
        Manager), written raw at a 32 KiB offset (``IMX_BOOT_SEEK = "32"``).
+       UUU also writes it to the eMMC boot partition and boots from there;
+       see `eMMC Boot Partitions`_.
    * - U-Boot environment
      - 16 KiB, no partition
      - Raw at offset 0x700000 (7 MiB). See `U-Boot Environment`_.
@@ -94,8 +96,9 @@ see `The /data Partition`_.
 
 ``mmcblk0`` is the device U-Boot calls MMC 0; on most Cargt boards that is the
 eMMC, and the microSD card is ``mmcblk1``. ``mmcblk0boot0`` and
-``mmcblk0boot1`` are the eMMC hardware boot partitions. Cargt images do not
-use them, and Linux keeps them read-only by default.
+``mmcblk0boot1`` are the eMMC hardware boot partitions. When a board is
+flashed with UUU, the boot loader runs from ``mmcblk0boot0``; see
+`eMMC Boot Partitions`_. Linux keeps them read-only by default.
 
 Boot Sequence
 ~~~~~~~~~~~~~
@@ -155,6 +158,126 @@ U-Boot lists the MMC devices and the partition table with:
      1     16384           12582912        076c4a2a-01     83
      2     12599296        12582912        076c4a2a-02     83
      3     25182208        4194304         076c4a2a-03     83
+
+eMMC Boot Partitions
+~~~~~~~~~~~~~~~~~~~~
+
+Besides the user area that holds the partition table, an eMMC has two
+hardware boot partitions, ``mmcblk0boot0`` and ``mmcblk0boot1`` (31.5 MiB
+each on the 32 GB eMMC of the i.MX 93 00363). The eMMC's ``PARTITION_CONFIG``
+register tells the boot ROM which area to load the boot loader from.
+
+UUU's ``emmc_all`` script, used in :doc:`getting-started`, writes the ``.wic``
+image to the user area, writes ``imx-boot`` to boot partition 1, and then
+selects boot partition 1. These are its last steps (``uuu -bshow emmc_all``):
+
+.. code-block:: text
+
+   FB: flash -raw2sparse all _image
+   FB: flash -scanterm -scanlimited 0x800000 bootloader _flash.bin
+   FB: ucmd if env exists emmc_ack; then ; else setenv emmc_ack 0; fi;
+   FB: ucmd mmc partconf ${emmc_dev} ${emmc_ack} 1 0
+
+Check the setting from Linux with ``mmc`` from ``mmc-utils``. On an i.MX 93
+00363 on the 00428 carrier flashed with UUU:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# mmc extcsd read /dev/mmcblk0 | grep -A2 PARTITION_CONFIG
+   Boot configuration bytes [PARTITION_CONFIG: 0x08]
+    Boot Partition 1 enabled
+    No access to boot partition
+
+``mmcblk0boot0`` then holds the same boot container as the 32 KiB offset in
+the user area, and the boot ROM uses the copy in ``mmcblk0boot0``. This
+matters in two cases:
+
+- **Writing a new image from Linux.** ``bmaptool`` or ``dd`` writes the
+  ``.wic`` image to the user area only, so the board keeps running the old
+  boot loader from boot partition 1. Use UUU to update the boot loader as
+  well.
+- **Erasing the eMMC to force serial download mode.** Erasing the user area
+  does not remove the boot loader in boot partition 1, so the board still
+  boots. Change the boot switches to serial download instead (see
+  :doc:`getting-started`).
+
+Linux keeps the boot partitions read-only
+(``/sys/block/mmcblk0boot0/force_ro`` is ``1``), so they cannot be
+overwritten by accident.
+
+Updating the Boot Loader from Linux
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To replace the boot loader in boot partition 1 without UUU, write the new
+``imx-boot`` file (``tmp/deploy/images/<machine>/imx-boot`` in your build,
+not ``imx-boot.tagged``) to the start of ``mmcblk0boot0``.
+
+.. danger::
+
+   If the new boot loader is wrong or the write is interrupted, the board
+   no longer boots from eMMC. It can then only be recovered by setting the
+   boot switches to serial download and flashing it with UUU (see
+   :doc:`getting-started`). Use an ``imx-boot`` built for the same machine,
+   and do not remove power during the write.
+
+.. code-block:: bash
+
+   dd if=/dev/mmcblk0boot0 of=/data/boot0-backup.img bs=1M   # keep a copy
+   echo 0 > /sys/block/mmcblk0boot0/force_ro                 # allow writing
+   dd if=imx-boot of=/dev/mmcblk0boot0 bs=1M conv=fsync
+   echo 1 > /sys/block/mmcblk0boot0/force_ro                 # read-only again
+   cmp -n $(stat -c %s imx-boot) imx-boot /dev/mmcblk0boot0 && echo OK
+
+The new boot loader runs at the next boot. While ``force_ro`` is ``1``, a
+write fails:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# dd if=/data/boot0-backup.img of=/dev/mmcblk0boot0 bs=1M count=1
+   dd: error writing '/dev/mmcblk0boot0': Operation not permitted
+
+These steps were checked on an i.MX 93 00363 on the 00428 carrier by
+reading all of ``mmcblk0boot0`` and writing the same bytes back. The 32 MiB
+write took under half a second, and the SHA-256 checksum of the partition
+was the same before and after.
+
+Pseudo-SLC Mode
+~~~~~~~~~~~~~~~
+
+An eMMC can configure part or all of its user area as an *enhanced* area,
+which most devices implement as pseudo-SLC: each cell stores one bit
+instead of two or three. That area gets much better write endurance and
+data retention, at a fraction of the capacity.
+
+.. danger::
+
+   Configuring the enhanced area is **permanent**. The eMMC accepts its
+   partition settings only once (``PARTITION_SETTING_COMPLETED``), erases its
+   contents when they take effect, and the capacity cannot be restored.
+   Configure it on a SOM you can afford to lose first, and contact Cargt
+   before using it in production.
+
+The current settings and the largest possible enhanced area can be read
+without changing anything. On the 32 GB eMMC of an i.MX 93 00363:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# mmc extcsd read /dev/mmcblk0 | grep -E "MAX_ENH|ENH_SIZE|PARTITION_SETTING|HC_WP_GRP|HC_ERASE_GRP"
+   High-capacity erase unit size [HC_ERASE_GRP_SIZE: 0x01]
+   High-capacity W protect group size [HC_WP_GRP_SIZE: 0x10]
+   Max Enhanced Area Size [MAX_ENH_SIZE_MULT]: 0x0004cd
+   Partitioning Setting [PARTITION_SETTING_COMPLETED]: 0x00
+   Enhanced User Data Area Size [ENH_SIZE_MULT]: 0x000000
+
+``PARTITION_SETTING_COMPLETED`` and ``ENH_SIZE_MULT`` are 0: no enhanced area
+is configured. The largest possible enhanced area is
+``MAX_ENH_SIZE_MULT`` × ``HC_WP_GRP_SIZE`` × ``HC_ERASE_GRP_SIZE`` × 512 KiB,
+here 0x4cd × 16 × 1 × 512 KiB, about 9.6 GiB. Configuring the whole device
+as pseudo-SLC therefore leaves about a third of its normal capacity.
+
+``mmc enh_area set`` in ``mmc-utils`` configures the area, and the setting
+takes effect after the next power cycle. Plan the partition layout for the
+smaller capacity (see `Using a Different Layout`_).
 
 Using a Different Layout
 ~~~~~~~~~~~~~~~~~~~~~~~~
