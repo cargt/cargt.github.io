@@ -172,79 +172,117 @@ Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
       uuu -lsusb
 
    The output should list the connected device.
-#. Download the appropriate pre-compiled image from the `Cargt Package Repository Images`_.
+#. Download two files for your machine from the `Cargt Package Repository Images`_,
+   for example from ``wrynose/imx93-cargt-00363-00365/``:
 
-   - This will usually be a ``.wic`` file, possibly compressed (e.g., ``.wic.zst``).
-   - ``.wic`` is a disk image format that includes partitioning and filesystems.
-#. Use the UUU tool to flash both the bootloader and image to eMMC / SD card.
+   - ``imx-boot.tagged`` - the bootloader
+   - ``cargt-image-<type>-<machine>.rootfs.wic.zst`` - the full disk image
+     (partition table and filesystems), compressed with zstd
 
    .. note::
 
-      This will erase all existing data on the eMMC / SD card.
+      Older releases named the bootloader file ``imx-boot-tagged``. Use
+      whichever name is in the directory you downloaded from.
+
+#. Flash the bootloader and image. This erases everything on the target
+   storage.
+
+   To eMMC:
 
    .. code-block:: bash
 
-      Select the appropriate command based on your target storage:
-      uuu -b emmc_all imx-boot-tagged <image_file>.wic.zst
-      uuu -b sd_all imx-boot-tagged <image_file>.wic.zst
+      uuu -b emmc_all imx-boot.tagged cargt-image-dev-imx93-cargt-00363-00365.rootfs.wic.zst
 
-#. Reboot the board.
-
-UUU Example
-
-.. figure:: /_static/images/screenshots/img-nxp-uuu-commands.png
-   :alt: UUU commands example output
-
-   UUU commands example output
-
-Extra options for UUU:
-
-- To flash only specific partitions, use the corresponding UUU command (e.g., ``-b emmc_boot``, ``-b emmc_rootfs``).
-- For verbose output, add the ``-v`` flag to the UUU command.
-- To log the flashing process, use the ``-l <log_file>`` option.
-- To run the bootloader (SPL and U-Boot) from RAM:
+   To an SD card:
 
    .. code-block:: bash
 
-      uuu imx-boot
+      uuu -b sd_all imx-boot.tagged cargt-image-dev-imx93-cargt-00363-00365.rootfs.wic.zst
 
-- To program just the bootloader to eMMC or SD Card
+#. Power cycle the board without holding the BOOT button. If you entered
+   UUU mode by changing ``bootcmd``, restore it first (see below).
 
-   .. code-block:: bash
+Example session on Windows, flashing a board that is already in fastboot
+mode (``FB:``):
 
-      Select the appropriate command based on your target storage:
-      uuu -b emmc imx-boot
-      uuu -b sd imx-boot
+.. code-block:: text
 
-- UUU allows multiple compression formats for the ``.wic`` image files, so you can use:
+   C:\NXP\images>uuu -lsusb
+   uuu (Universal Update Utility) for nxp imx chips -- libuuu_1.5.201-0-g727fc2b
 
-   .. code-block:: bash
+   Connected Known USB Devices
+           Path     Chip    Pro     Vid     Pid     BcdVersion      Serial_no
+           ====================================================================
+           4:2              FB:     0x1FC9 0x0152   0x0221   15FD978D21EA40AF
 
-      Select the appropriate command based on your target storage:
-      uuu -b emmc_all imx-boot <image_file>.wic[.zst, .gzip, etc.]
-      uuu -b sd_all imx-boot <image_file>.wic[.zst, .gzip, etc.]
+   C:\NXP\images>uuu -b emmc_all imx-boot-tagged cargt-image-core.rootfs.wic.zst
+   uuu (Universal Update Utility) for nxp imx chips -- libuuu_1.5.201-0-g727fc2b
 
-Flashing a Pre-compiled image to eMMC using STM32Cube on an STM32MP2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Success 1    Failure 0
 
-Booting from eMMC
-~~~~~~~~~~~~~~~~~
+   4:2-15FD978D 8/ 8 [Done                                  ] FB: done
 
-Flashing a Pre-compiled image to the SD card using STM32Cube on an STM32MP2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Other UUU options:
 
-Booting from the SD card
-~~~~~~~~~~~~~~~~~~~~~~~~
+- ``-v`` prints verbose output.
+- ``-l <log_file>`` writes a log of the session.
+- ``uuu`` accepts the image uncompressed (``.wic``) or compressed
+  (``.wic.zst``, ``.wic.gz``, ``.wic.bz2``).
+- Program only the bootloader:
 
-Understanding Flash Layouts and Partitions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  .. code-block:: bash
 
-- Flash Layout Overview
-- Partition Table Examples
-- Filesystem Types
-- WIC Overview
-- Creating Custom Flash Layouts with WIC
-- Autogrow Partitions
+     uuu -b emmc imx-boot.tagged
+     uuu -b sd imx-boot.tagged
+
+- Run the bootloader (SPL and U-Boot) from RAM without writing anything:
+
+  .. code-block:: bash
+
+     uuu imx-boot
+
+.. note::
+
+   **i.MX 95:** ``uuu imx-boot`` and the built-in ``-b`` scripts stop after
+   the ROM stage on i.MX 95 and never load the SPL. Use an explicit
+   ``uuu`` script instead. Save this as ``imx95-boot.uuu``:
+
+   .. code-block:: text
+
+      uuu_version 1.5.0
+      SDPS: boot -f imx-boot
+      SDPV: write -f imx-boot -skipspl
+      SDPV: jump
+
+   and run ``uuu imx95-boot.uuu``. The console shows DDR training output
+   followed by the SPL and U-Boot banners. Verified on the 00414 SOM in
+   serial download mode (October 2026).
+
+Flashing a Pre-compiled image on an STM32MP2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Each STM32MP2 image directory on the `Cargt Package Repository Images`_
+(for example ``scarthgap/stm32mp25-cargt-00395-02-00365/``) contains
+everything needed for both boot media:
+
+- **eMMC:** flash with
+  `STM32CubeProgrammer <https://www.st.com/en/development-tools/stm32cubeprog.html>`__
+  over USB, using the ``FlashLayout_emmc_*.tsv`` flash layout from the
+  ``flashlayout_cargt-image-dev/`` directory. Use the main layout, not one of
+  the ``-glt*`` display variants.
+- **SD card:** write the ``.wic`` image from a Linux host. ``bmaptool``
+  uses the ``.wic.bmap`` file next to the image and only writes the blocks
+  that contain data:
+
+  .. code-block:: bash
+
+     bmaptool copy cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-02-00365.rootfs-<timestamp>.wic.bz2 /dev/sdX
+
+  Replace ``/dev/sdX`` with the SD card device (check with ``lsblk``).
+  Everything on the card is erased.
+
+A step-by-step STM32CubeProgrammer guide is planned. For the 00395 A/B
+partition layout, see :doc:`rauc-ota-updates`.
 
 Understanding U-Boot Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -274,6 +312,20 @@ NXP - Enter UUU mode using U-Boot Environment Variable Method
       saveenv
       printenv bootcmd  # Verify the change
       reset
+
+   .. warning::
+
+      The board now enters fastboot on **every** boot until ``bootcmd`` is
+      restored. Flashing with ``uuu`` does not necessarily reset the
+      U-Boot environment. Before changing it, note the current value with
+      ``fw_printenv bootcmd``. To restore the default afterwards, stop at
+      the U-Boot prompt and run:
+
+      .. code-block:: bash
+
+         env default bootcmd
+         saveenv
+         reset
 
 Connecting Displays on a Cargt design
 -------------------------------------
@@ -337,7 +389,7 @@ Software Configuration
 If you bought an evaluation kit with a display, the display should be pre-configured and work out of the box with the pre-compiled images from the `Cargt Package Repository Images`_.
 
 If you are using your own display, you may need to modify the device tree to configure the display correctly.
-Refer to the `Yocto Development`_ section for instructions on how to modify the device tree and build custom images with the necessary display configuration.
+Build a custom image with your device tree changes as described in the :ref:`yocto-tutorial`. A guide to customizing the device tree is planned.
 
 If you are using a display that is sold by Cargt, then the necessary device tree configuration should already be included in the pre-compiled images from the `Cargt Package Repository Images`_.
 
@@ -359,9 +411,9 @@ How to check for available device tree overlays for display support:
       /boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
       /boot/imx93-cargt-00363-00365.dtb
       # Example output - STM32MP2:
-      /boot/stm32mp257f-cargt-00395-00365v3-glt0557201280is1.dtb
-      /boot/stm32mp257f-cargt-00395-00365v3-glt1011280800is1.dtb
-      /boot/stm32mp257f-cargt-00395-00365v3.dtb
+      /boot/stm32mp257f-cargt-00395-02-00365-glt0557201280is1.dtb
+      /boot/stm32mp257f-cargt-00395-02-00365-glt1011280800is1.dtb
+      /boot/stm32mp257f-cargt-00395-02-00365.dtb
 
 
 Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot environment variable ``fdtfile`` to point to the appropriate DTB file that matches your display model.
@@ -517,12 +569,18 @@ The ``-d`` flag specifies the download option, and ``-t`` indicates a TFTP sourc
 
    Ensure the TFTP server on your host is accessible from the target device and the update file is in the TFTP server's root directory or specify the full path.
 
-SWUpdate Concepts
------------------
-- How SWUpdate Works
-- Update Script Example
-- Update Image Example
-- U-Boot Environment Hooks and Partition Management
+RAUC A/B Updates (STM32MP2)
+===========================
+
+STM32MP2 00395 designs use RAUC with a dual-bank (A/B) partition layout
+instead of SWUpdate. Updates install to the inactive bank, and a bank that
+fails to boot falls back to the previous one automatically. See
+:doc:`rauc-ota-updates`.
+
+.. toctree::
+    :hidden:
+
+    rauc-ota-updates
 
 Package Management on a Cargt design
 ====================================
@@ -618,79 +676,8 @@ Advanced
    Further information: https://docs.yoctoproject.org/ref-manual/variables.html#term-PACKAGE_FEED_ARCHS
 
 
-Updating using a downloaded to target ``.deb`` package file
------------------------------------------------------------
-
-   .. code-block:: bash
-
-      dpkg -i /<path_to_downloaded_package>/<package_file>.deb
-
-Remote Access
-=============
-
-- Reverse SSH using Teleport
-- Provisioning
-- Connecting to a Remote Device
-- Using SSH Tunnel for RDP
-
-Connectivity
-============
-
-- Bluetooth
-- NFC
-- Cellular
-
-IP Networking Examples
-======================
-
-- IP Forwarding
-- DHCP Server (dnsmasq, Kea)
-- DNS Server Examples (dnsmasq)
-- Firewall Examples (nftables)
-- Remote Packet Capture
-
-Advanced Configuration
-======================
-
-One-Time Programmable Memory with i.MX Application Processors
--------------------------------------------------------------
-
-- Setting MAC Addresses
-
-One-Time Programmable Memory for STM32 MPU Application Processors
------------------------------------------------------------------
-
-- Setting MAC Addresses
-
-Production EEPROM Programming
------------------------------
-
-- Cargt's Production EEPROM Methodology
-  - Cargt's Production EEPROM Data Structure
-- Supported SOMs
-- Supported Methods
-  - I2C via U-Boot
-  - I2C via Linux
-- Using Cargt's Production EEPROM Tools
-- Limiting RAM size for testing
-
-eMMC
-----
-
-- Boot Partition Management
-- Pseudo-SLC for eMMC
-
 Advanced Development
 ====================
-
-Debugging with Lauterbach
--------------------------
-
-Java Enablement on i.MX
------------------------
-
-Network Booting using NFS and TFTP in U-Boot
---------------------------------------------
 
 Real-Time Linux (PREEMPT_RT)
 ----------------------------
@@ -704,61 +691,10 @@ measure latency and tune a system for deterministic applications.
 
     real-time-linux
 
-Secure Boot (AHAB) with i.MX 93
-===============================
-
-- Overview of Secure Boot
-- Generating Keys and Certificates
-- Signing Images with the Code Signing Tool (CST)
-- Programming Keys using One-Time Programmable Memory
-- Configuring U-Boot and Linux for Secure Boot
-
 .. _yocto-development:
 
 Yocto Development
 =================
-
-Development Guides
-------------------
-
-- Layers, Recipes, Machines, Distros
-- Adding a New Machine
-- Changes in Meta Layer, U-Boot, Linux, SWUpdate
-- Using VSCode on the Host with Remote-SSH Extension
-
-Using bitbake
--------------
-
-- Building Packages & Images
-- Intermediate Commands: ``listtasks``, ``clean``, ``cleansstate``, ``menuconfig``, ``do_configure``, ``do_deploy``
-
-Using devtool
--------------
-
-- Modify Existing Recipe (``modify``)
-- Add New Recipe (``add``)
-  - CMake Example
-  - Python Example
-  - NodeJS Example
-- Upgrade Recipe (``upgrade``)
-- Build on Host (``build``)
-- Test on Target (``deploy-target``, ``undeploy-target``)
-- Update Meta Layers (``finish``)
-- Other devtool Commands (``reset``, ``status``, ``menuconfig``, ``find-recipe``, ``edit-recipe``, ``ide-sdk``)
-
-Image Customization
--------------------
-
-- Adding/Removing Packages
-- Customizing Bootloader
-- Customizing Kernel
-  - Adding Kernel Modules
-  - Applying Kernel Patches
-  - Configuring Kernel Options
-- Customizing SWUpdate
-- Customizing Device Tree
-- Creating Custom Images
-- Adding systemd Services
 
 SBOM Generation
 ---------------
@@ -973,11 +909,11 @@ After accepting the EULA, you should see configuration details similar to this:
 
       DISTRO            :  cargt-openstlinux-weston
       DISTRO_CODENAME   :  scarthgap
-      MACHINE           :  stm32mp25-cargt-00395-00365v3
+      MACHINE           :  stm32mp25-cargt-00395-02-00365
       BB_NUMBER_THREADS :  <no-custom-config-set>
       PARALLEL_MAKE     :  <no-custom-config-set>
 
-      BUILDDIR          :  build-cargtopenstlinuxweston-stm32mp25-cargt-00395-00365v3
+      BUILDDIR          :  build-cargtopenstlinuxweston-stm32mp25-cargt-00395-02-00365
       DOWNLOAD_DIR      :  <disable>
       SSTATE_DIR        :  <disable>
 
@@ -1113,10 +1049,43 @@ Thermal Characterization
 Will your product need a heatsink? :doc:`thermal-characterization` gives the
 warmest air each Cargt SOM can run in for a range of loads, CPU frequency caps
 and cooling options, in open air and in a sealed enclosure. Results are
-available for the 00414 i.MX 95; the 00377 i.MX 8M Plus and 00363 i.MX 93
-follow.
+available for the 00414 i.MX 95 and the 00377 i.MX 8M Plus; the 00363
+i.MX 93 follows.
 
 .. toctree::
     :hidden:
 
     thermal-characterization
+
+.. _planned-topics:
+
+Planned Topics
+==============
+
+These guides are being written. `Contact Cargt <https://www.cargt.com/>`__
+if you need one of them sooner.
+
+- **Flashing and boot:** step-by-step STM32CubeProgrammer flashing, flash
+  layouts and partition tables, WIC files and custom layouts, partition
+  auto-grow on first boot
+- **SWUpdate internals:** how SWUpdate works, update scripts and images,
+  U-Boot environment hooks and partition switching
+- **Remote access:** reverse SSH with Teleport, provisioning, connecting to
+  a remote device, SSH tunnels for RDP
+- **Connectivity:** Bluetooth, NFC, cellular
+- **IP networking:** IP forwarding, DHCP (dnsmasq, Kea), DNS (dnsmasq),
+  firewalls (nftables), remote packet capture
+- **Production configuration:** setting MAC addresses in one-time
+  programmable memory (i.MX and STM32MP2), Cargt production EEPROM format and
+  tools (from U-Boot and Linux), limiting RAM size for testing, eMMC boot
+  partitions and pseudo-SLC mode
+- **Debug and development:** debugging with Lauterbach, Java on i.MX,
+  network boot with NFS and TFTP
+- **Secure boot (AHAB) on i.MX 93:** keys and certificates, signing with the
+  NXP Code Signing Tool, fusing keys, U-Boot and Linux configuration
+- **Yocto development:** layers, recipes, machines and distros; adding a
+  machine; bitbake tasks (``listtasks``, ``clean``, ``cleansstate``,
+  ``menuconfig``); devtool (``modify``, ``add``, ``upgrade``,
+  ``deploy-target``, ``finish``, ``ide-sdk``); customizing packages,
+  bootloader, kernel, device tree and SWUpdate; custom images; systemd
+  services; VS Code Remote-SSH

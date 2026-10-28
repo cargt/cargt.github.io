@@ -1,4 +1,8 @@
+# Sphinx / ESP-Docs build output
+_build/
 docs/_site
-docs/_build
-docs/venv
-temp/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
