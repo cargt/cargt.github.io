@@ -23,8 +23,8 @@ without the processor reaching its design limit.
        stress, application and NPU loads
    * - :ref:`00377 <00377>`
      - i.MX 8M Plus
-     - Tested: open air, no heatsink, stress, application and NPU loads.
-       Enclosure testing in progress
+     - Tested: open air and enclosure, no heatsink, stress, application and
+       NPU loads. Passive heatsink testing planned
    * - :ref:`00363-93 <00363-93>`
      - i.MX 93
      - Planned
@@ -91,6 +91,11 @@ For the i.MX 8M Plus (00377):
   memory load it rises 33 °C above the room, against 58 °C for the i.MX 95
   without a heatsink, so it allows 7–15 °C warmer air despite its lower
   design limit.
+- **In a sealed plastic enclosure, it needs no heatsink unless the NPU runs
+  flat out with everything else.** Without the NPU, every load allows at
+  least 42 °C room air; a touchscreen UI with video allows 51 °C. With CPU,
+  GPU, memory and NPU all fully loaded it allows 35 °C at 1.6 GHz and 39 °C
+  at 1.2 GHz.
 - **The NPU is again the largest single heat source**, adding 7–10 °C of ΔT.
 
 i.MX 95 (00414) results
@@ -388,8 +393,9 @@ Test setup
    :widths: 25 75
 
    * - Hardware
-     - 00377 i.MX 8M Plus OSM-L SOM on the 00365 carrier board, open air on a
-       desk, no heatsink. For the UI and video tests the HDMI output was
+     - 00377 i.MX 8M Plus OSM-L SOM on the 00365 carrier board, no
+       heatsink, in open air on a desk and in a sealed Polycase WA-42*16
+       plastic enclosure. For the UI and video tests the HDMI output was
        enabled with no monitor connected.
    * - Software
      - Cargt Linux BSP (NXP lf-6.18.20). CPU governor: performance for the
@@ -401,7 +407,8 @@ Test setup
      - The higher of the i.MX 8M Plus CPU and SoC thermal sensors, which
        report whole degrees
    * - Ambient
-     - A Dracal USB-PTH450 sensor in the room, 22–23 °C
+     - A Dracal USB-PTH450 sensor in the room, 22–24 °C. In the enclosure, a
+       second sensor measured the air inside it.
 
 The loads are those used for the i.MX 95, with the NPU loads running on the
 VIP8000 NPU through the TensorFlow Lite VX delegate. Every test ran to a
@@ -499,6 +506,93 @@ Open air, no heatsink
 - **The governor makes no difference:** ondemand and performance give the
   same temperature within 0.3 °C at the same cap and load.
 
+Enclosure, no heatsink
+~~~~~~~~~~~~~~~~~~~~~~
+
+The same loads inside the sealed enclosure. ΔT is still measured against the
+room air outside the enclosure. Each test ran about 40 minutes to settle.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 10 14 12 34
+
+   * - Load
+     - CPU cap MHz
+     - ΔT °C (open air → enclosure)
+     - Max ambient
+     - Performance
+   * - CPU + GPU + memory + NPU
+     - 1600
+     - 40.4 → 50.3
+     - **35 °C**
+     - 211 inferences/s, CPU 22 ops/s, GPU 15 fps
+   * - CPU + GPU + memory + NPU
+     - 1200
+     - 45.5
+     - **39 °C**
+     - 207 inferences/s, CPU −20 %, GPU 14 fps
+   * - CPU + GPU + memory
+     - 1600
+     - 33.4 → 42.7
+     - **42 °C**
+     - CPU 25 ops/s, GPU 17 fps
+   * - CPU + GPU + memory
+     - 1200
+     - 29.6 → 38.4
+     - 47 °C
+     - CPU −20 %, GPU unchanged
+   * - CPU, all cores
+     - 1600
+     - 30.6 → 37.1
+     - 48 °C
+     - 51 ops/s
+   * - CPU, all cores
+     - 1200
+     - 25.8 → 31.4
+     - 54 °C
+     - 40 ops/s (−22 %)
+   * - Image classification on the NPU
+     - 1600
+     - 29.0 → 37.1
+     - 48 °C
+     - 288 inferences/s
+   * - Touchscreen UI + 1080p30 video
+     - 1600
+     - 25.3 → 33.7
+     - 51 °C
+     - UI 32 fps, video 30 fps
+   * - GPU only
+     - 1600
+     - 25.1 → 33.2
+     - 52 °C
+     - 19 fps
+   * - CPU at 50 %
+     - 1600
+     - 25.2 → 30.6
+     - 54 °C
+     - –
+   * - 1080p30 video playback
+     - 1600
+     - 18.7 → 25.4
+     - 60 °C
+     - 30 fps
+   * - Idle
+     - 1600
+     - 18–19 → 24.0
+     - 61 °C
+     - –
+
+- **No test throttled.** The hottest die reading was 76 °C, with everything
+  loaded at 1600 MHz: 9 °C under the design limit.
+- **The enclosure costs 5–10 °C of ambient:** about 5 °C at idle and under
+  light loads, 8–10 °C under heavy ones. The air inside the enclosure ran
+  3–7 °C above the room.
+- **Only the NPU worst case may need a heatsink.** CPU, GPU, memory and NPU
+  all fully loaded allow 35 °C room air at 1600 MHz. Capping the CPU at
+  1200 MHz raises that to 39 °C, at a cost of 20 % of CPU throughput; the NPU
+  rate is unchanged. For warmer rooms this case needs a heatsink.
+
 Choosing cooling for your product
 ---------------------------------
 
@@ -507,7 +601,7 @@ To estimate the cooling a product needs:
 1. Find the row closest to your product's load and CPU frequency cap.
 2. Take the maximum ambient for your environment and cooling.
 3. Compare it with the warmest air your product will see. Allow for the
-   inside of your enclosure being warmer than the room: 3–5 °C in the sealed
+   inside of your enclosure being warmer than the room: 3–7 °C in the sealed
    enclosure tested here.
 
 For example, an indoor i.MX 95 product in a sealed plastic enclosure, with
