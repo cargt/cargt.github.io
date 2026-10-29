@@ -1221,3 +1221,220 @@ Enclosure (Polycase WA Series WA-42\*16), no heatsink
      - 35
      - 1600, 89 / –
      - cpu 22 ops/s, vm 15387 ops/s, glmark2 15 fps, NPU 211 inferences/s
+
+
+i.MX 93 (00363)
+---------------
+
+
+Open air, no heatsink
+~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load)
+     - – / –
+     - 20
+     - 22.7
+     - 35.4 / 36.4
+     - 12.8
+     - 72
+     - –, 3 / –
+     - –
+   * - Idle (no load)
+     - – / –
+     - 20
+     - 23.0
+     - 35.8 / 36.9
+     - 12.8
+     - 72
+     - –, 3 / –
+     - –
+   * - CPU, all cores at 50%
+     - – / –
+     - 20
+     - 22.9
+     - 39.3 / 41.9
+     - 16.5
+     - 69
+     - –, 54 / –
+     - cpu 16 ops/s
+   * - CPU, all cores (matrixprod)
+     - – / –
+     - 20
+     - 22.9
+     - 42.3 / 42.9
+     - 19.3
+     - 66
+     - –, 100 / –
+     - cpu 29 ops/s
+   * - CPU, all cores (matrixprod)
+     - – / –
+     - 20
+     - 22.6
+     - 42.1 / 42.4
+     - 19.5
+     - 65
+     - –, 100 / –
+     - cpu 29 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 23.0
+     - 43.3 / 43.9
+     - 20.3
+     - 65
+     - –, 100 / –
+     - cpu 14 ops/s, vm 18667 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 22.9
+     - 43.3 / 44.4
+     - 20.4
+     - 65
+     - –, 100 / –
+     - cpu 14 ops/s, vm 18743 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 22.7
+     - 43.4 / 44.4
+     - 20.7
+     - 64
+     - –, 100 / –
+     - cpu 14 ops/s, vm 18769 ops/s
+   * - Chromium kiosk HMI (charts at 60 fps)
+     - – / –
+     - 20
+     - 22.5
+     - 42.5 / 43.4
+     - 20.0
+     - 65
+     - –, 83 / –
+     - UI 13 fps
+
+
+Enclosure (Polycase WA Series WA-42\*16), no heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C) / enclosure air
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load)
+     - – / –
+     - 41
+     - 23.1 / 24.6
+     - 39.1 / 40.4
+     - 16.1
+     - 69
+     - –, 4 / –
+     - –
+   * - CPU, all cores at 50%
+     - – / –
+     - 40
+     - 23.1 / 25.0
+     - 42.7 / 44.9
+     - 19.7
+     - 65
+     - –, 54 / –
+     - cpu 15 ops/s
+   * - CPU, all cores (matrixprod)
+     - – / –
+     - 40
+     - 23.4 / 25.4
+     - 45.9 / 46.4
+     - 22.5
+     - 63
+     - –, 100 / –
+     - cpu 28 ops/s
+   * - CPU + memory
+     - – / –
+     - 40
+     - 23.3 / 25.6
+     - 47.2 / 47.9
+     - 23.9
+     - 61
+     - –, 100 / –
+     - cpu 13 ops/s, vm 18305 ops/s
+   * - CPU + memory
+     - – / –
+     - 41
+     - 23.4 / 26.0
+     - 47.4 / 48.4
+     - 24.0
+     - 61
+     - –, 100 / –
+     - cpu 13 ops/s, vm 18477 ops/s
+   * - Chromium kiosk HMI (charts at 60 fps)
+     - – / –
+     - 40
+     - 23.5 / 25.8
+     - 46.7 / 47.4
+     - 23.2
+     - 62
+     - –, 85 / –
+     - UI 12 fps
+
+
+Throttle tests (throttle point lowered): open air, no heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Throttle point (°C)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - CPU + memory
+     - – / –
+     - 42
+     - 20
+     - 22.9
+     - 41.0 / 42.9
+     - 18.1
+     - throttled after 16 s (60 %)
+     - –, 100 / –
+     - cpu 12 ops/s, vm 15252 ops/s
+   * - CPU + memory
+     - – / –
+     - 39
+     - 20
+     - 22.8
+     - 39.4 / 41.4
+     - 16.6
+     - throttled after 4 s (100 %)
+     - –, 100 / –
+     - cpu 10 ops/s, vm 13425 ops/s

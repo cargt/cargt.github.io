@@ -1049,8 +1049,8 @@ Thermal Characterization
 Will your product need a heatsink? :doc:`thermal-characterization` gives the
 warmest air each Cargt SOM can run in for a range of loads, CPU frequency caps
 and cooling options, in open air and in a sealed enclosure. Results are
-available for the 00414 i.MX 95 and the 00377 i.MX 8M Plus; the 00363
-i.MX 93 follows.
+available for the 00414 i.MX 95, the 00377 i.MX 8M Plus and the 00363
+i.MX 93.
 
 .. toctree::
     :hidden:

@@ -27,7 +27,8 @@ without the processor reaching its design limit.
        NPU loads. Passive heatsink testing planned
    * - :ref:`00363-93 <00363-93>`
      - i.MX 93
-     - Planned
+     - Tested: open air and enclosure, no heatsink, stress and application
+       loads. NPU testing planned
 
 Results for each SOM are added here as testing completes. Every test, with
 its full measurements, is listed in :doc:`thermal-test-data`.
@@ -48,7 +49,7 @@ The **design limit** is 10 °C below the temperature at which the processor
 starts to throttle (its passive trip point). Below it, the SOM runs at full
 speed with margin to spare. For the i.MX 95 the passive trip is 105 °C, so
 the design limit is **95 °C**. For the i.MX 8M Plus the passive trip is
-95 °C, so the design limit is **85 °C**.
+95 °C, so the design limit is **85 °C**, and the same holds for the i.MX 93.
 
 .. note::
 
@@ -97,6 +98,16 @@ For the i.MX 8M Plus (00377):
   GPU, memory and NPU all fully loaded it allows 35 °C at 1.6 GHz and 39 °C
   at 1.2 GHz.
 - **The NPU is again the largest single heat source**, adding 7–10 °C of ΔT.
+
+For the i.MX 93 (00363):
+
+- **It needs no heatsink, in open air or in a sealed plastic enclosure.**
+  Under full CPU and memory load it rises only 20 °C above the room in open
+  air and 24 °C in the enclosure, so it allows 64 °C and 61 °C room air.
+- **It runs much cooler than the i.MX 8M Plus**: with all CPU cores loaded it
+  rises 19 °C above the room, against 31 °C for the i.MX 8M Plus at 1.6 GHz.
+- **The enclosure costs only about 3 °C of ambient.** The air inside it ran
+  2–3 °C above the room.
 
 i.MX 95 (00414) results
 -----------------------
@@ -593,6 +604,86 @@ room air outside the enclosure. Each test ran about 40 minutes to settle.
   1200 MHz raises that to 39 °C, at a cost of 20 % of CPU throughput; the NPU
   rate is unchanged. For warmer rooms this case needs a heatsink.
 
+i.MX 93 (00363) results
+-----------------------
+
+Test setup
+~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :widths: 25 75
+
+   * - Hardware
+     - 00363 i.MX 93 OSM-L SOM on the 00365 carrier board, no heatsink, in
+       open air on a desk and in the same sealed Polycase WA-42*16 enclosure,
+       mounted as the i.MX 8M Plus was. The display output was enabled with
+       no panel connected.
+   * - Software
+     - Cargt Linux BSP (NXP lf-6.18.20)
+   * - CPU frequency
+     - The two Cortex-A55 cores run at a fixed 1.7 GHz; the i.MX 93 has no
+       CPU frequency levels to cap or governor to choose. It has no 3D GPU or
+       video decoder, so the touchscreen UI is drawn by the CPU and there are
+       no GPU or video tests.
+   * - Die temperature
+     - The i.MX 93 CPU thermal sensor
+   * - Ambient
+     - A Dracal USB-PTH450 sensor in the room, 22–24 °C. In the enclosure, a
+       second sensor measured the air inside it.
+
+The loads are those used for the other SOMs, without the GPU. Every test ran
+to a steady die temperature and none throttled. The open-air tests of CPU and
+memory, all CPU cores and idle were repeated two or three times; repeats
+agreed within 0.5 °C, and the tables give their mean. NPU tests on the
+Ethos-U65 are planned.
+
+.. list-table:: Open air and enclosure, no heatsink
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 16 16 16 22
+
+   * - Load
+     - ΔT °C (open air → enclosure)
+     - Max ambient, open air
+     - Max ambient, enclosure
+     - Performance (open air → enclosure)
+   * - CPU + memory
+     - 20.5 → 24.0
+     - **64 °C**
+     - **61 °C**
+     - CPU 14 → 13 ops/s, memory 18,700 → 18,400 ops/s
+   * - CPU, all cores
+     - 19.4 → 22.5
+     - 66 °C
+     - 63 °C
+     - 29 → 28 ops/s
+   * - Touchscreen UI (drawn by the CPU)
+     - 20.0 → 23.2
+     - 65 °C
+     - 62 °C
+     - 13 → 12 fps
+   * - CPU at 50 %
+     - 16.5 → 19.7
+     - 69 °C
+     - 65 °C
+     - –
+   * - Idle
+     - 12.8 → 16.1
+     - 72 °C
+     - 69 °C
+     - –
+
+- **No heatsink is needed** in open air or in the enclosure: the hottest die
+  reading in any test was 48 °C, 37 °C under the design limit.
+- **The enclosure costs about 3 °C of ambient.** The air inside it ran
+  1.6 °C above the room at idle and 2.6 °C at full load.
+- **The touchscreen UI loads the CPU almost fully**, because the i.MX 93 has
+  no 3D GPU: it runs about as warm as the CPU stress test, at 12–13 fps.
+- **Throttling works as on the other SOMs.** With the throttle point lowered
+  to test it, the kernel held the die at the throttle point by idling the
+  CPU, at a cost of 18–30 % of CPU throughput.
+
 Choosing cooling for your product
 ---------------------------------
 
@@ -601,7 +692,7 @@ To estimate the cooling a product needs:
 1. Find the row closest to your product's load and CPU frequency cap.
 2. Take the maximum ambient for your environment and cooling.
 3. Compare it with the warmest air your product will see. Allow for the
-   inside of your enclosure being warmer than the room: 3–7 °C in the sealed
+   inside of your enclosure being warmer than the room: 2–7 °C in the sealed
    enclosure tested here.
 
 For example, an indoor i.MX 95 product in a sealed plastic enclosure, with
