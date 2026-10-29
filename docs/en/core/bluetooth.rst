@@ -223,19 +223,6 @@ characteristics require encryption), use an agent and ``pair``:
 ``agent NoInputNoOutput`` selects "just works" pairing for devices without
 a display or keyboard; use ``agent KeyboardDisplay`` to confirm passkeys.
 
-.. warning::
-
-   LE pairing does not complete on Cargt images published on or before
-   October 29, 2026. ``pair`` connects, but the kernel never starts the pairing
-   exchange and logs ``Bluetooth: hci0: security requested but not
-   available``; ``bluetoothctl`` reports
-   ``Failed to pair: org.bluez.Error.AuthenticationCanceled``. Connections
-   and GATT access that do not need encryption, as in the example above,
-   work; characteristics that require encryption fail with
-   ``Insufficient Encryption``. Cargt has fixed this in the BSP, and pairing
-   works in both directions on the fixed builds, but the fix is not yet in
-   the published images.
-
 Debugging with btmon
 --------------------
 

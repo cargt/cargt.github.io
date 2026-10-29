@@ -438,24 +438,7 @@ starts its own dnsmasq instance to hand out addresses and answer DNS on that
 port, and routes the devices on it to the board's other connections through
 NAT.
 
-Images published on or before October 29, 2026 also enable a standalone
-``dnsmasq`` service, which by default only forwards DNS queries for the board itself.
-It listens on DNS port 53 on every address, so NetworkManager's dnsmasq
-cannot start while it runs, and the connection fails with this in
-``journalctl -u NetworkManager``:
-
-.. code-block:: text
-
-   dnsmasq: failed to create listening socket for 192.168.50.1: Address already in use
-
-On those images, stop and disable the standalone service first (newer Cargt
-BSP builds leave it disabled):
-
-.. code-block:: bash
-
-   systemctl disable --now dnsmasq
-
-Then create the shared connection:
+Create the shared connection:
 
 .. code-block:: bash
 
@@ -469,26 +452,6 @@ Devices on ``eth1`` get addresses from ``192.168.50.10`` to
 ``192.168.50.254`` (one-hour leases) and use ``192.168.50.1`` as their
 gateway and DNS server. Without ``ipv4.addresses``, NetworkManager uses
 ``10.42.0.1/24``.
-
-.. _nat-kernel-options:
-
-.. warning::
-
-   Cargt i.MX images published on or before October 29, 2026 (wrynose)
-   build the kernel without ``CONFIG_NFT_REJECT``, which NetworkManager's NAT rules
-   need. Cargt has fixed this in the BSP, but the fix is not yet in the
-   published images.
-   Shared mode still gives the port its address and runs the DHCP and DNS
-   server, so devices on it can reach the board, but they cannot reach the
-   network beyond it. NetworkManager logs
-   ``firewall: nft ... Error: Could not process rule`` when this happens.
-   To get NAT on those images, add these options to the kernel in your layer
-   with a configuration fragment:
-
-   .. code-block:: text
-
-      CONFIG_NFT_REJECT=m
-      CONFIG_NFT_REJECT_INET=m
 
 To set extra dnsmasq options for shared connections, such as a fixed
 address for one device, add a file in
@@ -538,9 +501,7 @@ Routing with nftables and Kea
 
 To write your own firewall rules, or to use the ISC Kea DHCP server, give
 the inside port a static address with NetworkManager and set up forwarding,
-NAT and DHCP yourself. Masquerading with your own nftables rules does not
-need ``CONFIG_NFT_REJECT``, so it also works on images where shared mode
-cannot route (see the warning above).
+NAT and DHCP yourself.
 
 The example below is from an i.MX 93 00363 on the 00428 carrier with
 ``cargt-image-dev`` (wrynose). The board has one Ethernet port, so the inside
@@ -798,13 +759,9 @@ modules, run the access point on ``uap0``, the driver's access point
 interface, rather than on ``mlan0``, the client interface.
 
 ``ipv4.method shared`` makes NetworkManager give ``uap0`` an address and
-run a DHCP and DNS server for the devices that connect. As for Ethernet
-shared mode, stop the standalone ``dnsmasq`` service first on images that
-enable it:
+run a DHCP and DNS server for the devices that connect:
 
 .. code-block:: bash
-
-   systemctl disable --now dnsmasq
 
    nmcli connection add type wifi ifname uap0 con-name cargt-ap \
        ssid my-device-setup mode ap \
@@ -820,13 +777,7 @@ The access point starts at boot from then on.
 
 .. note::
 
-   Use 2.4 GHz for the access point on current Cargt images. Their
-   regulatory domain is the world default (``iw reg get`` shows
-   ``country 00``), which does not allow an access point on 5 GHz. With
-   ``wifi.band a`` and ``wifi.channel 36``, the activation fails, and the
-   log shows ``uap0: Failed to start AP functionality``. ``iw reg set``
-   does not change the domain on the IW612; the country has to be set in
-   the Wi-Fi driver's configuration.
+   Use 2.4 GHz (``wifi.band bg``) for the access point.
 
 Checking it, on an i.MX 93 00363 with an IW612 on the 00365 carrier:
 
@@ -891,10 +842,7 @@ they were given:
    root@imx93-cargt-00363-00428:~# cat /var/lib/NetworkManager/dnsmasq-uap0.leases
    1793130843 00:11:22:33:44:55 192.168.60.149 imx93-cargt-00363-00428 01:00:11:22:33:44:55
 
-Devices on the access point can reach the board. Reaching the network
-beyond the board through NAT needs the kernel options in the
-:ref:`warning above <nat-kernel-options>`; without them, the client above
-could ping ``192.168.60.1`` but not addresses beyond the board.
+Devices on the access point can reach the board.
 
 To stop the access point, or remove it:
 
