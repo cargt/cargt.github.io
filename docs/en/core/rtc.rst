@@ -32,6 +32,15 @@ These boards have two RTCs:
      - Runs only while the board has power, so it starts at 1970 after
        every power-up. It has a wake alarm; see `Waking from Suspend`_.
 
+The two RTCs are there because of power. Keeping the i.MX's internal RTC
+running while the board is off would mean powering the processor's
+battery-backed domain from the backup battery, which draws far more than a
+dedicated RTC chip. The Epson RX8111 keeps time on about 100 nA (typical,
+from its datasheet), so a small backup battery lasts for years. Cargt boards
+therefore keep the time in the RX8111 while the board is off, and run the
+internal RTC only while the board has power, where its wake alarm is still
+useful.
+
 .. code-block:: text
 
    root@imx93-cargt-00363-00428:~# for r in /sys/class/rtc/rtc*; do echo "$(basename $r): $(cat $r/name)"; done

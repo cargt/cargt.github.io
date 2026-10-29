@@ -165,10 +165,11 @@ engine) and ``waylandsink`` (display through Weston).
 
 .. note::
 
-   - Do not set a ``framerate`` in the caps after ``libcamerasrc``. The
-     camera runs at 60 fps at 1920x1080, and with
-     ``framerate=30/1`` the pipeline stalls without an error and writes
-     nothing.
+   - Do not set a ``framerate`` in the caps right after ``libcamerasrc``.
+     At 1920x1080 the OS08A20 driver supports only about 49 to 69 fps, so
+     ``framerate=30/1`` cannot be negotiated: the pipeline stalls without
+     an error and writes nothing. For a lower rate, drop frames with
+     ``videorate`` (see `Recording H.264 Video`_).
    - ``libcamerasrc`` has no ``num-buffers`` property. To stop after a
      number of frames, add ``identity eos-after=<frames>``; to stop a
      running pipeline cleanly, run ``gst-launch-1.0`` with ``-e`` and press
@@ -184,6 +185,13 @@ From a shell on the board (over SSH or the serial console), point
 
    export LIBCAMERA_PIPELINES_MATCH_LIST=nxp/neo WAYLAND_DISPLAY=/run/wayland-0
    gst-launch-1.0 libcamerasrc ! video/x-raw,width=1920,height=1080,format=NV12 ! waylandsink
+
+.. figure:: /_static/images/cameras/img-camera-weston-preview.jpg
+   :width: 90%
+   :alt: Weston screenshot of the 10.1-inch panel showing the camera preview of a Cargt cap on baseballs, letterboxed below the panel bar
+
+   The preview on the 10.1" LVDS panel (a Weston screenshot). The 16:9 video
+   is letterboxed on the 1280x800 panel.
 
 To see the frame rate, use ``fpsdisplaysink`` around the sink:
 
@@ -231,6 +239,13 @@ Each 1920x1080 JPEG is about 115 KB. The JPEG encoder does not keep up with
 all 60 frames per second, so libcamera logs ``frame loss!`` warnings; this
 does not matter for snapshots.
 
+.. figure:: /_static/images/cameras/img-camera-jpeg-snapshot.jpg
+   :width: 90%
+   :alt: JPEG snapshot from the OS08A20 through the NEO ISP, showing a Cargt cap on baseballs in a blue bucket
+
+   One of the snapshots, processed by the NEO ISP (scaled down for this
+   page).
+
 To rotate an upside-down image, add ``imxvideoconvert_g2d
 rotation=rotate-180`` before the encoder. With G2D, 120 rotated frames were
 encoded in 2.2 seconds, about 56 fps; rotating with ``videoflip`` on the CPU
@@ -267,7 +282,16 @@ An 11-second recording gave a 14.7 MB file:
          Height: 1080
          Frame rate: 4900/81
 
-``4900/81`` is about 60.5 fps, the camera's rate. For H.265, use
+``4900/81`` is about 60.5 fps, the camera's rate. To record at 30 fps, let
+the camera run at its own rate and drop frames with ``videorate``:
+
+.. code-block:: bash
+
+   gst-launch-1.0 -e libcamerasrc ! video/x-raw,format=NV12,width=1920,height=1080 ! \
+       videorate ! video/x-raw,framerate=30/1 ! queue ! \
+       v4l2h264enc ! h264parse ! mp4mux ! filesink location=video.mp4
+
+The recorded file reports ``framerate=(fraction)30/1``. For H.265, use
 ``v4l2h265enc ! h265parse`` instead; a 7.4-second H.265 recording was
 10.1 MB.
 
