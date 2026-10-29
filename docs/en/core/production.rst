@@ -15,7 +15,9 @@ works for every memory option of a SOM.
 Record Format
 ~~~~~~~~~~~~~
 
-The record starts at offset 0. Multi-byte fields are big-endian.
+The record starts at offset 0 and is 48 bytes long. Multi-byte fields are
+big-endian. Cargt production programs version 2 records, with the reserved
+bytes set to 0.
 
 .. list-table::
    :class: wrap-cells
@@ -138,9 +140,12 @@ How the DRAM Fields Are Used
    random crashes under load rather than a clean boot failure. If you think
    a SOM's EEPROM is wrong, contact Cargt.
 
-``cargt_eeprom setrank <1|2>`` rewrites the DRAM rank field and the CRC. It
-is a repair tool for SOMs programmed with the wrong rank count; use it only
-when Cargt asks you to.
+If the EEPROM is blank or its CRC is wrong, SPL assumes one rank. A version
+1 record, or a version 2 record with a rank of 0, is treated as two ranks.
+
+``cargt_eeprom setrank <1|2>`` rewrites the DRAM rank field and the CRC, and
+updates a version 1 record to version 2. It is a repair tool for SOMs
+programmed with the wrong rank count; use it only when Cargt asks you to.
 
 .. _mac-addresses:
 
