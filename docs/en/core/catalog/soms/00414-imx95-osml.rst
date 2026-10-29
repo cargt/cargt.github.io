@@ -16,12 +16,109 @@
 .. thumbnail:: /_static/images/photos/soms/00414-1.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX 95 OSM-L - top
+   :title: 00414 i.MX 95 OSM-L - top (render)
 
 .. thumbnail:: /_static/images/photos/soms/00414-2.png
    :group: 00414
    :width: 45%
-   :title: 00414 i.MX 95 OSM-L - bottom
+   :title: 00414 i.MX 95 OSM-L - bottom (render)
+
+Software Releases
+------------------
+
+See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases.
+
+.. grid:: 1 2 2 2
+    :gutter: 2
+
+    .. grid-item-card:: Yocto
+
+        wrynose (kernel 6.18.20)
+
+        :bdg-success:`New designs`
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 25 35 20 20
+
+   * - Release
+     - Machine
+     - Packages
+     - Pre-built Images
+   * - wrynose (kernel 6.18.20)
+     - ``imx95-cargt-00414-00365``
+     - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx95_cargt_00414_00365/>`__
+     - `Images <https://yocto.cargt.com/images/wrynose/imx95-cargt-00414-00365/>`__
+   * - wrynose (kernel 6.18.20)
+     - ``imx95-cargt-00414-00428``
+     - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx95_cargt_00414_00428/>`__
+     - `Images <https://yocto.cargt.com/images/wrynose/imx95-cargt-00414-00428/>`__
+
+A real-time (``PREEMPT_RT``) build is also available for the 00414:
+`pre-built RT images <https://yocto.cargt.com/images/wrynose-rt/>`__. See
+:doc:`/core/real-time-linux` to build and tune it.
+
+Tested Interfaces
+------------------
+
+Results for the 00414 (2 GB) on the 00365 carrier with ``cargt-image-dev``,
+wrynose, October 2026.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 25 75
+
+   * - Interface
+     - Result
+   * - eMMC
+     - Boots from eMMC. HS400ES, 200 MHz, 8-bit.
+   * - microSD
+     - Boots from microSD. Read/write with checksum verification, about
+       19 MB/s write and 17 MB/s read. The 00365 limits the slot to 3.3 V
+       high speed (50 MHz) for signal integrity.
+   * - Ethernet ETH_A, ETH_B
+     - 1 Gb/s link on both ports. ``iperf3``: 941 Mb/s each way and
+       940 + 940 Mb/s bidirectional, 0 errors.
+   * - CAN_A, CAN_B
+     - Port-to-port loopback at 250 kbit/s, 500 kbit/s and 1 Mbit/s,
+       20,000 frames each way, 0 lost. Note that ``can0`` is CAN_B and
+       ``can1`` is CAN_A.
+   * - USB-C (OSM USB_C)
+     - Host, SuperSpeed (5 Gb/s) in both plug orientations, about 122 MB/s
+       read from a USB 3 drive.
+   * - Cameras
+     - OS08A20 on CSI-1 and CSI-2, 1920×1080 through the NEO ISP; both
+       cameras at once at about 29.5 fps each; 3840×2160 at 29.6 fps. CSI-2
+       shares its PHY with the DSI display connector, so the two cannot be
+       used together.
+   * - Display
+     - 10.1" LVDS (GLT1011280800IS1) with touch.
+
+Checking USB-C SuperSpeed and plug orientation:
+
+.. code-block:: bash
+
+   lsusb -t                                   # device on bus 2 at 5000M
+   cat /sys/class/typec/port1/orientation
+   dd if=/dev/sda of=/dev/null bs=1M count=1024 iflag=direct
+
+Streaming a camera full screen through the ISP:
+
+.. code-block:: bash
+
+   LIBCAMERA_PIPELINES_MATCH_LIST=nxp/neo gst-launch-1.0 libcamerasrc ! \
+       video/x-raw,width=1920,height=1080 ! queue ! waylandsink fullscreen=true
+
+Without ``LIBCAMERA_PIPELINES_MATCH_LIST=nxp/neo``, libcamera selects the
+raw-only ISI pipeline instead of the ISP.
+
+Source Code
+------------
+
+- `imx_manifest <https://github.com/cargt/imx_manifest>`__ - Yocto repo manifest
+- `meta-imx-cargt <https://github.com/cargt/meta-imx-cargt>`__ - Cargt BSP layer
 
 Thermal Performance
 -------------------
@@ -33,8 +130,4 @@ Compatible Carrier Boards
 --------------------------
 
 - :doc:`/core/catalog/carrier-boards/00365-osml-carrier`
-
-Coming Soon
------------
-
-Documentation for this board is not yet available.
+- :doc:`/core/catalog/carrier-boards/00428-osml-carrier`

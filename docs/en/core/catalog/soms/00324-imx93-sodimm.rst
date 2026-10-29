@@ -68,6 +68,9 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
      - `Images <https://yocto.cargt.com/images/wrynose/imx93-cargt-00324-00326/>`__
      - Available
 
+**Tested:** with wrynose on the 00326 carrier: flashing eMMC, booting, networking,
+and a full SWUpdate update (October 2026).
+
 Source Code
 ------------
 
