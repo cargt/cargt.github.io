@@ -1043,6 +1043,20 @@ Build fails
          NOTE: Pressure status changed to CPU: None, IO: None, Mem: True (CPU: 945702.0/None, IO: 20.3/None, Mem: 132625.6/100000.0) - using 15/16 bitbake threads
          NOTE: Pressure status changed to CPU: None, IO: None, Mem: False (CPU: 999309.6/None, IO: 345.9/None, Mem: 0.0/100000.0) - using 13/16 bitbake threads
 
+Thermal Characterization
+========================
+
+Will your product need a heatsink? :doc:`thermal-characterization` gives the
+warmest air each Cargt SOM can run in for a range of loads, CPU frequency caps
+and cooling options, in open air and in a sealed enclosure. Results are
+available for the 00414 i.MX 95, the 00377 i.MX 8M Plus and the 00363
+i.MX 93.
+
+.. toctree::
+    :hidden:
+
+    thermal-characterization
+
 .. _planned-topics:
 
 Planned Topics
