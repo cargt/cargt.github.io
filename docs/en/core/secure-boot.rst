@@ -24,8 +24,7 @@ Checking the Lifecycle
 ----------------------
 
 Current Cargt U-Boot builds do not include ``ahab_status`` (see the
-warning in step 2), but the lifecycle it reports can be read on any Cargt
-U-Boot. On i.MX 93, bits 9:0 of the FSB register at
+warning in step 2), but the lifecycle can be read on any Cargt U-Boot. On i.MX 93, bits 9:0 of the FSB register at
 ``0x4751041c`` hold the lifecycle (on i.MX 95 the register is at
 ``0x47510414``). This only reads the register. From an i.MX 93 00363 on the
 00428 carrier:
@@ -128,9 +127,7 @@ Steps
 
       Current Cargt U-Boot builds (wrynose, October 2026) do not enable
       ``CONFIG_AHAB_BOOT``, so the ``ahab_*`` and ``auth_cntr`` commands are
-      not available in them. The ``ahab_status`` output in step 7 is from a
-      Cargt test build that adds only the read-only ``ahab_status`` and
-      ``ahab_dump`` commands.
+      not available in them.
 
 3. **Build the boot image.** ``imx-mkimage``, run by the ``imx-boot``
    recipe, prints the container and signature block offsets that the CST

@@ -473,17 +473,6 @@ SSH reports ``REMOTE HOST IDENTIFICATION HAS CHANGED`` after an update
    Expected: the newly installed bank generates its own SSH host key on
    first boot. Run ``ssh-keygen -R <DUT>`` before reconnecting.
 
-Device stuck at the boot loader prompt on an otherwise-normal boot
-   Separate from the failed-boot/rollback scenario above: on builds
-   predating a fix for this, the boot loader's automatic partition scan
-   could occasionally drift to the wrong partition, typically after a
-   stale scan-state value got persisted to the environment (for example,
-   from interactive debugging at the boot prompt). This has since been
-   fixed at the source. On an affected/unpatched build, clearing the
-   stale value (``setenv distro_bootpart`` at the U-Boot prompt, then
-   ``saveenv``) restores correct automatic scanning and stays fixed
-   across subsequent boots.
-
 Enabling A/B on another machine
 -------------------------------
 
