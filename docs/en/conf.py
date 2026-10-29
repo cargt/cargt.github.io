@@ -47,6 +47,10 @@ html_theme_options = {
                                                  # the nav menu below stays Kaitoke Green
      'logo_only': True,
      'style_external_links': True,
+     # Render the whole navigation tree on every page, so any section can be
+     # expanded from any page, not only the current page's section.
+     'collapse_navigation': False,
+     'navigation_depth': 3,
 }
 
 html_context = {
