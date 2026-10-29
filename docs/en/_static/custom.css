@@ -188,3 +188,12 @@ footer span.commit tt, footer span.commit .rst-content tt, footer span.commit co
 .rst-content table.docutils.wrap-cells th {
   white-space: normal;
 }
+
+/* Data pages (e.g. Thermal Test Data) opt in with ".. rst-class:: cargt-wide-page"
+   to use more of the window for wide tables, with slightly smaller table text. */
+.wy-nav-content:has(.cargt-wide-page) {
+  max-width: 1400px;
+}
+.wy-nav-content:has(.cargt-wide-page) .rst-content table.docutils {
+  font-size: 13px;
+}

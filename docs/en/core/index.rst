@@ -76,3 +76,17 @@ development board (machine ``imx95-15x15-lpddr4x-frdm``), which is useful for
 evaluating software before Cargt hardware is available:
 `wrynose images <https://yocto.cargt.com/images/wrynose/imx95-15x15-lpddr4x-frdm/>`__,
 `real-time images <https://yocto.cargt.com/images/wrynose-rt/imx95-15x15-lpddr4x-frdm/>`__.
+
+Thermal Characterization
+========================
+
+Will your product need a heatsink? :doc:`thermal-characterization` gives the
+warmest air each Cargt SOM can run in for a range of loads, CPU frequency caps
+and cooling options, in open air and in a sealed enclosure. Results are
+available for the 00414 i.MX 95, the 00377 i.MX 8M Plus and the 00363
+i.MX 93.
+
+.. toctree::
+    :hidden:
+
+    thermal-characterization

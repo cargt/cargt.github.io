@@ -84,6 +84,13 @@ Source Code
 - `meta-imx-cargt <https://github.com/cargt/meta-imx-cargt>`__ - Cargt BSP layer
 
 
+Thermal Performance
+-------------------
+
+In open air this SOM needs no heatsink, even with the CPU, GPU, memory and
+NPU fully loaded. See :ref:`thermal-00377` for the results; enclosure testing
+is in progress.
+
 Compatible Carrier Boards
 --------------------------
 
