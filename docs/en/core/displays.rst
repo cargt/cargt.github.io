@@ -289,9 +289,10 @@ can see and use a board's display from a computer, for example with Windows
 Remote Desktop Connection or FreeRDP. The board keeps showing the desktop on
 its own panel at the same time.
 
-The steps below were tested on an i.MX 93 00363 on the 00365 carrier with
-the 5.5" MIPI-DSI display, running ``cargt-image-dev`` (wrynose) built with
-Weston's RDP backend.
+Cargt i.MX images include Weston's RDP backend and FreeRDP. It was tested
+on an i.MX 93 00363 on the 00365 carrier with the rotated 5.5" MIPI-DSI
+display and on an i.MX 95 00414 on the 00365 with the 10.1" LVDS display,
+running ``cargt-image-dev`` (wrynose).
 
 .. warning::
 
@@ -300,25 +301,17 @@ Weston's RDP backend.
    Use RDP only on a network you control, or block port 3389 and connect
    through an SSH tunnel (see `Connecting through SSH`_).
 
-Adding the RDP Backend to an Image
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The TLS Key
+~~~~~~~~~~~
 
-Current Cargt images include FreeRDP and a ``[screen-share]`` section in
-``/etc/xdg/weston/weston.ini``, but not Weston's RDP backend
-(``/usr/lib/libweston-15/rdp-backend.so``). Cargt is adding it to the BSP;
-until then, enable it in your own layer with two ``.bbappend`` files:
+The RDP connection is encrypted with TLS. On its first boot, each board
+creates its own self-signed certificate and key in ``/etc/freerdp/keys``
+(the ``cargt-rdp-keys`` service). Clients show a certificate warning the
+first time they connect, because the certificate is self-signed. To create
+a new key, delete ``/etc/freerdp/keys/server.key`` and reboot.
 
-.. code-block:: text
-
-   # recipes-graphics/wayland/weston_%.bbappend
-   PACKAGECONFIG:append = " rdp"
-
-   # recipes-graphics/wayland/weston-init.bbappend
-   PACKAGECONFIG:append = " rdp"
-
-The first builds the backend. The second makes ``weston.ini`` load the
-screen-sharing module and point the RDP server at a TLS certificate and
-key. The resulting sections of ``/etc/xdg/weston/weston.ini``:
+The ``[screen-share]`` section of ``/etc/xdg/weston/weston.ini`` points the
+RDP server at that key:
 
 .. code-block:: ini
 
@@ -328,30 +321,13 @@ key. The resulting sections of ``/etc/xdg/weston/weston.ini``:
    [screen-share]
    command=/usr/bin/weston --backend=rdp-backend.so --shell=fullscreen-shell.so --no-resizeable --rdp-tls-cert=/etc/freerdp/keys/server.crt --rdp-tls-key=/etc/freerdp/keys/server.key
 
-Creating the TLS Key
-~~~~~~~~~~~~~~~~~~~~
-
-The RDP connection is encrypted with TLS, and the image does not include a
-key. Create a self-signed certificate and key once on each board:
-
-.. code-block:: text
-
-   root@imx93-cargt-00363-00365:~# mkdir -p /etc/freerdp/keys
-   root@imx93-cargt-00363-00365:~# winpr-makecert -rdp -silent -path /etc/freerdp/keys -n server
-   root@imx93-cargt-00363-00365:~# openssl x509 -in /etc/freerdp/keys/server.crt -noout -subject -enddate
-   subject=CN=server
-   notAfter=Oct 28 20:37:07 2027 GMT
-
-The certificate is valid for one year. Clients show a certificate warning
-the first time they connect, because it is self-signed.
-
 Starting Screen Sharing
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Press :kbd:`Ctrl+Alt+S` on a keyboard connected to the board to start
-screen sharing until Weston restarts. To start it every time Weston starts,
-add ``start-on-startup=true`` to the ``[screen-share]`` section and restart
-Weston:
+Screen sharing is off when Weston starts. Press :kbd:`Ctrl+Alt+S` on a
+keyboard connected to the board to start it until Weston restarts. To start
+it every time Weston starts, add ``start-on-startup=true`` to the
+``[screen-share]`` section and restart Weston:
 
 .. code-block:: ini
 
@@ -363,12 +339,15 @@ Weston:
 
    systemctl restart weston
 
+To build an image that starts it automatically, set this in your
+``local.conf`` or distro configuration:
+
+.. code-block:: text
+
+   CARGT_WESTON_RDP_AUTOSTART = "1"
+
 Weston then starts a second Weston instance with the RDP backend, which
 listens on TCP port 3389.
-
-On a rotated display such as the 5.5" MIPI-DSI panel, also set
-``use-g2d=false`` in the ``[core]`` section before restarting Weston;
-otherwise clients see a black screen. See `G2D and Rotated Displays`_.
 
 Connecting
 ~~~~~~~~~~
@@ -403,43 +382,3 @@ the local end of the tunnel:
 
    ssh -N -L 13389:localhost:3389 root@<board-ip>
    xfreerdp /v:localhost:13389
-
-G2D and Rotated Displays
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Cargt i.MX images set ``use-g2d=true`` in ``weston.ini``, so Weston draws
-the desktop with the i.MX G2D 2D engine. Screen sharing does not work with
-G2D on a display that Weston rotates:
-
-- Screen sharing copies the panel's picture by reading the pixels back
-  through the renderer.
-- The 5.5" MIPI-DSI panel is 720 pixels wide and 1280 high, mounted in
-  landscape; its device tree sets ``rotation = <90>`` (see
-  `Rotated Displays`_).
-- NXP's screen-sharing code skips the output rotation for G2D, so it asks
-  the G2D engine to copy a 1280-pixel-wide area out of the 720-pixel-wide
-  framebuffer. The copy fails, the error is not reported, and the RDP client
-  receives a black picture.
-
-With ``use-g2d=false``, Weston uses its OpenGL renderer instead, which reads
-back rotated frames correctly. The i.MX 93 has no 3D GPU, so on that SoC
-the OpenGL renderer runs in software (Mesa's llvmpipe), as Weston's log
-shows:
-
-.. code-block:: text
-
-   root@imx93-cargt-00363-00365:~# grep "GL renderer" /run/user/0/weston.log
-   [21:04:51.574] GL renderer: llvmpipe (LLVM 22.1.3, 128 bits)
-
-With nothing changing on screen and no client connected, the board stayed
-over 99% idle. With a Remote Desktop client connected, software rendering
-used about 4% CPU at idle and about 18% while a window was being dragged.
-
-On displays that are not rotated, such as the 10" LVDS panel, the readback
-does not need a rotation, but screen sharing with G2D has not yet been
-tested there.
-
-.. note::
-
-   Removing the panel rotation from the device tree also makes screen
-   sharing work with G2D, but the panel then shows the desktop in portrait.
