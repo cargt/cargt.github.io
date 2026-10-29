@@ -90,4 +90,4 @@ user guide. NXP distributes both from the **Documentation** and
 **Design Tools** tabs of the processor's product page after you sign in to an
 NXP account; some documents require a signed NDA.
 
-A Cargt guide to secure boot on Cargt SOMs is planned.
+See :doc:`/core/secure-boot` for an overview of AHAB on Cargt SOMs.

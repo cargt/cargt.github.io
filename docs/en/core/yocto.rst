@@ -109,7 +109,6 @@ Initialize build environment for NXP processors
    # cargt-imx-wayland.conf
    # cargt-imx-xwayland-ap.conf
    # cargt-imx-xwayland.conf
-   # cargt-imx-xwayland-connman.conf
 
    ls -1 sources/meta-imx-cargt/conf/machine/
    # Output:

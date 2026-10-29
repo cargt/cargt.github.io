@@ -53,6 +53,8 @@ Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
    - ``imx-boot.tagged`` - the bootloader
    - ``cargt-image-<type>-<machine>.rootfs.wic.zst`` - the full disk image
      (partition table and filesystems), compressed with zstd
+   - ``cargt-image-<type>-<machine>.rootfs.wic.bmap`` - optional, the block
+     map that makes flashing much faster; see `Faster Flashing with bmap`_
 
    .. note::
 
@@ -133,6 +135,39 @@ Other UUU options:
    followed by the SPL and U-Boot banners. Verified on the 00414 SOM in
    serial download mode (October 2026).
 
+Faster Flashing with bmap
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The disk image is about 15 GB uncompressed, but most of it is empty space:
+the second root partition, free space in the root file system, and
+``/data``. Without help, ``uuu`` decompresses and scans all of it, and the
+eMMC writes zeros to the empty areas. The ``.wic.bmap`` file published next
+to each image lists the blocks that hold data (about 2.2 GB for
+``cargt-image-dev``), and ``-bmap`` tells ``uuu`` to write only those:
+
+.. code-block:: bash
+
+   uuu -bmap -b emmc_all imx-boot.tagged cargt-image-dev-imx93-cargt-00363-00428.rootfs.wic.zst
+
+Keep the ``.wic.bmap`` file in the same folder as the image. For
+``<name>.wic.zst``, ``uuu`` looks for ``<name>.wic.bmap``. The built-in
+``emmc_all`` and ``sd_all`` scripts only use it when you pass ``-bmap``.
+
+Flashing ``cargt-image-dev`` to the eMMC of an i.MX 93 00363 on the 00428
+carrier took 2 minutes 32 seconds with ``-bmap``, and 15 to 20 minutes
+without it.
+
+To flash several boards at once, run ``uuu`` in daemon mode with ``-d``; it
+flashes every board that connects until you stop it. Each board needs
+memory on the host computer: on a host with 2 GB of RAM, flashing three
+boards at once ran out of memory, so flash one board at a time there with
+``-m <usb path>`` (the paths are listed by ``uuu -lsusb``):
+
+.. code-block:: bash
+
+   uuu -d -bmap -b emmc_all imx-boot.tagged <image>.wic.zst          # all boards
+   uuu -m 1:12 -bmap -b emmc_all imx-boot.tagged <image>.wic.zst     # one board
+
 Flashing a Pre-compiled image on an STM32MP2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -167,7 +202,7 @@ U-Boot variables can be accessed through either the console or ssh session.
    - Console: Interrupt the boot process by pressing any key during the U-Boot countdown.
       This will drop you to the U-Boot command prompt.
       U-Boot variables can be viewed and modified using the ``printenv``, ``setenv``, and ``saveenv`` commands in the U-Boot console.
-   - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variablesusing the ``fw_setenv`` and ``fw_printenv`` utilities.
+   - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variables using the ``fw_setenv`` and ``fw_printenv`` utilities.
 
 NXP - Enter UUU mode using U-Boot Environment Variable Method
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
