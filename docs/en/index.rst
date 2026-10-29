@@ -22,6 +22,8 @@ Modern Electronics. Confidence at Every Step.
   core/key-storage
   core/displays
   core/cameras
+  core/npu
+  core/mikrobus
   core/software-updates
   core/production
   core/package-management
