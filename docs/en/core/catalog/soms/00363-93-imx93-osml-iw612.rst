@@ -15,18 +15,25 @@
    * - Wireless Module
      - NXP IW612 Dual-Band Wi-Fi 6 BLE
 
-.. Bare-SOM photos borrowed from 00363-91 (same OSM-L PCB, different
-   processor) - no bare-SOM photo of the i.MX 93 variant exists yet.
-
-.. thumbnail:: /_static/images/photos/soms/00363-91-1.png
+.. thumbnail:: /_static/images/photos/soms/00363-93-1.png
    :group: 00363-93
    :width: 45%
    :title: 00363-93 i.MX 93 OSM-L with IW612 - top
 
-.. thumbnail:: /_static/images/photos/soms/00363-91-2.png
+.. thumbnail:: /_static/images/photos/soms/00363-93-2.png
    :group: 00363-93
    :width: 45%
    :title: 00363-93 i.MX 93 OSM-L with IW612 - bottom
+
+.. thumbnail:: /_static/images/photos/soms/00363-93-3.png
+   :group: 00363-93
+   :width: 45%
+   :title: 00363-93 i.MX 93 OSM-L with IW612 - angled
+
+.. thumbnail:: /_static/images/photos/soms/00363-93-on-00365.jpg
+   :group: 00363-93
+   :width: 45%
+   :title: 00363-93 on the 00365 OSM-L carrier board
 
 Resources
 ---------
@@ -56,21 +63,33 @@ See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and relea
         :bdg-success:`New designs`
 
 .. list-table::
+   :class: wrap-cells
    :header-rows: 1
-   :widths: 25 25 25 25
+   :widths: 25 35 20 20
 
    * - Release
+     - Machine
      - Packages
      - Pre-built Images
-     - Status
-   * - scarthgap (kernel 6.6.36) :bdg-secondary:`Existing designs`
-     - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx93_cargt_00363_00365/>`__
-     - `Images <https://yocto.cargt.com/images/scarthgap/imx93-cargt-00363-00365/>`__
-     - Available
    * - wrynose (kernel 6.18.20) :bdg-success:`New designs`
+     - ``imx93-cargt-00363-00365``
      - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx93_cargt_00363_00365/>`__
      - `Images <https://yocto.cargt.com/images/wrynose/imx93-cargt-00363-00365/>`__
-     - Available
+   * - wrynose (kernel 6.18.20) :bdg-success:`New designs`
+     - ``imx93-cargt-00363-00428``
+     - `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx93_cargt_00363_00428/>`__
+     - `Images <https://yocto.cargt.com/images/wrynose/imx93-cargt-00363-00428/>`__
+   * - scarthgap (kernel 6.6.36) :bdg-secondary:`Existing designs`
+     - ``imx93-cargt-00363-00365``
+     - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx93_cargt_00363_00365/>`__
+     - `Images <https://yocto.cargt.com/images/scarthgap/imx93-cargt-00363-00365/>`__
+   * - scarthgap (kernel 6.6.36) :bdg-secondary:`Existing designs`
+     - ``imx93-cargt-00363-00428``
+     - `Packages <https://yocto.cargt.com/linux-imx/scarthgap/imx93_cargt_00363_00428/>`__
+     - `Images <https://yocto.cargt.com/images/scarthgap/imx93-cargt-00363-00428/>`__
+
+**Tested:** with wrynose on the 00365 carrier: flashing eMMC, booting, networking,
+and a full SWUpdate update (October 2026).
 
 Source Code
 ------------
@@ -83,3 +102,4 @@ Compatible Carrier Boards
 --------------------------
 
 - :doc:`/core/catalog/carrier-boards/00365-osml-carrier`
+- :doc:`/core/catalog/carrier-boards/00428-osml-carrier`

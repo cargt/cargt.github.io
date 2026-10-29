@@ -7,3 +7,4 @@ All Carrier Boards
    00326-sodimm-carrier
    00365-osml-carrier
    00406-lga-carrier
+   00428-osml-carrier

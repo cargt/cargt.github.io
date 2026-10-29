@@ -13,6 +13,13 @@ Modern Electronics. Confidence at Every Step.
   :maxdepth: 1
 
   core/index
+  core/getting-started
+  core/displays
+  core/software-updates
+  core/package-management
+  core/yocto
+  core/real-time-linux
+  core/planned-topics
   references/index
 
 

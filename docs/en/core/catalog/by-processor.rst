@@ -59,7 +59,7 @@ i.MX 95
         :link: /core/catalog/soms/00414-imx95-osml
         :link-type: doc
 
-        OSM-L · i.MX 95 · Coming Soon
+        OSM-L · i.MX 95
 
 STM32MP2
 --------
@@ -67,26 +67,8 @@ STM32MP2
 .. grid:: 1 2 2 3
     :gutter: 3
 
-    .. grid-item-card:: 00378 – OSM-L with CC3351
-        :link: /core/catalog/soms/00378-stm32mp257f-osml-cc3351
-        :link-type: doc
-
-        OSM-L · MP257F · CC3351
-
     .. grid-item-card:: 00395 – OSM-L with IW610
         :link: /core/catalog/soms/00395-stm32mp257f-osml-iw610
         :link-type: doc
 
         OSM-L · MP257F · IW610
-
-AM6254
-------
-
-.. grid:: 1 2 2 3
-    :gutter: 3
-
-    .. grid-item-card:: 00364 – OSM-L with IW612
-        :link: /core/catalog/soms/00364-am6254-osml-iw612
-        :link-type: doc
-
-        OSM-L · AM6254 · IW612
