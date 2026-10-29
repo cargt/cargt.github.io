@@ -1,79 +1,38 @@
-.. _mikrobus:
+.. _linux-basics:
 
-Using the mikroBUS Socket
-=========================
+Getting Started with Linux
+==========================
 
-Cargt carrier boards have a mikroBUS socket for MikroElektronika Click
-boards and other add-on boards. This page shows how to use the socket from
-Linux user space, one Click board at a time.
+This page shows how to use common hardware interfaces from Linux user
+space: GPIO lines, analog inputs, I²C devices and their kernel drivers,
+serial ports, and sysfs. Each topic is demonstrated with a MikroElektronika Click board in the
+carrier's mikroBUS socket.
 
-The examples on this page are from an i.MX 91 00363 SOM on an 00365 carrier,
-running a wrynose image. The i.MX 93 00363 uses the same pins on the 00365.
+The examples are from an i.MX 91 00363 SOM on an 00365 carrier, running a
+wrynose image. See `Hardware for the Examples`_ for the mikroBUS pins they
+use.
 
-Pins on the 00365
------------------
+Device Files and sysfs
+----------------------
 
-On the 00365, the mikroBUS logic signals go through level translators,
-which convert between the SOM's 1.8 V signals and the socket's 3.3 V. Apart
-from the I²C pins, the translators have a fixed direction, so each pin works
-in one direction only:
+Linux gives programs access to hardware in two main ways:
 
-.. list-table::
-   :class: wrap-cells
-   :header-rows: 1
-   :widths: 15 15 30 40
+- **Device files** in ``/dev``, such as ``/dev/gpiochip0``, ``/dev/i2c-1``
+  and ``/dev/ttyLP1``, which programs open, read, write and control.
+- **sysfs**, the file system mounted at ``/sys``. Kernel drivers publish
+  devices and their settings there as small text files. ``/sys/class``
+  groups devices by type, for example ``/sys/class/pwm``, and ``/sys/bus``
+  groups them by the bus they are on, for example ``/sys/bus/i2c``. Reading
+  a file gets a value, and writing one changes a setting, so ``cat`` and
+  ``echo`` are often all you need.
 
-   * - Pin
-     - Direction
-     - Linux
-     - Notes
-   * - RST
-     - Output
-     - GPIO ``pca9555_20-8``
-     - On the PCA9555 I/O expander, which has no interrupt line.
-   * - CS
-     - Output
-     - GPIO ``gpio2-12``
-     - SPI chip select (LPSPI8). A plain GPIO when SPI does not use it.
-   * - SCK, MOSI
-     - Output
-     - LPSPI8
-     - Not turned on in the default device tree.
-   * - MISO
-     - Input
-     - LPSPI8
-     - Not turned on in the default device tree.
-   * - PWM
-     - Output
-     - TPM6 channel 1
-     - Not turned on in the default device tree.
-   * - INT
-     - Input
-     - GPIO ``gpio2-8``
-     - Supports edge events.
-   * - TX
-     - Output
-     - ``/dev/ttyLP1`` (LPUART2)
-     -
-   * - RX
-     - Input
-     - ``/dev/ttyLP1`` (LPUART2)
-     -
-   * - AN
-     - Analog input
-     - ADC channel 0
-     - Through a buffer that scales the signal to the ADC's 1.8 V range.
-   * - SCL, SDA
-     - Both
-     - I²C
-     - Through a bidirectional translator.
+The examples on this page use both.
 
-A Click board that drives a signal back on an output pin, such as RST or CS,
-is never seen by the SoC, and its driver fights the translator. Check which
-pins a Click board drives before you fit it.
+GPIO
+----
 
 Finding the GPIO Lines
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 The GPIO lines have names, so you do not need to work out chip and line
 numbers. ``gpiodetect`` lists the GPIO controllers, and ``gpioinfo`` shows
@@ -98,10 +57,10 @@ The examples use the libgpiod tools (``gpioset``, ``gpioget``, ``gpiomon``),
 which are in Cargt images. The old ``/sys/class/gpio`` interface is
 deprecated; use libgpiod or its C, C++ or Python bindings instead.
 
-GPIO Outputs: Relay 3 Click
----------------------------
+Driving Outputs
+~~~~~~~~~~~~~~~
 
-The Relay 3 Click has two relays. Relay 1 is driven by RST and relay 2 by
+The examples use a Relay 3 Click, which has two relays. Relay 1 is driven by RST and relay 2 by
 CS, and a high level turns a relay on.
 
 Turn relay 1 on:
@@ -139,10 +98,10 @@ A line can be held by only one process at a time. Stop the background
 In a program, request the lines once when it starts and keep them for as
 long as it runs.
 
-GPIO Inputs: Opto 2 Click
--------------------------
+Reading Inputs and Waiting for Edges
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Opto 2 Click has four optocoupler inputs, with their outputs on INT, CS,
+The examples use an Opto 2 Click, which has four optocoupler inputs, with their outputs on INT, CS,
 RST and AN. Apply 3.3 V to 5 V between an input's A (anode) and C (cathode)
 terminals to turn it on. Its output then goes high.
 
@@ -166,7 +125,15 @@ and prints each one:
 is the time of the edge in seconds since boot; here input 1 was on for about
 8 seconds. Press Ctrl+C to stop ``gpiomon``.
 
-Input 4 is on AN, so read it as an analog value from the ADC. Multiply the
+Analog Inputs
+-------------
+
+ADCs and many sensors are Industrial I/O (IIO) devices, which appear in
+``/sys/bus/iio/devices``. Each channel has a ``_raw`` file with the
+reading, and a ``_scale`` file to convert it to millivolts or another unit.
+
+Opto 2 input 4 is on the mikroBUS AN pin, which goes to channel 0 of the
+i.MX ADC. Multiply the
 raw value by ``in_voltage_scale`` (0.439453125 here) to get millivolts at
 the ADC:
 
@@ -178,8 +145,16 @@ the ADC:
 With 4 V on input 4, ``in_voltage0_raw`` read 2482 (about 1.09 V at the
 ADC). With the input off, it read 1 or 2.
 
-I²C and PWM: PWM Click
-----------------------
+I²C
+---
+
+I²C devices are on numbered buses, ``i2c-0``, ``i2c-1`` and so on. The
+``i2c-tools`` commands (``i2cdetect``, ``i2cget``, ``i2cset``) talk to a
+device directly, and a kernel driver can turn a device into a standard
+Linux device instead, such as a PWM controller in ``/sys/class/pwm``.
+
+The PWM Click
+~~~~~~~~~~~~~
 
 The PWM Click has an NXP PCA9685, a 16-channel PWM controller on I²C. Its
 outputs are labelled CH0 to CH15 on the board; the PCA9685 datasheet calls
@@ -331,7 +306,7 @@ line is released. In a product, describe the chip in the device tree and set
 up the outputs in a startup service.
 
 Binding and Unbinding I²C Drivers
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Linux keeps I²C devices and their drivers in sysfs. Under
 ``/sys/bus/i2c/devices``, ``1-0040`` is the device at address 0x40 on
@@ -391,3 +366,136 @@ stop:
 Devices described in the device tree are created at boot; you can unbind and
 bind their drivers, but not delete them. Use a device tree node for hardware
 that is always fitted.
+
+Serial Ports
+------------
+
+Serial ports are device files in ``/dev``. On i.MX, the SoC's UARTs are
+``/dev/ttyLP*``; the mikroBUS UART on the 00365 is ``/dev/ttyLP1``. USB
+serial adapters appear as ``/dev/ttyUSB*`` (FTDI and similar) or
+``/dev/ttyACM*``.
+
+The examples use an RS232 Click, which converts the mikroBUS UART to RS-232
+levels on a DB9 connector. A USB-to-RS-232 adapter plugged into the board's
+USB port is connected to it through a null-modem adapter, so whatever one
+port sends, the other receives.
+
+.. note::
+
+   Most RS-232 devices, including the RS232 Click and typical USB adapters,
+   are wired the same way (as DTE). Connecting two of them needs a null-modem
+   cable or adapter, which crosses TX and RX. Without one, nothing arrives
+   in either direction.
+
+Set both ports to the same speed with ``stty``. ``raw`` passes bytes through
+unchanged, and ``-echo`` stops the port from echoing what it receives:
+
+.. code-block:: text
+
+   root@imx91-cargt-00363-00365:~# stty -F /dev/ttyLP1 115200 raw -echo
+   root@imx91-cargt-00363-00365:~# stty -F /dev/ttyUSB0 115200 raw -echo
+   root@imx91-cargt-00363-00365:~# stty -F /dev/ttyLP1
+   speed 115200 baud; line = 0;
+   min = 1; time = 0;
+   -brkint -icrnl -imaxbel
+   -opost
+   -isig -icanon -echo
+
+Read one port in the background and write to the other:
+
+.. code-block:: bash
+
+   cat /dev/ttyUSB0 &
+   echo "hello from ttyLP1" > /dev/ttyLP1     # cat prints: hello from ttyLP1
+   kill %1
+
+For an interactive terminal, use ``microcom -s 115200 /dev/ttyLP1`` (press
+Ctrl+X to exit) or ``minicom``.
+
+If nothing arrives, ``/proc/tty/driver/fsl-lpuart`` shows how many bytes
+each i.MX UART has sent and received. Here ``1:`` is ``ttyLP1``, after
+sending 54 bytes and receiving 19:
+
+.. code-block:: text
+
+   root@imx91-cargt-00363-00365:~# cat /proc/tty/driver/fsl-lpuart
+   serinfo:1.0 driver revision:
+   0: uart:FSL_LPUART mmio:0x44380010 irq:17 tx:14880 rx:74 RTS|CTS|DTR|DSR|CD
+   1: uart:FSL_LPUART mmio:0x44390010 irq:18 tx:54 rx:19 CTS|DSR|CD
+   4: uart:FSL_LPUART mmio:0x42590010 irq:19 tx:2813 rx:908 RTS|CTS|DTR|DSR|CD
+   5: uart:FSL_LPUART mmio:0x425A0010 irq:20 tx:0 rx:0 CTS|DSR|CD
+
+A ``tx`` count that grows while ``rx`` on the other end stays at 0 points to
+the wiring, such as a missing null-modem adapter.
+
+Hardware for the Examples
+-------------------------
+
+The examples use these Click boards in the 00365's mikroBUS socket:
+
+- **Relay 3 Click:** two relays (GPIO outputs).
+- **Opto 2 Click:** four optocoupler inputs (GPIO inputs and the ADC).
+- **PWM Click:** an NXP PCA9685 16-channel PWM controller on I²C.
+- **RS232 Click:** an RS-232 transceiver for the mikroBUS UART.
+
+mikroBUS Pins on the 00365
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On the 00365, the mikroBUS logic signals go through level translators,
+which convert between the SOM's 1.8 V signals and the socket's 3.3 V. Apart
+from the I²C pins, the translators have a fixed direction, so each pin works
+in one direction only:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 15 15 30 40
+
+   * - Pin
+     - Direction
+     - Linux
+     - Notes
+   * - RST
+     - Output
+     - GPIO ``pca9555_20-8``
+     - On the PCA9555 I/O expander, which has no interrupt line.
+   * - CS
+     - Output
+     - GPIO ``gpio2-12``
+     - SPI chip select (LPSPI8). A plain GPIO when SPI does not use it.
+   * - SCK, MOSI
+     - Output
+     - LPSPI8
+     - Not turned on in the default device tree.
+   * - MISO
+     - Input
+     - LPSPI8
+     - Not turned on in the default device tree.
+   * - PWM
+     - Output
+     - TPM6 channel 1
+     - Not turned on in the default device tree.
+   * - INT
+     - Input
+     - GPIO ``gpio2-8``
+     - Supports edge events.
+   * - TX
+     - Output
+     - ``/dev/ttyLP1`` (LPUART2)
+     -
+   * - RX
+     - Input
+     - ``/dev/ttyLP1`` (LPUART2)
+     -
+   * - AN
+     - Analog input
+     - ADC channel 0
+     - Through a buffer that scales the signal to the ADC's 1.8 V range.
+   * - SCL, SDA
+     - Both
+     - I²C
+     - Through a bidirectional translator.
+
+A Click board that drives a signal back on an output pin, such as RST or CS,
+is never seen by the SoC, and its driver fights the translator. Check which
+pins a Click board drives before you fit it.

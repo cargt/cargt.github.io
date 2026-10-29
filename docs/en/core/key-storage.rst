@@ -196,7 +196,7 @@ another board.
 
 .. warning::
 
-   - On images published up to October 2026, ``/var/lib/tee`` is on the
+   - On images published so far, ``/var/lib/tee`` is on the
      root file system. A full software update (SWUpdate on i.MX) installs a
      new root file system in the other partition, so tokens and keys created
      before the update are not there afterwards. Cargt has a BSP change that

@@ -148,8 +148,9 @@ will follow.
 
 .. note::
 
-   Cargt is adding ``nmtui`` to ``cargt-image-dev``. Images published up to
-   October 2026 do not include it. To add it to your own image:
+   ``cargt-image-dev`` images published from October 29, 2026 include
+   ``nmtui``. Earlier images and other images do not. To add it to your own
+   image:
 
    .. code-block:: bash
 
@@ -437,8 +438,8 @@ starts its own dnsmasq instance to hand out addresses and answer DNS on that
 port, and routes the devices on it to the board's other connections through
 NAT.
 
-Images published up to October 2026 also enable a standalone ``dnsmasq``
-service, which by default only forwards DNS queries for the board itself.
+Images published on or before October 29, 2026 also enable a standalone
+``dnsmasq`` service, which by default only forwards DNS queries for the board itself.
 It listens on DNS port 53 on every address, so NetworkManager's dnsmasq
 cannot start while it runs, and the connection fails with this in
 ``journalctl -u NetworkManager``:
@@ -473,8 +474,8 @@ gateway and DNS server. Without ``ipv4.addresses``, NetworkManager uses
 
 .. warning::
 
-   Cargt i.MX images published up to October 2026 (wrynose) build the
-   kernel without ``CONFIG_NFT_REJECT``, which NetworkManager's NAT rules
+   Cargt i.MX images published on or before October 29, 2026 (wrynose)
+   build the kernel without ``CONFIG_NFT_REJECT``, which NetworkManager's NAT rules
    need. Cargt has fixed this in the BSP, but the fix is not yet in the
    published images.
    Shared mode still gives the port its address and runs the DHCP and DNS

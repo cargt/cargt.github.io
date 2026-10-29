@@ -225,8 +225,8 @@ a display or keyboard; use ``agent KeyboardDisplay`` to confirm passkeys.
 
 .. warning::
 
-   LE pairing does not complete on Cargt images published up to October
-   2026. ``pair`` connects, but the kernel never starts the pairing
+   LE pairing does not complete on Cargt images published on or before
+   October 29, 2026. ``pair`` connects, but the kernel never starts the pairing
    exchange and logs ``Bluetooth: hci0: security requested but not
    available``; ``bluetoothctl`` reports
    ``Failed to pair: org.bluez.Error.AuthenticationCanceled``. Connections

@@ -123,13 +123,15 @@ The RX8111 alarm is not used on these boards (``rtc0`` has no
 
 .. warning::
 
-   - On images published up to October 2026 (wrynose), suspend is aborted
-     on boards with an IW610 or IW612 module, because the Wi-Fi module's
-     wake line (``wifi_oob_wakeup``) is active when the board tries to
-     suspend. ``rtcwake`` then reports ``write error``, and ``dmesg`` shows
-     ``Wakeup pending. Abort CPU freeze``. ``cat /sys/power/pm_wakeup_irq``
-     shows which interrupt aborted the suspend. Cargt has fixed this in the
-     BSP, and ``-m freeze`` then resumes on the RTC alarm, but the fix is
-     not yet in the published images.
+   - On images published on or before October 29, 2026 (wrynose), suspend
+     does not last on boards with an IW610 or IW612 module, because the
+     device tree treats a pin that is always low as the Wi-Fi module's wake
+     line (``wifi_oob_wakeup``). Depending on timing, ``rtcwake`` either
+     reports ``write error``, with ``Wakeup pending. Abort CPU freeze`` in
+     ``dmesg``, or returns after a second or two instead of at the alarm.
+     ``cat /sys/power/pm_wakeup_irq`` shows the interrupt that woke the
+     board; ``grep wifi_oob /proc/interrupts`` shows the same number. Cargt
+     has fixed this in the BSP, and ``-m freeze`` then resumes on the RTC
+     alarm, but the fix is not yet in the published images.
    - Deep suspend (``-m mem``) does not resume on i.MX 93 00363 boards, even
      with that fix. Use ``-m freeze``.
