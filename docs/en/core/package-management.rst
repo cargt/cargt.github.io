@@ -1,92 +1,203 @@
+.. _package-management:
+
 Package Management on a Cargt design
 ====================================
 
-Cargt Package Repository
-------------------------
+Cargt images use ``apt`` and ``dpkg`` with Debian (``.deb``) packages built
+by Yocto. This page shows how to install packages from the Cargt package
+repository, from your own Yocto build, and from a local directory.
 
-Updating and Installing Packages using the Cargt Package Repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The examples on this page are from an i.MX 91 00363 on the 00365 carrier,
+running ``cargt-image-dev`` (wrynose).
 
-   .. code-block:: bash
+Package Feeds
+-------------
 
-      apt-get update
-      apt-get install <package_name>
+A Yocto build puts its packages in ``<build_dir>/tmp/deploy/deb``, in one
+directory per package architecture:
 
-Listing Installed Packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 35 65
 
-   .. code-block:: bash
+   * - Directory
+     - Contents
+   * - ``all``
+     - Architecture-independent packages, such as scripts and data
+   * - ``armv8a``
+     - Packages for any 64-bit Arm processor
+   * - ``armv8a-mx91``, ``armv8a-mx93``, ...
+     - Packages built for one i.MX processor family
+   * - ``imx91_cargt_00363_00365``, ...
+     - Packages built for one machine, such as the kernel, its modules and
+       the device trees
 
-      apt list --installed
+Each directory is a separate ``apt`` source (a feed). Cargt images list the
+feeds on ``yocto.cargt.com`` for their machine in ``/etc/apt/sources.list``:
 
-Using a Downloaded Package File
--------------------------------
+.. code-block:: text
 
-Updating using a downloaded ``.deb`` package file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   root@imx91-cargt-00363-00365:~# cat /etc/apt/sources.list
+   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/all ./
+   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/armv8a ./
+   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/armv8a-mx91 ./
+   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/imx91_cargt_00363_00365 ./
 
-   .. code-block:: bash
+The feeds are not signed, so each line has ``[trusted=yes]``.
 
-      dpkg -i /<path_to_downloaded_package>/<package_file>.deb
+Installing Packages
+-------------------
 
-Using your Own Package Repository
----------------------------------
+Refresh the package lists, then search for and install packages:
 
-Generating a Package Repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code-block:: bash
 
-   In your Yocto build environment, run:
+   apt-get update
+   apt-cache search <name>
+   apt-get install <package>
+
+Other useful commands:
+
+.. code-block:: bash
+
+   apt list --installed                 # installed packages
+   apt-cache policy <package>           # installed and available versions, and their feeds
+   dpkg -L <package>                    # files a package installed
+   dpkg -i <file>.deb                   # install a downloaded package file
+
+``apt-get update`` prints ``Ign`` lines for ``InRelease`` and
+``Release.gpg``, because the feeds are not signed. They are harmless.
+
+.. warning::
+
+   Install packages from the same build as the image on the board. Kernel
+   module packages only work with the kernel they were built for (see
+   :ref:`application-development`), and other packages can depend on
+   libraries at the versions of their own build. On an image you built
+   yourself, the Cargt feeds hold packages from a different build, and
+   ``apt list --upgradable`` lists some of them at the same version
+   numbers. Do not run ``apt-get upgrade`` against them; point the board
+   at your own build's feeds instead (see below).
+
+Hosting Packages from Your Own Build
+------------------------------------
+
+Any Yocto build directory can serve its packages to boards on your network.
+
+1. Generate the package indexes (the ``Packages`` files) after building:
 
    .. code-block:: bash
 
       bitbake package-index
 
-   Then navigate to ``<build_dir>/tmp/deploy/deb/<machine>/`` to find the generated ``.deb`` repository files.
+   Run it again after each build, so the indexes list the new packages.
 
-Simple Package Repository Hosting using Python HTTP Server
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   On your development host, navigate to the package repository directory (as above) and start a simple HTTP server:
+2. Serve ``tmp/deploy/deb`` with Python's built-in web server. Choose any
+   free port above 1024; SWUpdate's web interface uses 8080:
 
    .. code-block:: bash
 
-      cd <path_to_package_repo>
-      python3 -m http.server <chosen_port_number>
-      python3 -m http.server 8081
+      cd <build_dir>/tmp/deploy/deb
+      python3 -m http.server 5678
 
-   .. note::
+   The server runs until you press Ctrl+C. Opening
+   ``http://<host-ip>:5678/`` in a browser lists the feeds and their
+   packages.
 
-      Ensure that the chosen port number is open in your firewall settings.
-      Choose a port number > 1024 and that is not already in use by another service such as SWUpdate (default port 8080).
-      Open example:5678
+3. On the board, add one line per feed in a file under
+   ``/etc/apt/sources.list.d/``, using your machine's directory names:
 
-Configuring the Target to use your Package Repository
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   .. code-block:: text
 
-   On the target device, add your repository to the APT sources list:
+      # /etc/apt/sources.list.d/my-feed.list
+      deb [trusted=yes] http://<host-ip>:5678/all ./
+      deb [trusted=yes] http://<host-ip>:5678/armv8a ./
+      deb [trusted=yes] http://<host-ip>:5678/armv8a-mx91 ./
+      deb [trusted=yes] http://<host-ip>:5678/imx91_cargt_00363_00365 ./
 
-   .. code-block:: bash
+4. Update and install. ``apt-cache policy`` shows which feed a package comes
+   from. Here ``hello-cmake``, the example program from
+   :ref:`application-development`, exists only in the build on the host:
 
-      echo "deb [trusted=yes] http://<your_server_ip>:<port_number>/ ./" >> /etc/apt/sources.list.d/my-custom-repo.list
-      apt-get update
-      apt-get install <package_name>
+   .. code-block:: text
 
-Advanced
-~~~~~~~~
+      root@imx91-cargt-00363-00365:~# apt-get update
+      Ign:1 http://<host-ip>:5678/all ./ InRelease
+      ...
+      Get:13 http://<host-ip>:5678/all ./ Packages [51.8 kB]
+      Get:14 http://<host-ip>:5678/armv8a ./ Packages [1726 kB]
+      Get:15 http://<host-ip>:5678/armv8a-mx91 ./ Packages [39.6 kB]
+      Get:16 http://<host-ip>:5678/imx91_cargt_00363_00365 ./ Packages [202 kB]
+      ...
+      Reading package lists...
+      root@imx91-cargt-00363-00365:~# apt-cache policy hello-cmake
+      hello-cmake:
+        Installed: (none)
+        Candidate: 1.0-r0
+        Version table:
+           1.0-r0 500
+              500 http://<host-ip>:5678/armv8a ./ Packages
+      root@imx91-cargt-00363-00365:~# apt-get install -y hello-cmake
+      ...
+      Get:1 http://<host-ip>:5678/armv8a ./ hello-cmake 1.0-r0 [2752 B]
+      Fetched 2752 B in 0s (38.6 kB/s)
+      Selecting previously unselected package hello-cmake.
+      ...
+      Setting up hello-cmake (1.0-r0) ...
+      root@imx91-cargt-00363-00365:~# hello-cmake
+      Hello from a CMake project, built with devtool
 
-   You can list all of the packages in your repository by navigating to ``http://<your_server_ip>:<port_number>/`` in a web browser.
+Setting the Feeds in Your Image
+-------------------------------
 
-   Bitbake produces multiple directories such as ``armv8a``, ``all``, ``<machine-name>`` etc.
-   If you add each directory as a separate line in the sources list, APT will be able to find more packages.
-   Then the package server can be run from the ``<build_dir>/tmp/deploy/deb/`` directory.
+The feed lines in ``/etc/apt/sources.list`` come from these variables in
+the machine configuration. To make your own images use your own server, set
+them in your machine configuration, distro configuration or ``local.conf``.
+The Cargt values for the i.MX 91 00363 on the 00365:
 
-   To do it at build time, add the following lines to your ``local.conf`` file on the development machine:
+.. code-block:: text
 
-   .. code-block:: bash
+   PACKAGE_FEED_URIS = "https://yocto.cargt.com/linux-imx/wrynose"
+   PACKAGE_FEED_BASE_PATHS = ""
+   PACKAGE_FEED_ARCHS = "all  armv8a  armv8a-mx91  imx91_cargt_00363_00365"
 
-      PACKAGE_FEED_URIS += " http://<your_server_ip>:<port_number>/ "
-      PACKAGE_FEED_ARCHS = "all armv8a"
-      Depending on your package repo, you may also need to specify:
-      PACKAGE_FEED_BASE_PATHS = "deb"
+Each combination of a URI, a base path and an architecture becomes one
+``deb`` line. See ``PACKAGE_FEED_ARCHS`` in the `Yocto Project reference
+manual <https://docs.yoctoproject.org/ref-manual/variables.html#term-PACKAGE_FEED_ARCHS>`__.
 
-   Further information: https://docs.yoctoproject.org/ref-manual/variables.html#term-PACKAGE_FEED_ARCHS
+Using a Local Directory
+-----------------------
+
+``apt`` can also install from a directory on the board, such as a USB drive,
+without a network. Put the ``.deb`` files in a directory, and create the
+index on a Linux host with ``dpkg-scanpackages`` (in Debian and Ubuntu's
+``dpkg-dev`` package):
+
+.. code-block:: text
+
+   $ ls
+   hello-cmake_1.0-r0_arm64.deb
+   $ dpkg-scanpackages -m . > Packages
+   dpkg-scanpackages: info: Wrote 1 entries to output Packages file.
+
+Copy the directory to the board (here to ``/data/apt``) and add it as a
+source with ``file:``:
+
+.. code-block:: text
+
+   root@imx91-cargt-00363-00365:~# echo "deb [trusted=yes] file:/data/apt ./" > /etc/apt/sources.list.d/local.list
+   root@imx91-cargt-00363-00365:~# apt-get update
+   ...
+   root@imx91-cargt-00363-00365:~# apt-cache policy hello-cmake
+   hello-cmake:
+     Installed: (none)
+     Candidate: 1.0-r0
+     Version table:
+        1.0-r0 500
+           500 file:/data/apt ./ Packages
+   root@imx91-cargt-00363-00365:~# apt-get install -y hello-cmake
+
+For a local source, ``apt-get update`` also reports ``Err`` lines for
+``Translation-en`` files, followed by ``Ign``; they are harmless.
+``apt-ftparchive packages . > Packages`` creates the same index.
