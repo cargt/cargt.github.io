@@ -103,8 +103,9 @@ flashed with UUU, the boot loader runs from ``mmcblk0boot0``; see
 Boot Sequence
 ~~~~~~~~~~~~~
 
-The default ``bootcmd`` is ``run distro_bootcmd;run bsp_bootcmd``. U-Boot
-first tries the standard distro boot methods (``extlinux.conf``, boot
+On i.MX 8M Plus, i.MX 91 and i.MX 93 machines, the default ``bootcmd`` is
+``run distro_bootcmd;run bsp_bootcmd``. (The i.MX 95 00414 machines use
+``run bsp_bootcmd`` alone and skip the distro boot scan.) U-Boot first tries the standard distro boot methods (``extlinux.conf``, boot
 scripts and EFI) on the eMMC, the microSD card and USB. Cargt images
 provide none of these, so it then runs ``bsp_bootcmd``, which loads the
 kernel and device tree from the root partition selected by ``mmcpart``.
@@ -324,13 +325,28 @@ image is inserted in a board that booted from eMMC, both disks have a
 partition labelled ``data``, and only the one on the boot disk is mounted on
 ``/data``.
 
-**Older images** mount ``/data`` from ``/etc/fstab`` (``LABEL=data``) and
-leave it at 2 GiB. To check which you have:
+**Older images** handle ``/data`` differently, depending on the machine and
+the image date:
+
+- **Up to October 13, 2026:** only the i.MX 93 00363 on the 00428 carrier
+  and the i.MX 95 00414 on the 00428 mount the data partition on ``/data``,
+  from ``/etc/fstab`` (``LABEL=data``), at 2 GiB. On the other machines the
+  data partition is only mounted under ``/run/media``, and ``/data`` is a
+  plain directory on the root file system.
+- **October 14 to 22, 2026:** ``grow-data-part`` grows the data partition,
+  but does not mount it. ``/etc/fstab`` mounts it on ``/data`` on the 00428
+  machines and the other 00414 machines only; on the rest, ``/data`` is
+  still a directory on the root file system.
+
+Where ``/data`` is a directory on the root file system, SWUpdate stages the
+whole update archive (about 440 MB) on the root partition, which then needs
+that much free space. To check which you have:
 
 .. code-block:: bash
 
-   systemctl status grow-data-part     # "could not be found" on older images
-   grep data /etc/fstab
+   systemctl status grow-data-part     # "could not be found" before October 14
+   grep data /etc/fstab                # an entry: an image from before October 23
+   findmnt /data                       # no output: /data is on the root file system
 
 .. _u-boot-environment:
 
@@ -344,6 +360,9 @@ U-Boot stores its environment raw on the boot device, 16 KiB at offset
 .. code-block:: text
 
    /dev/mmcblk0		0x700000	0x4000
+
+The device is the eMMC: ``/dev/mmcblk0`` on most machines, and
+``/dev/mmcblk2`` on the i.MX 8M Plus 00377.
 
 Variables Cargt images use:
 

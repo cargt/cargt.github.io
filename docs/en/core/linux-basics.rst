@@ -172,7 +172,8 @@ Finding the Device
 ~~~~~~~~~~~~~~~~~~
 
 On the 00365, the mikroBUS I²C pins are on ``i2c-1``, which also has the
-carrier's I/O expander (0x20) and USB-C controller. ``i2cdetect`` shows the
+carrier's I/O expander (0x20) and its two USB-C controllers (0x51 and 0x52).
+``i2cdetect`` shows the
 PCA9685 at its default address, 0x40. ``UU`` marks addresses that a kernel
 driver is using:
 

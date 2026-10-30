@@ -34,7 +34,6 @@ Resources
 ---------
 
 - `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx8%20Quick%20Start%20PDF%20v1.pdf>`__
-- `Datasheet <https://downloads.cargt.com/datasheets/IMX8MMRM.pdf>`__
 
 Software Releases
 ------------------

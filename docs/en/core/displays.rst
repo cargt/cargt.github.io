@@ -117,14 +117,12 @@ Electrical Connections
 Software Configuration
 ~~~~~~~~~~~~~~~~~~~~~~
 
-If you bought an evaluation kit with a display, the display should be pre-configured and work out of the box with the pre-compiled images from the `Cargt Package Repository Images`_.
+The pre-compiled images from the `Cargt Package Repository Images`_ include a device tree for each display Cargt sells, but most machines boot the device tree without a display by default. Only the i.MX 93 00363 on the 00428 carrier boots with the 5.5" MIPI-DSI display (``glt0557201280is1``) selected. On every other machine, including evaluation kits with a display, select the display's device tree with ``fdtfile`` as shown below.
 
 If you are using your own display, you may need to modify the device tree to configure the display correctly.
 Build a custom image with your device tree changes as described in the :ref:`yocto-tutorial`. A guide to customizing the device tree is planned.
 
-If you are using a display that is sold by Cargt, then the necessary device tree configuration should already be included in the pre-compiled images from the `Cargt Package Repository Images`_.
-
-How to check for available device tree overlays for display support:
+How to check which display device trees are available:
 
    - As part of build:
 
@@ -149,10 +147,16 @@ How to check for available device tree overlays for display support:
 Set the correct Device Tree Blob (DTB) for the display by modifying the U-Boot environment variable ``fdtfile`` to point to the appropriate DTB file that matches your display model.
 See :ref:`u-boot-environment` for how ``fdtfile`` is written and how to change it from the U-Boot prompt.
 
+Write the new value in the same form as the current one. On i.MX the value
+is a path relative to the root partition, starting with ``boot/``. On
+STM32MP2 it is the file name alone, for example
+``stm32mp257f-cargt-00395-02-00365.dtb``.
+
    .. code-block:: bash
 
-      fw_setenv fdtfile boot/<dtb_file_name>
-      fw_printenv fdtfile  # Verify the change
+      fw_printenv fdtfile  # the current value, to copy its form
+      fw_setenv fdtfile boot/<dtb_file_name>          # i.MX
+      fw_setenv fdtfile <dtb_file_name>               # STM32MP2
       reboot
 
    - Examples:
@@ -164,6 +168,9 @@ See :ref:`u-boot-environment` for how ``fdtfile`` is written and how to change i
 
       # For GLT1011280800is1 10.1" LVDS display:
       fw_setenv fdtfile boot/imx93-cargt-00363-00365-glt1011280800is1.dtb
+
+      # The same display on an STM32MP2 00395-02:
+      fw_setenv fdtfile stm32mp257f-cargt-00395-02-00365-glt1011280800is1.dtb
 
 Taking Screenshots with Weston
 ------------------------------

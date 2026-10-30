@@ -16,7 +16,9 @@ The Wi-Fi Hardware
 ------------------
 
 The examples on this page are from i.MX 93 00363 SOMs (IW612) on 00428 and
-00365 carriers, running wrynose images.
+00365 carriers, running wrynose images. This section describes i.MX images
+with the IW612. STM32MP2 00395 SOMs (IW610) load the Wi-Fi driver
+differently and do not use ``nxp-wifi.service``.
 
 The IW612 is connected over SDIO. ``nxp-wifi.service`` loads NXP's ``moal``
 and ``mlan`` drivers at boot with the options in
@@ -135,8 +137,7 @@ Regulatory Domain
 ~~~~~~~~~~~~~~~~~
 
 Cargt images do not set a country, so the radio uses the world regulatory
-domain (``country 00``). The kernel also logs that it has no regulatory
-database (``Direct firmware load for regulatory.db failed``):
+domain (``country 00``):
 
 .. code-block:: text
 
@@ -151,6 +152,11 @@ database (``Direct firmware load for regulatory.db failed``):
            (5490 - 5730 @ 160), (6, 20), (0 ms), DFS, PASSIVE-SCAN
            (5735 - 5835 @ 80), (6, 20), (N/A), PASSIVE-SCAN
            (57240 - 63720 @ 2160), (N/A, 0), (N/A)
+
+The images include the regulatory database (``wireless-regdb-static``). The
+``Direct firmware load for regulatory.db failed`` message early in the
+kernel log does not mean it is missing: the kernel's wireless core looks for
+the file before the root file system is mounted.
 
 ``PASSIVE-SCAN`` means the radio may only listen on those frequencies until
 it hears an access point there; it may not start transmitting on its own.

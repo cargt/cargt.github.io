@@ -342,9 +342,9 @@ layout, so a board on the single-bank layout **cannot** be converted by an
 OTA update. Flash it once:
 
 - **eMMC:** STM32CubeProgrammer with the
-  ``FlashLayout_emmc_<CUBEMX_DTB>-optee.tsv`` flash layout. Use the main
-  layout, not one of the ``-glt*`` display variants: only the main layout
-  has the A/B partitions.
+  ``optee/FlashLayout_emmc_<CUBEMX_DTB>-optee.tsv`` flash layout. Only this
+  main ``optee`` layout has the A/B partitions; the ``opteemin/`` layouts
+  and the ``-glt*`` display variants are single-bank.
 - **SD card:** write the ``.wic`` image, for example with
   ``bmaptool copy <image>.wic.bz2 /dev/sdX`` (``bmaptool`` uses the
   ``.wic.bmap`` file next to it).

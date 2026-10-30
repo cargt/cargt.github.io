@@ -25,24 +25,30 @@ directory per package architecture:
      - Contents
    * - ``all``
      - Architecture-independent packages, such as scripts and data
-   * - ``armv8a``
-     - Packages for any 64-bit Arm processor
-   * - ``armv8a-mx91``, ``armv8a-mx93``, ...
+   * - ``armv8a``, ``cortexa55``, ...
+     - Packages built for the processor's CPU tuning: ``cortexa55`` on the
+       i.MX 91 (images from October 29, 2026), ``armv8a`` on the i.MX 93
+   * - ``cortexa55-mx91``, ``armv8a-mx93``, ...
      - Packages built for one i.MX processor family
    * - ``imx91_cargt_00363_00365``, ...
      - Packages built for one machine, such as the kernel, its modules and
        the device trees
 
 Each directory is a separate ``apt`` source (a feed). Cargt images list the
-feeds on ``yocto.cargt.com`` for their machine in ``/etc/apt/sources.list``:
+feeds on ``yocto.cargt.com`` for their machine in ``/etc/apt/sources.list``.
+For the i.MX 91 00363 on the 00365, images from October 29, 2026 list:
 
 .. code-block:: text
 
-   root@imx91-cargt-00363-00365:~# cat /etc/apt/sources.list
    deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/all ./
-   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/armv8a ./
-   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/armv8a-mx91 ./
+   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/cortexa55 ./
+   deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/cortexa55-mx91 ./
    deb [trusted=yes] https://yocto.cargt.com/linux-imx/wrynose/imx91_cargt_00363_00365 ./
+
+Earlier i.MX 91 images list ``armv8a`` and ``armv8a-mx91`` in place of the
+two ``cortexa55`` feeds. Those feeds are no longer updated, so do not mix
+them with the new ones; ``cat /etc/apt/sources.list`` shows which your board
+uses.
 
 The feeds are not signed, so each line has ``[trusted=yes]``.
 
@@ -112,13 +118,15 @@ Any Yocto build directory can serve its packages to boards on your network.
 
       # /etc/apt/sources.list.d/my-feed.list
       deb [trusted=yes] http://<host-ip>:5678/all ./
-      deb [trusted=yes] http://<host-ip>:5678/armv8a ./
-      deb [trusted=yes] http://<host-ip>:5678/armv8a-mx91 ./
+      deb [trusted=yes] http://<host-ip>:5678/cortexa55 ./
+      deb [trusted=yes] http://<host-ip>:5678/cortexa55-mx91 ./
       deb [trusted=yes] http://<host-ip>:5678/imx91_cargt_00363_00365 ./
 
 4. Update and install. ``apt-cache policy`` shows which feed a package comes
    from. Here ``hello-cmake``, the example program from
-   :ref:`application-development`, exists only in the build on the host:
+   :ref:`application-development`, exists only in the build on the host.
+   That build was made before the October 29 tuning change, so its feeds are
+   named ``armv8a`` and ``armv8a-mx91``:
 
    .. code-block:: text
 
@@ -151,16 +159,20 @@ Any Yocto build directory can serve its packages to boards on your network.
 Setting the Feeds in Your Image
 -------------------------------
 
-The feed lines in ``/etc/apt/sources.list`` come from these variables in
-the machine configuration. To make your own images use your own server, set
-them in your machine configuration, distro configuration or ``local.conf``.
-The Cargt values for the i.MX 91 00363 on the 00365:
+The feed lines in ``/etc/apt/sources.list`` come from these variables, which
+Cargt sets for every i.MX machine in
+``meta-imx-cargt/conf/distro/include/cargt-imx-base.inc``. To make your own
+images use your own server, set them in your distro configuration or
+``local.conf``. For the i.MX 91 00363 on the 00365 they expand to:
 
 .. code-block:: text
 
    PACKAGE_FEED_URIS = "https://yocto.cargt.com/linux-imx/wrynose"
    PACKAGE_FEED_BASE_PATHS = ""
-   PACKAGE_FEED_ARCHS = "all  armv8a  armv8a-mx91  imx91_cargt_00363_00365"
+   PACKAGE_FEED_ARCHS = "all cortexa55 cortexa55-mx91 imx91_cargt_00363_00365"
+
+The i.MX 93 00363 and i.MX 95 00414 machines also add their SOM's own
+directory, such as ``imx93_cargt_00363_osm_som``.
 
 Each combination of a URI, a base path and an architecture becomes one
 ``deb`` line. See ``PACKAGE_FEED_ARCHS`` in the `Yocto Project reference
