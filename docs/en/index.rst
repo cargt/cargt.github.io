@@ -17,6 +17,7 @@ Modern Electronics. Confidence at Every Step.
   core/linux-basics
   core/storage
   core/networking
+  core/wifi
   core/bluetooth
   core/rtc
   core/secure-boot
