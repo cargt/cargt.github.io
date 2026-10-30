@@ -50,6 +50,11 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     needs: build
+    # GitHub Pages runs one deployment at a time. Queue deploys instead of
+    # letting a second one fail; a newer queued deploy replaces an older one.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
