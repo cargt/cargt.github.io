@@ -117,11 +117,14 @@ Work through these checks in order:
 2. **Does the host see the board on USB?** On Linux, run ``lsusb`` and look
    for vendor ``1fc9`` (NXP):
 
-   .. code-block:: bash
+   .. code-block:: text
 
-      lsusb | grep 1fc9
+      $ lsusb | grep 1fc9
+      Bus 001 Device 099: ID 1fc9:0159 NXP Semiconductors OO Blank 91
 
-   If nothing with ``1fc9`` appears, the problem is the connection: use a
+   This is an i.MX 91 00363 on the 00365 carrier in serial download mode;
+   the USB ID tells you which processor it is (see the table above). If
+   nothing with ``1fc9`` appears, the problem is the connection: use a
    USB cable that carries data (some charging cables do not), connect it to
    the carrier's USB download port as shown in the quick start guide, and
    try another port on the host, without a hub.
@@ -142,9 +145,21 @@ Work through these checks in order:
    The rules list the USB IDs that this version of UUU knows, so run these
    commands again after updating UUU.
 
-Once the board is found, ``uuu -lsusb`` lists it with the protocol it is
-using: ``SDPS:`` for the boot ROM, and ``FB:`` once U-Boot's fastboot is
-running (``1fc9:0152``), as in the example in :ref:`running-linux`.
+Once the board is found, ``uuu -lsusb`` lists it with its processor and the
+protocol it is using. The same i.MX 91 board, in the boot ROM (``SDPS:``):
+
+.. code-block:: text
+
+   $ uuu -lsusb
+   uuu (Universal Update Utility) for nxp imx chips -- libuuu_1.5.233-0-g79ce7d2
+
+   Connected Known USB Devices
+           Path     Chip    Pro     Vid     Pid     BcdVersion      Serial_no
+           ====================================================================
+           1:5      MX91    SDPS:   0x1FC9  0x0159   0x0001         <serial>
+
+Once U-Boot's fastboot is running, the board is listed as ``FB:``
+(``1fc9:0152``) instead, as in the example in :ref:`running-linux`.
 
 The i.MX 95
 ~~~~~~~~~~~
@@ -203,8 +218,26 @@ the file for each.
 
       STM32_Programmer_CLI -l usb
 
-   The board appears under ``DFU Interface``. With no board in USB mode, the
-   tool prints ``No STM32 device in DFU mode connected``.
+   The board appears under ``DFU Interface``. From an STM32MP257F 00395-02
+   on the 00365 carrier:
+
+   .. code-block:: text
+
+      $ STM32_Programmer_CLI -l usb
+      ...
+      =====  DFU Interface   =====
+      Total number of available STM32 device in DFU mode: 1
+        Device Index           : USB1
+        USB Bus Number         : 005
+        USB Address Number     : 001
+        Product ID             : DFU in HS Mode @Device ID /0x505, @Revision ID /0x2000
+        Serial number          : <serial>
+        Firmware version       : 0x0110
+        Device ID              : 0x0505
+
+   ``lsusb`` shows it as ``0483:df11 STMicroelectronics STM Device in DFU
+   Mode``. With no board in USB mode, the tool prints ``No STM32 device in
+   DFU mode connected``.
 
 5. **Flash the eMMC.** From the image directory, pass the path to the flash
    layout:
@@ -218,6 +251,31 @@ the file for each.
    Use this ``optee`` layout without a display suffix: it is the only one
    with the A/B partitions that RAUC updates need (see
    :ref:`running-linux`).
+
+   The tool first loads TF-A and U-Boot into RAM, waits for U-Boot's
+   programming service to connect over USB, and then writes each partition.
+   On a 00395-02 it took about 16 minutes, 14 of them for the root file
+   system. It ends with:
+
+   .. code-block:: text
+
+      Flashing service completed successfully
+
+   .. note::
+
+      On the first attempt, the 00395-02 took about 35 seconds to reconnect
+      after loading U-Boot, longer than the tool waits, and the tool stopped
+      with:
+
+      .. code-block:: text
+
+         Error: Unable to reconnect the target device: time out expired
+         Error: Start Operation failed at Flashlayout partition
+         Error: TSV flashing service failed
+
+      The board was still running the programming service, so running the
+      same command again, without power-cycling, continued and completed
+      the flash.
 
 6. **Boot from eMMC:** power off, set the boot switches back to eMMC, and
    power on.
