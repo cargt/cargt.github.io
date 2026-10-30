@@ -1,7 +1,7 @@
 .. _linux-basics:
 
-Getting Started with Linux
-==========================
+Using Hardware from Linux
+=========================
 
 This page shows how to use common hardware interfaces from Linux user
 space: GPIO lines, analog inputs, I²C devices and their kernel drivers,

@@ -14,7 +14,6 @@ Modern Electronics. Confidence at Every Step.
 
   core/index
   core/getting-started
-  core/linux-basics
   core/storage
   core/networking
   core/bluetooth
@@ -24,6 +23,7 @@ Modern Electronics. Confidence at Every Step.
   core/displays
   core/cameras
   core/npu
+  core/linux-basics
   core/software-updates
   core/production
   core/package-management

@@ -1,5 +1,5 @@
-Getting Started with Embedded Linux
-===================================
+Getting Started
+===============
 
 Cargt Provided Software Resources
 ---------------------------------
