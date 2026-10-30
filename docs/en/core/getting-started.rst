@@ -79,6 +79,9 @@ Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
 #. Power cycle the board without holding the BOOT button. If you entered
    UUU mode by changing ``bootcmd``, restore it first (see below).
 
+If ``uuu`` waits at ``Wait for Known USB Device Appear...`` or fails, see
+:doc:`flashing-troubleshooting`.
+
 Example session on Windows, flashing a board that is already in fastboot
 mode (``FB:``):
 
