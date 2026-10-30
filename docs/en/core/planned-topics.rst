@@ -18,9 +18,10 @@ if you need one of them sooner.
   NFS and TFTP
 - **Secure boot:** a complete worked example of signing a Cargt image with
   the NXP Code Signing Tool, and kernel (OS container) signing
-- **Yocto development:** machines and distros; adding a machine; bitbake
+- **Yocto development:** adding a machine; bitbake
   tasks (``listtasks``, ``clean``, ``cleansstate``, ``menuconfig``); devtool
   ``add``, ``upgrade`` and ``ide-sdk``; customizing the bootloader, kernel,
   device tree and SWUpdate; custom images; systemd services; VS Code
-  Remote-SSH (layers, recipes, ``devtool modify``/``finish`` and kernel
-  modules are in :doc:`application-development`)
+  Remote-SSH (the machines and distros are listed in :doc:`yocto`; layers,
+  recipes, ``devtool modify``/``finish`` and kernel modules are in
+  :doc:`application-development`)
