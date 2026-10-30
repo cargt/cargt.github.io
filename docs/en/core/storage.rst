@@ -332,6 +332,8 @@ leave it at 2 GiB. To check which you have:
    systemctl status grow-data-part     # "could not be found" on older images
    grep data /etc/fstab
 
+.. _u-boot-environment:
+
 U-Boot Environment
 ------------------
 
@@ -359,12 +361,14 @@ Variables Cargt images use:
    * - ``fdtfile``
      - Device tree to load, relative to the root partition, for example
        ``boot/<name>.dtb``. Change it to select the device tree for a
-       display; see :doc:`displays`.
+       display; see :doc:`displays`. Write a new value in the same form as
+       the current one (``fw_printenv fdtfile``), and check that the file
+       exists in ``/boot`` first: U-Boot cannot boot Linux without it.
    * - ``ethaddr``, ``eth1addr``
      - MAC addresses, when set. See :ref:`mac-addresses`.
    * - ``bootcmd``
      - Command run at boot. Set it to ``fastboot auto`` to re-flash over
-       USB; see :doc:`getting-started`.
+       USB; see :ref:`uuu-from-environment`.
 
 Reading and changing variables from Linux:
 

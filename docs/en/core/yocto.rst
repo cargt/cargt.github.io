@@ -124,6 +124,11 @@ Initialize build environment for NXP processors
    # imx95-cargt-00414-00428.conf
    # imx95-cargt-00414-osm-som.conf
 
+The layer also builds NXP's FRDM development boards, whose machine files come from NXP's
+``meta-imx``: ``imx8mp-lpddr4-frdm``, ``imx93-11x11-lpddr4x-frdm``,
+``imx95-15x15-lpddr4x-frdm`` and ``imx95-19x19-lpddr5-frdm-pro``. They are useful as references
+before Cargt hardware arrives.
+
 ``cargt-imx-rt`` is the real-time (``PREEMPT_RT``) distro for i.MX 95 designs. Build it in its own
 build directory. See :doc:`real-time-linux`.
 
@@ -291,7 +296,7 @@ Deploy to Target
 ~~~~~~~~~~~~~~~~
 
 - See :ref:`running-linux` for instructions on how to flash pre-compiled images to the target hardware using UUU or STM32Cube.
-- See :ref:`swupdate` for instructions on how to use SWUpdate to install incremental update images on the target hardware.
+- See :ref:`swupdate` for instructions on how to use SWUpdate to install full root file system update images on the target hardware.
 - See :doc:`package-management` for instructions on how to use APT or dpkg to install packages on the target hardware.
 
 Advanced Yocto Usage

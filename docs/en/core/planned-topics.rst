@@ -6,8 +6,8 @@ Planned Topics
 These guides are being written. `Contact Cargt <https://www.cargt.com/>`__
 if you need one of them sooner.
 
-- **STM32MP2 storage:** step-by-step STM32CubeProgrammer flashing and the
-  STM32MP2 flash layout
+- **STM32MP2 flashing:** a step-by-step STM32CubeProgrammer guide (the
+  00395 partition layout is in :doc:`rauc-ota-updates`)
 - **Remote access:** reverse SSH with Teleport, provisioning, connecting to
   a remote device
 - **Connectivity:** Bluetooth audio, NFC
@@ -18,9 +18,10 @@ if you need one of them sooner.
   NFS and TFTP
 - **Secure boot:** a complete worked example of signing a Cargt image with
   the NXP Code Signing Tool, and kernel (OS container) signing
-- **Yocto development:** machines and distros; adding a machine; bitbake
+- **Yocto development:** adding a machine; bitbake
   tasks (``listtasks``, ``clean``, ``cleansstate``, ``menuconfig``); devtool
   ``add``, ``upgrade`` and ``ide-sdk``; customizing the bootloader, kernel,
   device tree and SWUpdate; custom images; systemd services; VS Code
-  Remote-SSH (layers, recipes, ``devtool modify``/``finish`` and kernel
-  modules are in :doc:`application-development`)
+  Remote-SSH (the machines and distros are listed in :doc:`yocto`; layers,
+  recipes, ``devtool modify``/``finish`` and kernel modules are in
+  :doc:`application-development`)

@@ -71,9 +71,14 @@ Software updates use RAUC A/B bundles; see :doc:`/core/rauc-ota-updates`.
      - ``stm32mp25-cargt-00395-01-00365``
      - `Packages <https://yocto.cargt.com/openstlinux/scarthgap/stm32mp25_cargt_00395_01_00365/>`__
      - `Images <https://yocto.cargt.com/images/scarthgap/stm32mp25-cargt-00395-01-00365/>`__
+   * - scarthgap (kernel 6.6.78)
+     - ``stm32mp25-cargt-00395-00365v3``
+     - `Packages <https://yocto.cargt.com/openstlinux/scarthgap/stm32mp25_cargt_00395_00365v3/>`__
+     - `Images <https://yocto.cargt.com/images/scarthgap/stm32mp25-cargt-00395-00365v3/>`__
 
 The ``-01`` and ``-02`` machines are for the two 00395 SOM variants. Use the one that matches the
-part number on your SOM.
+part number on your SOM. ``stm32mp25-cargt-00395-00365v3`` is for the older revision 3 of the 00365
+carrier; it uses a single-bank layout, without RAUC A/B updates.
 
 Source Code
 ------------

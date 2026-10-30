@@ -604,6 +604,8 @@ room air outside the enclosure. Each test ran about 40 minutes to settle.
   1200 MHz raises that to 39 °C, at a cost of 20 % of CPU throughput; the NPU
   rate is unchanged. For warmer rooms this case needs a heatsink.
 
+.. _thermal-00363-93:
+
 i.MX 93 (00363) results
 -----------------------
 
