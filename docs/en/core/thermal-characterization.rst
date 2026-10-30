@@ -48,8 +48,13 @@ Each test runs one load until the die temperature is steady, which takes
 The **design limit** is 10 °C below the temperature at which the processor
 starts to throttle (its passive trip point). Below it, the SOM runs at full
 speed with margin to spare. For the i.MX 95 the passive trip is 105 °C, so
-the design limit is **95 °C**. For the i.MX 8M Plus the passive trip is
-95 °C, so the design limit is **85 °C**, and the same holds for the i.MX 93.
+the design limit is **95 °C**. For the i.MX 8M Plus and i.MX 93 the passive
+trip depends on the processor's temperature grade: U-Boot sets it 10 °C
+below the grade's maximum junction temperature. The SOMs tested here have
+105 °C parts, so the passive trip is 95 °C and the design limit is
+**85 °C**. A part with a lower maximum has a lower trip point and design
+limit. ``grep . /sys/class/thermal/thermal_zone*/trip_point_*_t*`` shows a
+running board's trip points and their types, in thousandths of a degree.
 
 .. note::
 

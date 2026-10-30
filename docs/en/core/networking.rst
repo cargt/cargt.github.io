@@ -4,9 +4,10 @@ Networking with NetworkManager
 ==============================
 
 NetworkManager manages the Ethernet, Wi-Fi and cellular interfaces on Cargt
-images, for both i.MX and STM32MP2. ``systemd-networkd`` is also installed,
-but it is told to leave the Ethernet interfaces alone, and it only sets up
-the CAN interfaces.
+images, for both i.MX and STM32MP2. On i.MX images, ``systemd-networkd`` also
+runs, but it is told to leave the Ethernet interfaces alone, and it only sets
+up the CAN interfaces. On STM32MP2 images it is disabled; see
+`NetworkManager and systemd-networkd`_.
 
 Use ``nmcli`` to configure NetworkManager from the command line or from
 scripts. ``nmtui`` is a menu-driven alternative for configuring a board by
@@ -94,9 +95,9 @@ Interface names:
 NetworkManager and systemd-networkd
 -----------------------------------
 
-Both NetworkManager and ``systemd-networkd`` are installed and running.
-Each interface must be managed by only one of them, so Cargt images divide
-the work:
+On i.MX images, both NetworkManager and ``systemd-networkd`` are installed
+and running. Each interface must be managed by only one of them, so the
+images divide the work:
 
 .. list-table::
    :class: wrap-cells
@@ -139,6 +140,11 @@ configuration, and tell NetworkManager to leave the port alone with
 ``unmanaged-devices`` (see :ref:`wifi-link-up` for the file
 format).
 
+On STM32MP2 images, ``systemd-networkd`` is disabled, so NetworkManager
+manages the Ethernet ports on its own, and the CAN interfaces are not
+brought up at boot. Bring them up with ``ip link`` as shown above, for
+example from a systemd service of your own.
+
 .. _networking-nmtui:
 
 Using nmtui
@@ -151,8 +157,8 @@ will follow.
 
 .. note::
 
-   ``cargt-image-dev`` images published from October 29, 2026 include
-   ``nmtui``. Earlier images and other images do not. To add it to your own
+   i.MX ``cargt-image-dev`` images published from October 29, 2026 include
+   ``nmtui``. Earlier images, other images and STM32MP2 images do not. To add it to your own
    image:
 
    .. code-block:: bash
@@ -468,11 +474,13 @@ Create ``/etc/dnsmasq.d/eth1.conf``:
    dhcp-option=option:router
    dhcp-option=option:dns-server
 
-Then restart dnsmasq and check its log:
+The ``dnsmasq`` service is disabled by default, because NetworkManager runs
+its own dnsmasq for shared connections. Enable and start it, then check its
+log:
 
 .. code-block:: bash
 
-   systemctl restart dnsmasq
+   systemctl enable --now dnsmasq
    journalctl -u dnsmasq -f
 
 Routing with nftables and Kea

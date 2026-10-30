@@ -36,6 +36,10 @@ writes the root file system archive to ``/data/swupdate/update.tar.zst``.
 3. Extracts the archive into it.
 4. Runs ``fw_setenv mmcpart <new partition>`` so U-Boot boots it next.
 
+On the i.MX 93 00363 on the 00428 carrier, ``update.sh`` also moves
+``fdtfile`` from the device tree without a display to the 5.5" display's
+device tree, if the board was still using the former.
+
 The new root file system runs after the next reboot. The script logs each
 step to ``/data/swupdate/log.txt``. If any step fails, the update is
 reported as failed and ``mmcpart`` is not changed.
@@ -152,8 +156,10 @@ Web Server
 
 Cargt images include the SWUpdate web interface (``swupdate-www``). On a
 connected host computer, open ``http://<target_ip>:8080/`` in a web browser,
-drag the ``.swu`` file onto the page, and reboot the board when the update
-completes.
+and drag the ``.swu`` file onto the page. When the update succeeds, the board
+reboots into the new root file system by itself: ``swupdate-progress``,
+which Cargt images run as a service (``swupdate-progress -r -w``), reboots
+it.
 
 .. image:: /_static/images/screenshots/img-swu-web-pic1.png
    :alt: SWUpdate web interface drag and drop - picture 1
@@ -200,7 +206,19 @@ Downloading from a Server or hawkBit
 Cargt images build SWUpdate without its downloader (``-d``) and without
 suricatta, its hawkBit client. To add them, put a configuration fragment
 in a ``swupdate`` bbappend in your own layer, the same way
-``meta-imx-cargt`` adds ``cargt-swupdate-mods.cfg``:
+``meta-imx-cargt`` adds ``cargt-swupdate-mods.cfg``.
+
+.. warning::
+
+   The ``swupdate.cfg`` that Cargt images install already has a
+   ``suricatta`` section with ``enable = true``, pointing at a Cargt test
+   server. It does nothing while suricatta is not built in, but as soon as
+   you enable ``CONFIG_SURICATTA``, the board starts polling that server.
+   Install your own ``swupdate.cfg`` from your layer, with a ``suricatta``
+   section for your own hawkBit server (``url``, ``tenant``, ``id`` and
+   your token), or with ``enable = false``.
+
+The configuration fragment:
 
 .. code-block:: text
 

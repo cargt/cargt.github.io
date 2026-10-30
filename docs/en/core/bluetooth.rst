@@ -4,7 +4,9 @@ Bluetooth
 =========
 
 Cargt SOMs with an NXP IW610 or IW612 module have Bluetooth 5 (Classic and
-Low Energy). The ``btnxpuart`` driver loads the Bluetooth firmware at boot,
+Low Energy). On i.MX images, the Wi-Fi driver loads the module's combined
+Wi-Fi and Bluetooth firmware at boot. ``nxp-bluetooth.service`` then loads
+the ``btnxpuart`` Bluetooth driver, which attaches to the running firmware,
 and BlueZ (``bluetoothd``) manages the controller. Use ``bluetoothctl`` to
 control it, and ``btmon`` to watch the traffic between BlueZ and the
 controller.

@@ -8,11 +8,30 @@ time while the board is off, Cargt designs use a battery-backed real-time
 clock (RTC).
 
 The examples on this page are from i.MX 93 00363 SOMs on 00428 carriers.
+The RTC differs between SOMs:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 70
+
+   * - SOM
+     - Battery-backed RTC
+   * - i.MX 93 00363, i.MX 91 00363, i.MX 93 00324, i.MX 8M Plus 00377
+     - Epson RX8111 at I²C address 0x32, as ``rtc0``. On the 00377 the
+       processor's own RTC is ``rtc1`` (``snvs_rtc``).
+   * - i.MX 93 00359
+     - Micro Crystal RV3032 at I²C address 0x51, as ``rtc0``
+   * - i.MX 95 00414
+     - Epson RX8111, but on an I²C bus that belongs to the i.MX 95's System
+       Manager, so Linux cannot reach it in current images. Until it can, do
+       not rely on the 00414 to keep the time while it is off; use network
+       time.
 
 RTC Devices
 -----------
 
-These boards have two RTCs:
+The i.MX 93 00363 has two RTCs:
 
 .. list-table::
    :class: wrap-cells
@@ -36,7 +55,7 @@ The two RTCs are there because of power. Keeping the i.MX's internal RTC
 running while the board is off would mean powering the processor's
 battery-backed domain from the backup battery, which draws far more than a
 dedicated RTC chip. The Epson RX8111 keeps time on about 100 nA (typical,
-from its datasheet), so a small backup battery lasts for years. Cargt boards
+from its datasheet), so a small backup battery lasts for years. These boards
 therefore keep the time in the RX8111 while the board is off, and run the
 internal RTC only while the board has power, where its wake alarm is still
 useful.

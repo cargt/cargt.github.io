@@ -124,10 +124,9 @@ Initialize build environment for NXP processors
    # imx95-cargt-00414-00428.conf
    # imx95-cargt-00414-osm-som.conf
 
-The layer also builds NXP's FRDM development boards, whose machine files come from NXP's
-``meta-imx``: ``imx8mp-lpddr4-frdm``, ``imx93-11x11-lpddr4x-frdm``,
-``imx95-15x15-lpddr4x-frdm`` and ``imx95-19x19-lpddr5-frdm-pro``. They are useful as references
-before Cargt hardware arrives.
+The layer also supports NXP's i.MX 95 FRDM development boards, whose machine files come from
+NXP's ``meta-imx``: ``imx95-15x15-lpddr4x-frdm`` and ``imx95-19x19-lpddr5-frdm-pro``. Cargt
+publishes images for both, and they are useful as references before Cargt hardware arrives.
 
 ``cargt-imx-rt`` is the real-time (``PREEMPT_RT``) distro for i.MX 95 designs. Build it in its own
 build directory. See :doc:`real-time-linux`.
@@ -264,6 +263,10 @@ Build images
    # cargt-image-demo-swu:
    # cargt-image-dev:
    # cargt-image-dev-swu:
+   # cargt-image-stress-test:
+   # cargt-image-stress-test-swu:
+   # cargt-image-rt:                (real-time build only; see real-time-linux)
+   # cargt-image-rt-swu:
 
 - To build an image:
 
@@ -290,7 +293,7 @@ Build Packages
    bitbake linux-imx
 
 This will build the specified package and its dependencies, resulting in a ``.deb`` file that can be installed on the target device.
-The output package will be located in the ``<build_dir>/tmp/deploy/deb/<machine>/`` directory.
+The output package is in ``<build_dir>/tmp/deploy/deb/``, in the directory for its package architecture: kernel packages such as ``linux-imx`` in the machine's directory (``imx93_cargt_00363_00365``, with underscores), and most others in the CPU or SoC directories such as ``armv8a`` or ``cortexa55``. See :doc:`package-management`.
 
 Deploy to Target
 ~~~~~~~~~~~~~~~~
@@ -350,11 +353,8 @@ Build fails
 SBOM Generation
 ---------------
 
-#. Enable SPDX generation in your ``local.conf`` file:
-
-   .. code-block:: bash
-
-      echo 'INHERIT += "create-spdx"' >> conf/local.conf
+Yocto generates an SPDX SBOM for every image by default (``create-spdx`` is
+part of ``INHERIT_DISTRO``), so there is nothing to enable.
 
 #. Build the image:
 
@@ -362,6 +362,9 @@ SBOM Generation
 
       bitbake <image_name>
 
-#. Find the generated SBOM in the deploy directory:
+#. Find the image's SBOM next to the image:
 
-   ``<build_dir>/tmp/deploy/spdx/<machine>/recipe-<image>.spdx.json``
+   - i.MX: ``<build_dir>/tmp/deploy/images/<machine>/<image>-<machine>.rootfs.spdx.json``
+   - STM32MP2: ``<build_dir>/tmp/deploy/images/<machine>/<image>-<distro>-<machine>.rootfs.spdx.tar.zst``
+
+   The published images on ``yocto.cargt.com`` include the same files.

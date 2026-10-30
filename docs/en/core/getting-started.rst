@@ -47,7 +47,7 @@ Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
       uuu -lsusb
 
    The output should list the connected device.
-#. Download two files for your machine from the `Cargt Package Repository Images`_,
+#. Download these files for your machine from the `Cargt Package Repository Images`_,
    for example from ``wrynose/imx93-cargt-00363-00365/``:
 
    - ``imx-boot.tagged`` - the bootloader
@@ -177,16 +177,24 @@ everything needed for both boot media:
 
 - **eMMC:** flash with
   `STM32CubeProgrammer <https://www.st.com/en/development-tools/stm32cubeprog.html>`__
-  over USB, using the ``FlashLayout_emmc_*.tsv`` flash layout from the
-  ``flashlayout_cargt-image-dev/`` directory. Use the main layout, not one of
-  the ``-glt*`` display variants.
+  over USB, using this flash layout from the ``flashlayout_cargt-image-dev/``
+  directory (here for the 00395-02):
+
+  .. code-block:: text
+
+     optee/FlashLayout_emmc_stm32mp257f-cargt-00395-02-00365-optee.tsv
+
+  It is the only eMMC layout with the A and B partitions that RAUC updates
+  need (see :doc:`rauc-ota-updates`). The layouts in ``opteemin/``, and the
+  ``-glt*`` display variants in both directories, have a single set of
+  partitions, so RAUC updates cannot work on a board flashed with them.
 - **SD card:** write the ``.wic`` image from a Linux host. ``bmaptool``
   uses the ``.wic.bmap`` file next to the image and only writes the blocks
   that contain data:
 
   .. code-block:: bash
 
-     bmaptool copy cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-02-00365.rootfs-<timestamp>.wic.bz2 /dev/sdX
+     bmaptool copy cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-02-00365.rootfs.wic.bz2 /dev/sdX
 
   Replace ``/dev/sdX`` with the SD card device (check with ``lsblk``).
   Everything on the card is erased.

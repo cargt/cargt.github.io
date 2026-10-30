@@ -69,7 +69,7 @@ How AHAB Works
 --------------
 
 The boot image (``imx-boot``) is a sequence of containers, each with a
-header and a signature block:
+header and a signature block. On i.MX 91 and i.MX 93:
 
 .. list-table::
    :class: wrap-cells
@@ -89,10 +89,24 @@ header and a signature block:
      - ATF, OP-TEE and U-Boot proper
      - You (OEM keys); checked by SPL through the ELE
 
+The i.MX 95 image also carries the OEI, System Manager and V2X firmware; see
+the image layout in U-Boot's guide.
+
 The OEM keys form a PKI tree. Its root is the Super Root Key (SRK) table:
-up to four SRK public keys. A SHA-256 hash of that table is programmed once
-into the SRK_HASH fuses, and the ELE compares every signed container's SRK
-table against it.
+up to four SRK public keys. A hash of that table is programmed once into the
+SRK_HASH fuses, and the ELE compares every signed container's SRK table
+against it. On i.MX 91 and i.MX 93 the hash is SHA-256 (256 bits, eight
+fuse words).
+
+.. warning::
+
+   The i.MX 95 (B0 and later) uses AHAB 2.0, which works differently: the
+   SRK hash is 512 bits, programmed into sixteen fuse words in banks 16 and
+   17, and signing needs CST 4.0.1 or later, or NXP's Secure Provisioning SDK
+   (SPSDK). The i.MX 91/93 steps below do not apply to it as written, and
+   following them can leave an i.MX 95 SOM unable to boot once it is closed.
+   Follow the i.MX 95 sections of U-Boot's guide and NXP's SPSDK example for
+   the i.MX 95, and contact Cargt first.
 
 The device lifecycle decides what happens when a check fails:
 
@@ -103,6 +117,9 @@ The device lifecycle decides what happens when a check fails:
 
 Steps
 -----
+
+These steps are for i.MX 91 and i.MX 93; see the warning above for the
+i.MX 95.
 
 1. **Get the Code Signing Tool** from NXP (an NXP account is required), and
    generate the AHAB PKI tree with the scripts it provides. Then create the
@@ -168,9 +185,11 @@ Steps
 
       od -t x4 SRK_1_2_3_4_fuse.bin
 
-   On i.MX 93 and i.MX 95 they go in fuse bank 16, words 0 to 7, programmed
-   from the U-Boot prompt with ``fuse prog 16 <word> <value>``, one command
-   per word. Check every value twice before running these commands.
+   On i.MX 93 they go in fuse bank 16, words 0 to 7, programmed from the
+   U-Boot prompt with ``fuse prog 16 <word> <value>``, one command per word.
+   For the i.MX 91, take the bank and words from its fuse map in the
+   Security Reference Manual. Check every value twice before running these
+   commands.
 
 7. **Check for AHAB events.** Boot the signed image and run ``ahab_status``
    at the U-Boot prompt. It prints the lifecycle and the ELE's event log,
@@ -207,12 +226,14 @@ Authenticating the Kernel
 
 AHAB as described above covers the boot loader. To extend the chain of trust
 to Linux, U-Boot can authenticate a signed OS container with ``auth_cntr``.
-Cargt U-Boot environments include the hooks: with ``CONFIG_AHAB_BOOT``
-enabled, setting ``sec_boot`` to ``yes`` makes ``bsp_bootcmd`` load
-``os_cntr_signed.bin`` and authenticate it with ``auth_cntr`` before
-booting. See U-Boot's ``doc/imx/ahab/guides/sign_os_cntr.txt``.
+Cargt U-Boot environments include the hooks: when ``sec_boot`` is ``yes``,
+``bsp_bootcmd`` loads ``os_cntr_signed.bin`` and authenticates it with
+``auth_cntr`` before booting. You do not set ``sec_boot`` yourself: Cargt
+U-Boot sets it at every boot, to ``yes`` when it is built with
+``CONFIG_AHAB_BOOT`` and to ``no`` otherwise. See U-Boot's
+``doc/imx/ahab/guides/sign_os_cntr.txt``.
 
 For storing application keys, see :doc:`key-storage`.
 
-Protect the U-Boot environment and console as well; otherwise anyone with
-console access can change ``bootcmd`` or ``sec_boot``.
+Protect the U-Boot console as well; otherwise anyone with console access can
+change ``bootcmd``, or ``sec_boot`` for the current boot.
