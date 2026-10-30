@@ -12,6 +12,152 @@ same module is covered in :doc:`bluetooth`.
    :local:
    :depth: 1
 
+The Wi-Fi Hardware
+------------------
+
+The examples on this page are from i.MX 93 00363 SOMs (IW612) on 00428 and
+00365 carriers, running wrynose images.
+
+The IW612 is connected over SDIO. ``nxp-wifi.service`` loads NXP's ``moal``
+and ``mlan`` drivers at boot with the options in
+``/lib/firmware/nxp/wifi_mod_para.conf``:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# systemctl cat nxp-wifi
+   # /usr/lib/systemd/system/nxp-wifi.service
+   [Unit]
+   Description=NXP WiFi service
+   After=network.target
+
+   [Service]
+   Type=simple
+   ExecStart=/usr/bin/env modprobe moal mod_para=nxp/wifi_mod_para.conf drvdbg=0x00000000
+   ExecStartPost=/usr/bin/sleep 3
+
+   [Install]
+   WantedBy=multi-user.target
+
+The service only runs ``modprobe``, so ``systemctl status nxp-wifi`` shows it
+as ``inactive (dead)`` with ``status=0/SUCCESS`` once the drivers are
+loaded. That is normal. ``lsmod`` shows the drivers:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# lsmod | grep -E "moal|mlan"
+   moal                  901120  3
+   mlan                  684032  1 moal
+
+The ``SDIW612`` block in ``wifi_mod_para.conf`` names the firmware,
+``nxp/sduart_nw61x_v1.bin.se``. It is the combined Wi-Fi and Bluetooth
+firmware, so loading it also starts Bluetooth; see
+:ref:`bluetooth-address`.
+
+The driver creates three interfaces on one radio:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Interface
+     - Use
+   * - ``mlan0``
+     - Client (station): joins an access point.
+   * - ``uap0``
+     - Access point. See `Access Point Mode`_.
+   * - ``wfd0``
+     - Wi-Fi Direct (peer to peer).
+
+NetworkManager also lists a ``p2p-dev-`` device for each of them. ``iw dev``
+shows the interfaces (MAC addresses replaced):
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# iw dev
+   phy#0
+           Interface wfd0
+                   ifindex 5
+                   wdev 0x3
+                   addr 02:00:00:00:00:03
+                   type managed
+                   txpower 8.00 dBm
+           Interface uap0
+                   ifindex 4
+                   wdev 0x2
+                   addr 02:00:00:00:00:02
+                   type managed
+                   txpower 8.00 dBm
+           Interface mlan0
+                   ifindex 3
+                   wdev 0x1
+                   addr 02:00:00:00:00:01
+                   type managed
+                   txpower 8.00 dBm
+
+``iw phy`` shows the radio's capabilities: 2.4 and 5 GHz bands with Wi-Fi 6
+(HE) for client, access point and Wi-Fi Direct use. Its interface
+combinations line shows that the interfaces share one channel:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# iw phy | grep -A2 "valid interface combinations"
+           valid interface combinations:
+                    * #{ managed, AP, monitor, P2P-client, P2P-GO } <= 4,
+                      total <= 4, #channels <= 1, STA/AP BI must match, ...
+
+Because of ``#channels <= 1``, a board that runs an access point on
+``uap0`` and a client connection on ``mlan0`` at the same time uses the same
+channel for both. The single radio is also why scans disturb a connected
+link; see `Keeping a Wi-Fi Link Up`_.
+
+Scanning
+~~~~~~~~
+
+``--rescan yes`` waits for a fresh scan. With example network names:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# nmcli -f SSID,CHAN,FREQ,SIGNAL,SECURITY device wifi list ifname mlan0 --rescan yes
+   SSID         CHAN  FREQ      SIGNAL  SECURITY
+   office-5G    44    5220 MHz  77      WPA2 802.1X
+   guest        44    5220 MHz  75      WPA2
+   lab-ap       56    5280 MHz  74      WPA2 WPA3
+   office       2     2417 MHz  72      WPA2 WPA3
+   ...
+
+``iw dev mlan0 link`` shows the current connection, or ``Not connected.``;
+there is an example of a connected link in `Access Point Mode`_.
+
+.. _wifi-regulatory:
+
+Regulatory Domain
+~~~~~~~~~~~~~~~~~
+
+Cargt images do not set a country, so the radio uses the world regulatory
+domain (``country 00``). The kernel also logs that it has no regulatory
+database (``Direct firmware load for regulatory.db failed``):
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# iw reg get
+   global
+   country 00: DFS-UNSET
+           (2402 - 2472 @ 40), (6, 20), (N/A)
+           (2457 - 2482 @ 20), (6, 20), (N/A), AUTO-BW, PASSIVE-SCAN
+           (2474 - 2494 @ 20), (6, 20), (N/A), NO-OFDM, PASSIVE-SCAN
+           (5170 - 5250 @ 80), (6, 20), (N/A), AUTO-BW, PASSIVE-SCAN
+           (5250 - 5330 @ 80), (6, 20), (0 ms), DFS, AUTO-BW, PASSIVE-SCAN
+           (5490 - 5730 @ 160), (6, 20), (0 ms), DFS, PASSIVE-SCAN
+           (5735 - 5835 @ 80), (6, 20), (N/A), PASSIVE-SCAN
+           (57240 - 63720 @ 2160), (N/A, 0), (N/A)
+
+``PASSIVE-SCAN`` means the radio may only listen on those frequencies until
+it hears an access point there; it may not start transmitting on its own.
+The board can still join 5 GHz networks as a client, but only 2.4 GHz
+channels 1 to 11 (2402–2472 MHz) are free of that restriction. That is why
+the access point below uses 2.4 GHz.
+
 Connecting to a Network
 -----------------------
 
@@ -82,7 +228,8 @@ The access point starts at boot from then on.
 
 .. note::
 
-   Use 2.4 GHz (``wifi.band bg``) for the access point.
+   Use 2.4 GHz (``wifi.band bg``) for the access point; see
+   `Regulatory Domain`_.
 
 Checking it, on an i.MX 93 00363 with an IW612 on the 00365 carrier:
 
