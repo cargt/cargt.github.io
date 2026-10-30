@@ -14,6 +14,7 @@ Modern Electronics. Confidence at Every Step.
 
   core/index
   core/getting-started
+  core/identify-som
   core/flashing-troubleshooting
   core/storage
   core/networking
