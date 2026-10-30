@@ -101,8 +101,8 @@ Source Code
 Thermal Performance
 -------------------
 
-Thermal testing of this SOM is planned. Results will be published in
-:doc:`/core/thermal-characterization`.
+See :ref:`thermal-00363-93` in :doc:`/core/thermal-characterization` for
+how much air temperature and load this SOM handles with and without a heatsink.
 
 Compatible Carrier Boards
 --------------------------

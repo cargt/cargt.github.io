@@ -87,9 +87,8 @@ Source Code
 Thermal Performance
 -------------------
 
-In open air this SOM needs no heatsink, even with the CPU, GPU, memory and
-NPU fully loaded. See :ref:`thermal-00377` for the results; enclosure testing
-is in progress.
+See :ref:`thermal-00377` in :doc:`/core/thermal-characterization` for how
+much air temperature and load this SOM handles with and without a heatsink.
 
 Compatible Carrier Boards
 --------------------------

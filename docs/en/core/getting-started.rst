@@ -20,7 +20,7 @@ Public Pre-compiled Images
 .. _Cargt Package Repository Images: https://yocto.cargt.com/images
 
 - `Pre-built complete system images <https://yocto.cargt.com/images>`_ for supported Cargt hardware suitable for initial flashing or full system recovery.
-- `Incremental update images <https://yocto.cargt.com/images>`_ compatible with SWUpdate for in-field updates without reflashing the entire system.
+- `Update images <https://yocto.cargt.com/images>`_ for SWUpdate (i.MX) and RAUC (STM32MP2), which replace the whole root file system in the field without reflashing the board.
 
 .. _running-linux:
 
@@ -38,7 +38,7 @@ Flashing a Pre-compiled image to eMMC / SD card using UUU on an i.MX design
 #. Put the board into the UUU mode as per the hardware design's user guide.
 
    - Option 1: For OSM-L based designs, this typically involves holding the BOOT button while powering on the board.
-   - Option 2: U-boot Environment Variable Method can be used if BOOT button is not available. See U-Boot Environment Variables section for details.
+   - Option 2: If the board has no BOOT button, set ``bootcmd`` in the U-Boot environment; see `NXP - Enter UUU mode using U-Boot Environment Variable Method`_.
 
 #. Connect the board to the host computer via USB and check the connection by running:
 
@@ -194,21 +194,13 @@ everything needed for both boot media:
 A step-by-step STM32CubeProgrammer guide is planned. For the 00395 A/B
 partition layout, see :doc:`rauc-ota-updates`.
 
-Understanding U-Boot Environment Variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-U-Boot variables can be accessed through either the console or ssh session.
-
-   - Console: Interrupt the boot process by pressing any key during the U-Boot countdown.
-      This will drop you to the U-Boot command prompt.
-      U-Boot variables can be viewed and modified using the ``printenv``, ``setenv``, and ``saveenv`` commands in the U-Boot console.
-   - SSH: Connect to the device via SSH once Linux has booted and access U-Boot variables using the ``fw_setenv`` and ``fw_printenv`` utilities.
+.. _uuu-from-environment:
 
 NXP - Enter UUU mode using U-Boot Environment Variable Method
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    - To enter UUU mode without using the BOOT button, you can set the U-Boot environment variable ``bootcmd`` to boot into UUU mode on the next reboot.
-      Use either ``fw_setenv`` or ``setenv`` to set the variable.
+      Use either ``fw_setenv`` from Linux or ``setenv`` at the U-Boot prompt; see :ref:`u-boot-environment` for how to reach the prompt and which variables Cargt images use.
 
    .. code-block:: bash
 

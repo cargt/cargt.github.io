@@ -6,8 +6,8 @@ Planned Topics
 These guides are being written. `Contact Cargt <https://www.cargt.com/>`__
 if you need one of them sooner.
 
-- **STM32MP2 storage:** step-by-step STM32CubeProgrammer flashing and the
-  STM32MP2 flash layout
+- **STM32MP2 flashing:** a step-by-step STM32CubeProgrammer guide (the
+  00395 partition layout is in :doc:`rauc-ota-updates`)
 - **Remote access:** reverse SSH with Teleport, provisioning, connecting to
   a remote device
 - **Connectivity:** Bluetooth audio, NFC
