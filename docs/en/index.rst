@@ -16,6 +16,7 @@ Modern Electronics. Confidence at Every Step.
   core/getting-started
   core/storage
   core/networking
+  core/wifi
   core/bluetooth
   core/rtc
   core/secure-boot
