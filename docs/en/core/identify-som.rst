@@ -202,4 +202,5 @@ Software updates check the machine before they install anything:
   including one for the other 00395 variant. See :doc:`rauc-ota-updates`.
 
 If a board was flashed with the image for another carrier or SOM variant,
-flash the image for the right ``MACHINE``; see :ref:`running-linux`.
+flash the image for the right ``MACHINE``; see :ref:`running-linux` and
+:doc:`flashing-troubleshooting`.
