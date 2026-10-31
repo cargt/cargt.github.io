@@ -43,9 +43,10 @@ Many warnings are harmless: ``supply ... not found, using dummy regulator``
 means the device tree does not name a regulator for a supply that is
 always on. Lines saying a **probe failed** matter: the driver gave up on that
 device. The number is a negated Linux error code; here ``-5`` is ``EIO``, an
-I/O error, which on an I²C device usually means it did not answer. This
-board's touch controller at address 0x41 on I²C bus 2 did not respond, so
-the touchscreen does not work. Other common codes are ``-2`` (``ENOENT``, a
+I/O error, which on an I²C device usually means it did not answer. Here
+the board runs the device tree for the 5.5" display, which describes a
+touch controller at address 0x41 on I²C bus 2, but no display is
+connected, so nothing answers there. Other common codes are ``-2`` (``ENOENT``, a
 file such as firmware not found), ``-19`` (``ENODEV``, no such device) and
 ``-110`` (``ETIMEDOUT``).
 
@@ -203,8 +204,9 @@ A device without one was found but is not working. For the I²C devices:
    i2c-2 42530000.i2c <no driver>
 
 The ``i2c-N`` entries are the buses themselves, which have no driver link.
-The touch controller at ``2-0041`` has no driver either, which matches the
-probe failure in the kernel log above.
+The touch controller at ``2-0041`` has no driver either: the device tree
+describes it, but it isn't connected, which matches the probe failure in
+the kernel log above.
 The same works for any device, for example a network interface:
 
 .. code-block:: text
