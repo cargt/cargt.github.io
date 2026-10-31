@@ -20,6 +20,7 @@ Modern Electronics. Confidence at Every Step.
   core/wifi
   core/bluetooth
   core/rtc
+  core/power-watchdog
   core/secure-boot
   core/key-storage
   core/displays
