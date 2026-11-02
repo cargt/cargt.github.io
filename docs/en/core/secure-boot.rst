@@ -90,7 +90,7 @@ header and a signature block. On i.MX 91 and i.MX 93:
      - You (OEM keys); checked by SPL through the ELE
 
 The i.MX 95 image also carries the OEI, System Manager and V2X firmware; see
-the image layout in U-Boot's guide.
+:doc:`imx95-system-manager` and the image layout in U-Boot's guide.
 
 The OEM keys form a PKI tree. Its root is the Super Root Key (SRK) table:
 up to four SRK public keys. A hash of that table is programmed once into the

@@ -156,7 +156,9 @@ variable instead:
 How i.MX Boards Boot
 --------------------
 
-These are the variables that control booting on the 00377:
+On the i.MX 95, the System Manager and OEI firmware run before U-Boot;
+see :doc:`imx95-system-manager`. From U-Boot on, the i.MX SOMs boot the
+same way. These are the variables that control booting on the 00377:
 
 .. code-block:: text
 
