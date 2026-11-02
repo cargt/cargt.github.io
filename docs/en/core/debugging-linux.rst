@@ -7,6 +7,8 @@ When something on a board does not work, three places usually explain why:
 the kernel log (``dmesg``), the systemd journal (``journalctl``), and the
 kernel's view of the hardware in sysfs. The examples on this page are from
 an i.MX 93 00363 on the 00428 carrier, running a wrynose image.
+To step through your own program with a debugger, see
+:doc:`debugging-applications`.
 
 .. contents:: On this page
    :local:

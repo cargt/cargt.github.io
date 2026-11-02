@@ -31,6 +31,7 @@ Modern Electronics. Confidence at Every Step.
   core/npu
   core/linux-basics
   core/debugging-linux
+  core/debugging-applications
   core/systemd-services
   core/software-updates
   core/production
