@@ -248,13 +248,21 @@ platforms differ:
   ``systemctl restart weston-graphical-session``, or control Weston in the
   ``weston`` user's manager from a root shell:
 
-  .. code-block:: bash
+  .. code-block:: text
 
-     systemctl --user -M weston@ status weston
-     systemctl --user -M weston@ restart weston
+     root@cargt-00395-01-00365-xxxxxxxxxxxx:~# systemctl --user -M weston@ status weston
+     ● weston.service - Weston, a Wayland compositor, as a user service
+          Loaded: loaded (/usr/lib/systemd/user/weston.service; disabled; preset: enabled)
+          Active: active (running) since Mon 2026-11-02 18:57:03 UTC; 2h 47min ago
+     TriggeredBy: ● weston.socket
+     ...
+     root@cargt-00395-01-00365-xxxxxxxxxxxx:~# systemctl --user -M weston@ restart weston
 
-  This is how ST's OpenSTLinux layers install Weston; these commands have
-  not yet been tested on a Cargt STM32MP2 board.
+  ``weston.service`` shows as ``disabled`` because the session starts it,
+  not the ``weston`` user's boot targets. Restarting the whole session also
+  restarts the ``weston`` user's other services, such as PipeWire. These
+  examples are from an STM32MP257F 00395-01 on the 00365 carrier; the
+  hostname ends in the board's MAC address, shown here as ``x``.
 
 The Main Cargt Services
 -----------------------
