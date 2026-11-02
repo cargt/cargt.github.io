@@ -7,7 +7,7 @@ Modern Electronics. Confidence at Every Step.
 
 .. rst-class:: cargt-contact-link
 
-`Contact Us <https://www.cargt.com/>`__
+`Contact Us <https://www.cargt.com/cargt-about/contact-us>`__
 
 .. toctree::
   :maxdepth: 1
