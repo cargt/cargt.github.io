@@ -17,6 +17,7 @@ Modern Electronics. Confidence at Every Step.
   core/identify-som
   core/flashing-troubleshooting
   core/storage
+  core/u-boot
   core/networking
   core/wifi
   core/bluetooth
