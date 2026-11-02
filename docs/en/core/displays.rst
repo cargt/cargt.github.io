@@ -65,6 +65,26 @@ Supported Touchscreen Displays
    :width: 30%
    :title: 2.8" SPI 240x320 - GLT028240320is1
 
+The 2.8" display connects to the carrier's mikroBUS socket through the Cargt
+00379 mikroBUS adapter. It works with the i.MX 91 and i.MX 93 00363 on the
+00365 and 00428 carriers, and with the STM32MP2 00395-01 and 00395-02 on the
+00365 carrier. The i.MX 8M Plus 00377 doesn't support it.
+
+- The display runs landscape, at 320x240. Touch (FT6236) and the PWM
+  backlight are in the display's device tree, with the touch axes matched to
+  the landscape panel.
+- The 00379 wires the touch controller's reset to the mikroBUS RX pin, which
+  the carriers pass to the SoC as an input only. The adapter's pull-up holds
+  the touch controller out of reset, so software can't reset it.
+- The backlight runs at 200 Hz, because the adapter's backlight driver only
+  dims at a low PWM frequency.
+- Weston can't use the GPU on this SPI panel. When the image detects it, it
+  starts Weston with the pixman renderer (and RGB565 on i.MX) and a smaller
+  Cargt logo, using a copy of ``weston.ini`` in ``/run/cargt-weston``. Other
+  displays keep the stock ``weston.ini``.
+
+Select the display's device tree as described in `Software Configuration`_.
+
 .. _Cargt Package Repository Images: https://yocto.cargt.com/images
 
 Connecting Displays on a Cargt design
@@ -171,6 +191,9 @@ STM32MP2 it is the file name alone, for example
 
       # The same display on an STM32MP2 00395-02:
       fw_setenv fdtfile stm32mp257f-cargt-00395-02-00365-glt1011280800is1.dtb
+
+      # For GLT028240320is1 2.8" SPI display on an i.MX 93 00363 / 00428:
+      fw_setenv fdtfile boot/imx93-cargt-00363-00428-glt028240320is1.dtb
 
 Taking Screenshots with Weston
 ------------------------------
@@ -305,10 +328,12 @@ The TLS Key
 ~~~~~~~~~~~
 
 The RDP connection is encrypted with TLS. On its first boot, each board
-creates its own self-signed certificate and key in ``/etc/freerdp/keys``
-(the ``cargt-rdp-keys`` service). Clients show a certificate warning the
-first time they connect, because the certificate is self-signed. To create
-a new key, delete ``/etc/freerdp/keys/server.key`` and reboot.
+creates its own self-signed certificate and key in ``/data/freerdp/keys``
+(the ``cargt-rdp-keys`` service). They are on the data partition, so they
+stay the same across A/B updates and also work with a read-only root
+filesystem. Clients show a certificate warning the first time they connect,
+because the certificate is self-signed. To create a new key, delete
+``/data/freerdp/keys/server.key`` and reboot.
 
 The ``[screen-share]`` section of ``/etc/xdg/weston/weston.ini`` points the
 RDP server at that key:
@@ -319,7 +344,7 @@ RDP server at that key:
    modules=screen-share.so
 
    [screen-share]
-   command=/usr/bin/weston --backend=rdp-backend.so --shell=fullscreen-shell.so --no-resizeable --rdp-tls-cert=/etc/freerdp/keys/server.crt --rdp-tls-key=/etc/freerdp/keys/server.key
+   command=/usr/bin/weston --backend=rdp-backend.so --shell=fullscreen-shell.so --no-resizeable --rdp-tls-cert=/data/freerdp/keys/server.crt --rdp-tls-key=/data/freerdp/keys/server.key
 
 Starting Screen Sharing
 ~~~~~~~~~~~~~~~~~~~~~~~
