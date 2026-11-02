@@ -237,32 +237,68 @@ the kernel received.
 How STM32MP2 Boards Boot
 ------------------------
 
-On STM32MP2 boards, U-Boot boots the ``extlinux.conf`` file on the boot
-file system (``bootfs``) partition. That file names the kernel and the
-kernel command line, and uses ``FDTDIR``, so U-Boot loads the device tree
-named by ``fdtfile`` from it. ``fdtfile`` holds the file name alone, for
-example:
+These examples are from an STM32MP257F 00395-01 on the 00365 carrier with
+the 5.5-inch display. The variables that control booting:
 
 .. code-block:: text
 
-   fdtfile=stm32mp257f-cargt-00395-02-00365.dtb
+   STM32MP> printenv bootcmd altbootcmd bootdelay bootcount bootlimit upgrade_available fdtfile boot_targets
+   bootcmd=echo 'Boot A';setenv altboot 0;run bootcmd_stm32mp
+   altbootcmd=echo 'Boot B';setenv altboot 1;run bootcmd_stm32mp
+   bootdelay=1
+   bootcount=1
+   bootlimit=3
+   upgrade_available=0
+   fdtfile=stm32mp257f-cargt-00395-01-00365-glt0557201280is1.dtb
+   boot_targets=mmc1
 
-so the same one-boot test works:
+``bootcmd_stm32mp`` sets ``boot_targets`` to the device the board booted
+from, ``mmc1`` (the eMMC), and runs ``distro_bootcmd``. That scan looks at
+the bootable partitions, the two boot file systems ``bootfs-a`` and
+``bootfs-b``, and boots the ``extlinux.conf`` it finds. ``altboot=0``
+starts the scan at ``bootfs-a`` and ``altboot=1`` at ``bootfs-b``:
 
 .. code-block:: text
 
-   setenv fdtfile stm32mp257f-cargt-00395-02-00365-glt1011280800is1.dtb
+   STM32MP> boot
+   Boot A
+   Boot over mmc1!
+   switch to partitions #0, OK
+   mmc1(part 0) is current device
+   Scanning mmc 1:6...
+   Found /mmc1_extlinux/extlinux.conf
+   Retrieving file: /mmc1_extlinux/extlinux.conf
+   ...
+   1:	OpenSTLinux
+   Retrieving file: /Image.gz
+   Retrieving file: /st-image-resize-initrd
+   append: root=/dev/mmcblk1p10 rootwait rw   earlycon rauc.slot=A console=ttySTM0,115200
+   Retrieving file: /stm32mp257f-cargt-00395-01-00365-glt0557201280is1.dtb
+   ...
+   Starting kernel ...
+
+``extlinux.conf`` names the kernel and the kernel command line
+(``append``), and loads the device tree named by ``fdtfile``. ``fdtfile``
+holds the file name alone, so the same one-boot test works:
+
+.. code-block:: text
+
+   setenv fdtfile stm32mp257f-cargt-00395-01-00365-glt1011280800is1.dtb
    boot
 
-Each of the two software slots has its own ``bootfs`` partition.
-``bootcmd`` boots slot A and ``altbootcmd`` boots slot B; RAUC changes
-which one is which during an update, and U-Boot's boot counter
-(``bootcount``, ``bootlimit=3``) falls back to the other slot after three
-failed boots. :doc:`rauc-ota-updates` describes this in detail. Do not
-change these variables by hand unless you are following that page.
+On this board U-Boot also prints ``File not found /splash_landscape.bmp``
+and ``panel device error -19`` while it reads ``extlinux.conf``; they are
+normal.
 
-This section comes from the U-Boot configuration in the STM32MP2 layers.
-It has not yet been checked at the prompt of a Cargt STM32MP2 board.
+``bootcmd`` boots the active slot. On slot A, as here, it prints
+``Boot A``; RAUC rewrites ``bootcmd`` and ``altbootcmd`` when it switches
+slots. While a newly installed slot is on trial (``upgrade_available=1``),
+U-Boot counts its boots in ``bootcount``, and after ``bootlimit`` (3)
+failed boots it runs ``altbootcmd`` to go back to the other slot.
+``bootcount=1`` above is the current boot; with ``upgrade_available=0``
+it is not saved, and Linux shows ``bootcount=0``. :doc:`rauc-ota-updates`
+describes this in detail. Do not change these variables by hand unless you
+are following that page.
 
 Looking at Storage
 ------------------
@@ -311,6 +347,14 @@ partition (see :doc:`storage`). ``ls`` and ``load`` work on ext4 and FAT
 file systems. ``ls`` is the quickest way to check that a device tree you
 are about to set in ``fdtfile`` exists.
 
+On STM32MP2 boards the eMMC is MMC device 1 and has a GPT partition table
+with named partitions, which ``mmc part`` lists with their GUIDs:
+``fip-a`` and ``fip-b`` (TF-A, OP-TEE and U-Boot), ``u-boot-env``,
+``bootfs-a`` and ``bootfs-b``, ``vendorfs-a`` and ``vendorfs-b``,
+``rootfs-a`` and ``rootfs-b``, and ``userfs``. ``bootfs-a`` is partition
+6, so ``ls mmc 1:6 /`` lists the kernel and device trees of slot A. In
+Linux, the running slot's ``bootfs`` is mounted at ``/boot``.
+
 Looking at Hardware
 -------------------
 
@@ -352,6 +396,8 @@ in the SOM's EEPROM, including its part number:
    	DRAM rank: 1
    	DRAM size: 4096 MB
    	DRAM speed: 4000 MT/s
+
+STM32MP2 U-Boot does not have ``cargt_eeprom``.
 
 U-Boot also has commands that write: ``mw``, ``i2c mw``, ``mmc write``,
 ``gpio set``, ``cargt_eeprom setrank`` and others. They change hardware
