@@ -3,7 +3,7 @@
 Planned Topics
 ==============
 
-These guides are being written. `Contact Cargt <https://www.cargt.com/>`__
+These guides are being written. `Contact Cargt <https://www.cargt.com/cargt-about/contact-us>`__
 if you need one of them sooner.
 
 - **STM32MP2 flashing:** a step-by-step STM32CubeProgrammer guide (the

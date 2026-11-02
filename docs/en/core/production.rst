@@ -195,4 +195,4 @@ To go back to the eFuse addresses, delete the variables:
 
 Programming MAC eFuses is permanent and the fuse locations differ for each
 i.MX processor. See the processor's reference manual (Fusemap chapter) and
-`contact Cargt <https://www.cargt.com/>`__ for production programming.
+`contact Cargt <https://www.cargt.com/cargt-about/contact-us>`__ for production programming.
