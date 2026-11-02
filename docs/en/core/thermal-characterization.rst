@@ -23,12 +23,17 @@ without the processor reaching its design limit.
        stress, application and NPU loads
    * - :ref:`00377 <00377>`
      - i.MX 8M Plus
-     - Tested: open air and enclosure, no heatsink, stress, application and
-       NPU loads. Passive heatsink testing planned
+     - Tested: open air and enclosure, no heatsink; open air, passive
+       heatsink; stress, application and NPU loads. Passive heatsink in the
+       enclosure planned
    * - :ref:`00363-93 <00363-93>`
      - i.MX 93
      - Tested: open air and enclosure, no heatsink, stress and application
        loads. NPU testing planned
+   * - :ref:`00395 <00395>`
+     - STM32MP257F
+     - Tested: open air, no heatsink, CPU, memory, GPU and video loads.
+       Enclosure and NPU testing planned
 
 Results for each SOM are added here as testing completes. Every test, with
 its full measurements, is listed in :doc:`thermal-test-data`.
@@ -53,7 +58,8 @@ trip depends on the processor's temperature grade: U-Boot sets it 10 °C
 below the grade's maximum junction temperature. The SOMs tested here have
 105 °C parts, so the passive trip is 95 °C and the design limit is
 **85 °C**. A part with a lower maximum has a lower trip point and design
-limit. ``grep . /sys/class/thermal/thermal_zone*/trip_point_*_t*`` shows a
+limit. For the STM32MP257F the passive trip is 110 °C, so the design limit
+is **100 °C**. ``grep . /sys/class/thermal/thermal_zone*/trip_point_*_t*`` shows a
 running board's trip points and their types, in thousandths of a degree.
 
 .. note::
@@ -93,6 +99,9 @@ For the i.MX 8M Plus (00377):
   GPU, memory and NPU all fully loaded at 1.6 GHz, allows 45 °C room air;
   without the NPU, 52 °C. A touchscreen UI with video playback allows about
   60 °C.
+- **A passive heatsink adds 5–12 °C of headroom.** It lowers ΔT by about
+  30 % and raises the open-air worst case from 45 to 57 °C, with no change
+  in performance.
 - **It runs much cooler than the i.MX 95.** Under the same full CPU, GPU and
   memory load it rises 33 °C above the room, against 58 °C for the i.MX 95
   without a heatsink, so it allows 7–15 °C warmer air despite its lower
@@ -113,6 +122,18 @@ For the i.MX 93 (00363):
   rises 19 °C above the room, against 31 °C for the i.MX 8M Plus at 1.6 GHz.
 - **The enclosure costs only about 3 °C of ambient.** The air inside it ran
   2–3 °C above the room.
+
+For the STM32MP257F (00395):
+
+- **In open air, the SOM needs no heatsink.** The worst case we tested, CPU,
+  GPU and memory all fully loaded at 1.5 GHz, rises 26 °C above the room. With
+  its 100 °C design limit that allows 74 °C room air, although figures that
+  high are extrapolations.
+- **It runs cooler than the i.MX 8M Plus and i.MX 95.** Under full CPU, GPU
+  and memory load it rises 26 °C above the room, against 33 °C for the
+  i.MX 8M Plus and 58 °C for the i.MX 95 without heatsinks.
+- **The GPU is its largest heat source.** Capping the CPU at 1.2 GHz saves
+  only about 2 °C.
 
 i.MX 95 (00414) results
 -----------------------
@@ -409,10 +430,13 @@ Test setup
    :widths: 25 75
 
    * - Hardware
-     - 00377 i.MX 8M Plus OSM-L SOM on the 00365 carrier board, no
-       heatsink, in open air on a desk and in a sealed Polycase WA-42*16
-       plastic enclosure. For the UI and video tests the HDMI output was
-       enabled with no monitor connected.
+     - 00377 i.MX 8M Plus OSM-L SOM on the 00365 carrier board, in open
+       air on a desk and in a sealed Polycase WA-42*16 plastic enclosure.
+       For the UI and video tests the HDMI output was enabled with no monitor
+       connected.
+   * - Cooling
+     - No heatsink, or the passive heatsink used on the i.MX 95
+       (ATS-CPX045045025-162-C2-R0)
    * - Software
      - Cargt Linux BSP (NXP lf-6.18.20). CPU governor: performance for the
        full-load tests, ondemand for the others.
@@ -521,6 +545,73 @@ Open air, no heatsink
   at 30–33 fps on the GC7000UL, against 49 fps on the i.MX 95.
 - **The governor makes no difference:** ondemand and performance give the
   same temperature within 0.3 °C at the same cap and load.
+
+Open air, passive heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 34 14 18 34
+
+   * - Load
+     - CPU cap MHz
+     - ΔT °C (no heatsink → passive)
+     - Max ambient, no heatsink → passive
+   * - CPU + GPU + memory + NPU
+     - 1600
+     - 40.4 → 28.4
+     - 45 → **57 °C**
+   * - CPU + GPU + memory
+     - 1600
+     - 33.4 → 23.9
+     - 52 → **61 °C**
+   * - CPU + GPU + memory
+     - 1200
+     - 29.6 → 21.5
+     - 55 → 63 °C
+   * - CPU, all cores
+     - 1600
+     - 30.6 → 20.7
+     - 54 → 64 °C
+   * - CPU, all cores
+     - 1200
+     - 25.8 → 18.1
+     - 59 → 67 °C
+   * - Image classification on the NPU
+     - 1600
+     - 29.0 → 19.5
+     - 56 → 65 °C
+   * - CPU at 50 %
+     - 1600
+     - 25.2 → 17.4
+     - 60 → 68 °C
+   * - GPU only
+     - 1600
+     - 25.1 → 18.6
+     - 60 → 66 °C
+   * - Touchscreen UI + 1080p30 video
+     - 1600
+     - 25.3 → 18.6
+     - 60 → 66 °C
+   * - Touchscreen UI + 1080p30 video
+     - 1200
+     - 23.6 → 17.4
+     - 61 → 68 °C
+   * - 1080p30 video playback
+     - 1600
+     - 18.7 → 13.8
+     - 66 → 71 °C
+   * - Idle
+     - 1600
+     - 18–19 → 12.9
+     - 66 → 72 °C
+
+- **The heatsink lowers ΔT by 26–33 %**, which allows 5–12 °C warmer air.
+  As on the i.MX 95, the gain is largest under the heaviest loads.
+- **Performance is unchanged:** no test throttled with or without the
+  heatsink. The hottest die reading with the heatsink was 52 °C.
+- Tests of the heatsink in the sealed enclosure are planned.
 
 Enclosure, no heatsink
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -691,6 +782,124 @@ Ethos-U65 are planned.
   to test it, the kernel held the die at the throttle point by idling the
   CPU, at a cost of 18–30 % of CPU throughput.
 
+.. _thermal-00395:
+
+STM32MP257F (00395) results
+---------------------------
+
+Test setup
+~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :widths: 25 75
+
+   * - Hardware
+     - 00395 STM32MP257F OSM-L SOM on the 00365 carrier board, no heatsink,
+       in open air on a desk, no display or cameras connected. For the GPU
+       and video tests the LVDS display output was enabled with no panel
+       connected.
+   * - Software
+     - Cargt OpenSTLinux BSP (scarthgap, kernel 6.6.78). CPU governor:
+       performance for the full-load tests, ondemand for the others.
+   * - CPU frequency caps
+     - 1200 and 1500 MHz, the two Cortex-A35 operating points. The GC8000UL
+       GPU has no frequency levels to cap.
+   * - Die temperature
+     - The higher of the STM32MP25 CPU and SoC thermal sensors
+   * - Ambient
+     - A Dracal USB-PTH450 sensor in the room, 22–24 °C
+
+The loads are those used for the other SOMs: ``stress-ng`` on the CPU and
+memory, ``glmark2`` on the GPU and 1080p30 H.264 playback on the hardware
+video decoder. The touchscreen UI and NPU loads were not run. Every test ran
+to a steady die temperature and none throttled. Where a test was repeated,
+the table gives the range.
+
+.. list-table:: Open air, no heatsink
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 34 12 12 14 28
+
+   * - Load
+     - CPU cap MHz
+     - ΔT °C
+     - Max ambient
+     - Performance
+   * - CPU + GPU + memory
+     - 1500
+     - 25.6–25.8
+     - **74 °C**
+     - CPU 8.5 ops/s, memory 11,200–11,500 ops/s, GPU 5 fps
+   * - CPU + GPU + memory
+     - 1200
+     - 24.0
+     - 76 °C
+     - CPU 7.0 ops/s, memory 9,400 ops/s (both −18 %), GPU 5 fps
+   * - GPU only
+     - 1500
+     - 21.5
+     - 79 °C
+     - 6 fps
+   * - CPU + memory
+     - 1500
+     - 19.8
+     - 80 °C
+     - CPU 5.7–5.9 ops/s, memory 14,800–15,000 ops/s
+   * - CPU + memory
+     - 1200
+     - 17.7
+     - 82 °C
+     - CPU 4.8 ops/s (−18 %), memory 12,500 ops/s (−16 %)
+   * - CPU, all cores
+     - 1500
+     - 18.8
+     - 81 °C
+     - 18.8 ops/s
+   * - CPU, all cores
+     - 1200
+     - 17.1
+     - 83 °C
+     - 15.0 ops/s (−20 %)
+   * - 1080p30 video playback
+     - 1500
+     - 17.4
+     - 83 °C
+     - 30 fps
+   * - CPU at 50 %
+     - 1500
+     - 16.5–16.9
+     - 83 °C
+     - –
+   * - CPU at 50 %
+     - 1200
+     - 15.5–15.6
+     - 84 °C
+     - –
+   * - Idle, display output enabled
+     - 1500
+     - 15.2
+     - 85 °C
+     - –
+   * - Idle, no display output
+     - 1500
+     - 14.0–14.3
+     - 86 °C
+     - –
+
+- **No heatsink is needed in open air:** the hottest die reading in any test
+  was 49 °C, 51 °C under the design limit. The maximum ambient figures are
+  far above the 22–24 °C room the tests ran in, so treat them as
+  extrapolations (see the note under `How to read the results`_).
+- **The GPU is the largest heat source.** The GPU alone raises ΔT 6 °C above
+  idle, more than all CPU cores do. With CPU, GPU and memory together the
+  GPU runs glmark2 at only 5–6 fps.
+- **Capping the CPU at 1200 MHz saves only about 2 °C** and costs 16–20 % of CPU
+  and memory throughput. The Cortex-A35 cores make little heat.
+- **Video costs about 2 °C** over idle with the display output enabled.
+- These tests are listed in full here; they are not in
+  :doc:`thermal-test-data`. Enclosure and NPU tests are planned.
+
 Choosing cooling for your product
 ---------------------------------
 
@@ -710,7 +919,7 @@ These results come from one SOM of each type in one orientation on the
 00365 carrier board. A different carrier, enclosure, mounting orientation or airflow
 changes them. Treat them as a starting point and verify your final design.
 For help choosing cooling for your product,
-`contact Cargt <https://www.cargt.com/contact/>`__.
+`contact Cargt <https://www.cargt.com/cargt-about/contact-us>`__.
 
 Test data
 ---------

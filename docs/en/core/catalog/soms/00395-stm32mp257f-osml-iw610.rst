@@ -88,6 +88,12 @@ Source Code
 - `meta-cargt-stm32mp-addons <https://github.com/cargt/meta-cargt-stm32mp-addons>`__ - Additional Cargt layer
 
 
+Thermal Performance
+-------------------
+
+See :ref:`thermal-00395` in :doc:`/core/thermal-characterization` for how
+much air temperature and load this SOM handles without a heatsink.
+
 Compatible Carrier Boards
 --------------------------
 

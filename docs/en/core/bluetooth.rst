@@ -225,6 +225,68 @@ characteristics require encryption), use an agent and ``pair``:
 ``agent NoInputNoOutput`` selects "just works" pairing for devices without
 a display or keyboard; use ``agent KeyboardDisplay`` to confirm passkeys.
 
+``trust`` lets the device reconnect later without asking. To use a paired
+device, such as a Bluetooth LE mouse or keyboard, connect to it; ``info``
+shows whether it is paired, trusted and connected:
+
+.. code-block:: text
+
+   [bluetoothctl]> connect <address>
+   [bluetoothctl]> info <address>
+
+``remove <address>`` deletes the pairing.
+
+Bluetooth on Your Own Carrier
+-----------------------------
+
+The Bluetooth half of the IW610 and IW612 modules is connected to the
+processor over a UART with hardware flow control (RTS and CTS). The
+``btnxpuart`` driver finds it through a ``bluetooth`` child node of that UART
+in the device tree; no ``hciattach`` command is needed. In the i.MX 93 00363
+SOM's device tree, the module is on ``lpuart5``:
+
+.. code-block:: dts
+
+   &lpuart5 { /* bluetooth */
+           pinctrl-names = "default";
+           uart-has-rtscts;
+           pinctrl-0 = <&pinctrl_uart5>;
+           status = "okay";
+
+           bluetooth {
+                   compatible = "nxp,88w8997-bt";
+                   fw-init-baudrate = <3000000>;
+                   max-speed = <3000000>;
+           };
+   };
+
+- ``compatible``: ``nxp,88w8997-bt`` on the i.MX SOMs with the IW612, and
+  ``nxp,88w8987-bt`` on the STM32MP2 00395 with the IW610.
+- ``fw-init-baudrate``: the UART speed the module uses once its firmware is
+  running. It is set in the module's one-time-programmable configuration
+  during production, and the device tree must match it; Cargt modules are
+  configured for 3000000.
+- ``max-speed``: the speed the driver then runs the UART at.
+
+These come from the SOM's device tree, so a carrier board's device tree
+normally inherits them unchanged. Check the node on a running board through
+the controller's device:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# readlink -f /sys/class/bluetooth/hci0/device/of_node
+   /sys/firmware/devicetree/base/soc@0/bus@42000000/serial@42590000/bluetooth
+   root@imx93-cargt-00363-00428:~# basename $(readlink /sys/class/bluetooth/hci0/device/driver)
+   btnxpuart
+
+Older notes for these modules attach the controller by hand with
+``hciattach /dev/ttyLPx any 115200 flow`` and switch it to 3 Mbaud with a
+vendor HCI command. With the ``btnxpuart`` node in place, the driver does
+both, and ``hciattach`` is not needed. The i.MX 8M Plus 00377 is the
+exception: its device tree has no ``bluetooth`` node, and
+``nxp-bluetooth.service`` attaches the controller with ``hciattach`` on
+``/dev/ttymxc0``.
+
 Debugging with btmon
 --------------------
 
@@ -238,3 +300,36 @@ Run it in a second terminal while you reproduce a problem:
    btmon -r /tmp/bt.snoop       # read a saved trace
 
 ``journalctl -u bluetooth`` shows the ``bluetoothd`` log.
+
+When hci0 Does Not Appear
+-------------------------
+
+Check the service that starts Bluetooth, and the kernel log:
+
+.. code-block:: bash
+
+   systemctl status nxp-bluetooth
+   dmesg | grep -iE "btnxpuart|Bluetooth: hci0"
+   hciconfig -a
+
+On a working i.MX 93 00363, the kernel log shows the driver binding and the
+controller finding the firmware the Wi-Fi driver loaded:
+
+.. code-block:: text
+
+   [   14.318817] btnxpuart serial0-0: supply vcc not found, using dummy regulator
+   [   15.335067] Bluetooth: hci0: FW already running.
+
+The ``supply vcc not found`` line is harmless.
+
+**STM32MP2 00395 (IW610): frame reassembly errors.** If the kernel log shows
+``hci0: Frame reassembly failed (-84)`` followed by ``Opcode 0x0c03 failed:
+-110``, and ``nxp-bluetooth.service`` fails with ``Can't init device hci0:
+Connection timed out``, the module's Bluetooth UART is running at a
+different speed from the 3000000 in the device tree. This happens on IW610
+modules whose one-time-programmable configuration was not set in
+production: they run at 115200, and when reached at that speed they report
+the placeholder address ``88:88:88:88:88:88`` instead of an address of
+their own, such as ``00:08:EE:...`` on a correctly configured module. There is no
+software fix for an unconfigured module; contact Cargt.
+

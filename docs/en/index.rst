@@ -14,18 +14,21 @@ Modern Electronics. Confidence at Every Step.
 
   core/index
   core/getting-started
+  core/identify-som
   core/flashing-troubleshooting
   core/storage
   core/networking
   core/wifi
   core/bluetooth
   core/rtc
+  core/power-watchdog
   core/secure-boot
   core/key-storage
   core/displays
   core/cameras
   core/npu
   core/linux-basics
+  core/debugging-linux
   core/systemd-services
   core/software-updates
   core/production

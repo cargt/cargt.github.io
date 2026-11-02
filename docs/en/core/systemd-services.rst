@@ -106,6 +106,8 @@ On a board where everything started:
    0 loaded units listed.
 
 ``systemctl list-unit-files --state=enabled`` lists what starts at boot.
+:doc:`debugging-linux` covers ``journalctl`` and the kernel log in more
+detail.
 
 Turning a Service Off Completely
 --------------------------------
