@@ -919,7 +919,7 @@ These results come from one SOM of each type in one orientation on the
 00365 carrier board. A different carrier, enclosure, mounting orientation or airflow
 changes them. Treat them as a starting point and verify your final design.
 For help choosing cooling for your product,
-`contact Cargt <https://www.cargt.com/contact/>`__.
+`contact Cargt <https://www.cargt.com/cargt-about/contact-us>`__.
 
 Test data
 ---------
