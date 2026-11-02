@@ -426,6 +426,9 @@ address it also tries to load a file over TFTP, and reports an error when
 no server is set. That error does not matter if you only wanted the
 address. Here ``eth1`` had no cable, and the address came over ``eth0``:
 
+To boot the kernel over TFTP and the root file system over NFS, see
+:doc:`network-boot`.
+
 .. code-block:: text
 
    u-boot=> dhcp

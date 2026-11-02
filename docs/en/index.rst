@@ -18,6 +18,7 @@ Modern Electronics. Confidence at Every Step.
   core/flashing-troubleshooting
   core/storage
   core/u-boot
+  core/network-boot
   core/imx95-system-manager
   core/networking
   core/wifi
