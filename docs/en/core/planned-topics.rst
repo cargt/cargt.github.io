@@ -17,10 +17,9 @@ if you need one of them sooner.
 - **Debug and development:** debugging with Lauterbach
 - **Secure boot:** a complete worked example of signing a Cargt image with
   the NXP Code Signing Tool, and kernel (OS container) signing
-- **Yocto development:** adding a machine; bitbake
-  tasks (``listtasks``, ``clean``, ``cleansstate``, ``menuconfig``);
-  ``devtool upgrade``; customizing the bootloader, kernel, device tree and
-  SWUpdate; custom images; systemd services (the machines and distros are
-  listed in :doc:`yocto`; layers, recipes, ``devtool modify``/``finish`` and
-  kernel modules are in :doc:`application-development`; ``devtool add``,
-  ``devtool ide-sdk`` and VS Code are in :doc:`debugging-applications`)
+- **Yocto development:** adding a machine; customizing the bootloader and
+  SWUpdate (the machines and distros are listed in :doc:`yocto`; layers,
+  recipes, ``devtool modify``/``finish`` and kernel modules are in
+  :doc:`application-development`; bitbake tasks, kernel configuration,
+  device trees, custom images and ``devtool upgrade`` are in
+  :doc:`yocto-development`; systemd services are in :doc:`systemd-services`)

@@ -454,3 +454,6 @@ image's own kernel, and ``/usr/lib/modules-load.d/hello.conf`` (containing
 
 Install the image with UUU or a software update (see :doc:`getting-started`
 and :doc:`software-updates`).
+
+:doc:`yocto-development` continues with single bitbake tasks, kernel
+configuration fragments, your own image and upgrading recipes.
