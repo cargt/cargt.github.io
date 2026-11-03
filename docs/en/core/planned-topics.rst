@@ -14,8 +14,7 @@ if you need one of them sooner.
 - **Production configuration:** programming MAC address eFuses (i.MX and
   STM32MP2), reading the SOM EEPROM from Linux, limiting RAM size for
   testing
-- **Debug and development:** debugging with Lauterbach, network boot with
-  NFS and TFTP
+- **Debug and development:** debugging with Lauterbach
 - **Secure boot:** a complete worked example of signing a Cargt image with
   the NXP Code Signing Tool, and kernel (OS container) signing
 - **Yocto development:** adding a machine; bitbake
