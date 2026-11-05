@@ -38,6 +38,7 @@ Modern Electronics. Confidence at Every Step.
   core/production
   core/package-management
   core/yocto
+  core/yocto-development
   core/application-development
   core/real-time-linux
   core/planned-topics
