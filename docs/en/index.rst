@@ -28,6 +28,7 @@ Modern Electronics. Confidence at Every Step.
   core/secure-boot
   core/key-storage
   core/displays
+  core/web-browsers
   core/cameras
   core/npu
   core/linux-basics
