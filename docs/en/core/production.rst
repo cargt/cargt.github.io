@@ -123,6 +123,83 @@ Version 3 records (i.MX 95) add a ``DDR config ID`` line. Older U-Boot
 builds print the serial number in hexadecimal only and leave out the CRC
 line.
 
+Reading the EEPROM in Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The SOM device tree declares the EEPROM, so Linux binds the ``at24``
+driver to it and the record can be read as a file. It is on I²C bus 0 on
+the i.MX 8M Plus 00377, the i.MX 91 and i.MX 93 00363, and the i.MX 95
+00414:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# ls /sys/bus/i2c/drivers/at24/
+   0-0050  bind  module  uevent  unbind
+   root@imx93-cargt-00363-00428:~# hexdump -C -n 48 /sys/bus/i2c/devices/0-0050/eeprom
+   00000000  43 52 47 54 00 30 02 30  31 32 2d 30 30 33 36 33  |CRGT.0.012-00363|
+   00000010  2d 46 45 00 xx xx xx xx  32 30 32 36 30 39 32 39  |-FE.....20260929|
+   00000020  00 08 00 0e 95 02 00 00  00 00 00 00 xx xx xx xx  |................|
+   00000030
+
+The file is 256 bytes, the size of the 24C02, and only root can read it.
+Some display carriers have a second EEPROM, on the display, at address
+0x54; it is not the SOM EEPROM.
+
+These shell commands print the fields:
+
+.. code-block:: bash
+
+   E=/sys/bus/i2c/devices/0-0050/eeprom
+   num() { od -An -tu1 -j$1 -N$2 $E | awk '{ for (i = 1; i <= NF; i++) v = v * 256 + $i } END { print v }'; }
+   str() { dd if=$E bs=1 skip=$1 count=$2 2>/dev/null | tr -d '\0'; }
+   echo "Magic:          $(str 0 4)"
+   echo "Version:        $(num 6 1)"
+   echo "Part number:    $(str 7 13)"
+   echo "Serial number:  $(num 20 4)"
+   echo "Date:           $(str 24 9)"
+   echo "DRAM:           $(num 33 2) MB, $(num 35 2) MT/s, $(num 37 1) rank(s)"
+   [ "$(num 6 1)" -ge 3 ] && echo "DDR config ID:  $(num 38 1)"
+
+On the same i.MX 93 board, and on an i.MX 95 00414 with a version 3
+record:
+
+.. code-block:: text
+
+   Magic:          CRGT
+   Version:        2
+   Part number:    012-00363-FE
+   Serial number:  <decimal>
+   Date:           20260929
+   DRAM:           2048 MB, 3733 MT/s, 2 rank(s)
+
+.. code-block:: text
+
+   Magic:          CRGT
+   Version:        3
+   Part number:    012-00414-X1
+   Serial number:  <decimal>
+   Date:           20261009
+   DRAM:           2048 MB, 6400 MT/s, 1 rank(s)
+   DDR config ID:  1
+
+The serial number is the SOM's Cargt serial number. To check the CRC, on an
+image with Python:
+
+.. code-block:: bash
+
+   python3 -c "import binascii; d = open('$E', 'rb').read(48); print('CRC OK' if binascii.crc32(d[:44]) == int.from_bytes(d[44:], 'big') else 'CRC BAD')"
+
+``free`` reports less than the DRAM size, because the kernel and reserved
+memory regions (for example for the Cortex-M core and the GPU) are not
+counted. On the boards above, ``free -m`` showed a total of 1939 MB for
+2048 MB on the i.MX 93, 3615 MB for 4096 MB on the i.MX 8M Plus, and
+1703 MB for 2048 MB on the i.MX 95.
+
+.. warning::
+
+   The file is writable by root. Do not write to it; see the warning
+   below about the DRAM fields.
+
 How the DRAM Fields Are Used
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -146,6 +223,65 @@ If the EEPROM is blank or its CRC is wrong, SPL assumes one rank. A version
 ``cargt_eeprom setrank <1|2>`` rewrites the DRAM rank field and the CRC, and
 updates a version 1 record to version 2. It is a repair tool for SOMs
 programmed with the wrong rank count; use it only when Cargt asks you to.
+
+.. _limit-ram:
+
+Limiting RAM for Testing
+------------------------
+
+To check that your application runs on a SOM with less memory than the
+one on your desk, boot with the ``mem=`` kernel argument. Linux then uses
+only that much RAM. The memory is still fitted and SPL still sets it up
+for its full size, as the EEPROM says; only Linux leaves the rest unused.
+
+On i.MX boards, U-Boot adds ``cargt_bootargs`` to the end of the kernel
+command line. It is not set by default. Stop U-Boot at its prompt (see
+:doc:`u-boot`), set it, and boot:
+
+.. code-block:: text
+
+   u-boot=> printenv mmcargs cargt_bootargs
+   mmcargs=setenv bootargs ${jh_clk} console=${console} root=/dev/mmcblk${mmcdev}p${mmcpart} rootwait rw ${cargt_bootargs}
+   ## Error: "cargt_bootargs" not defined
+   u-boot=> setenv cargt_bootargs mem=1024M
+   u-boot=> boot
+
+Without ``saveenv`` this lasts for one boot; the next reset boots with all
+the memory again. From an i.MX 8M Plus 00377 with 4 GB on the 00365
+carrier:
+
+.. code-block:: text
+
+   [    0.000000] OF: reserved mem: failed to allocate memory for node 'linux,cma': size 960 MiB
+   [    0.000000] Kernel command line: console=ttymxc3,115200 root=/dev/mmcblk2p2 rootwait rw mem=1024M
+   [    0.007902] Memory: 949980K/1048576K available (23104K kernel code, 2162K rwdata, 9160K rodata, 2112K init, 687K bss, 61388K reserved, 32768K cma-reserved)
+
+.. code-block:: text
+
+   root@imx8mp-cargt-00377-00365:~# free -m
+                  total        used        free      shared  buff/cache   available
+   Mem:             966         349         501          12         200         616
+   root@imx8mp-cargt-00377-00365:~# grep CmaTotal /proc/meminfo
+   CmaTotal:          32768 kB
+
+Normally the same board shows a total of 3615 MB and a ``CmaTotal`` of
+983040 kB.
+
+.. note::
+
+   The contiguous memory area (CMA) that the GPU, video codecs, display
+   and camera allocate from is sized in the device tree for the full
+   memory, 960 MiB on the 00377. With ``mem=1024M`` it does not fit, and
+   the kernel falls back to a 32 MiB CMA, as the first line above shows.
+   Weston still started, but graphics, video and camera use can fail with
+   a 32 MiB CMA, so the test is pessimistic for those. Add ``cma=<size>`` to ``cargt_bootargs`` to choose the size
+   yourself; this was not tested for this page.
+
+To keep the limit across resets, ``saveenv`` after setting
+``cargt_bootargs``, or set it from Linux with
+``fw_setenv cargt_bootargs mem=1024M``. ``fw_setenv cargt_bootargs`` with
+no value removes it. STM32MP2 boards boot with extlinux and do not use
+``cargt_bootargs``.
 
 .. _mac-addresses:
 
