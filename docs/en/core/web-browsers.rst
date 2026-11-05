@@ -66,6 +66,59 @@ The **least expensive platform that runs a browser adequately** is the
 STM32MP2 with 1 GB and WPE WebKit. The least expensive SoC on which Chrome
 performs well is the i.MX 8M Plus.
 
+At a Glance
+-----------
+
+The charts show the main results; the tables under `Results`_ have every
+number. WPE WebKit is green, its trimmed build light green, and Chrome
+orange. Chrome does not run on the STM32MP2, and its panel refreshes at
+44 Hz rather than 60.
+
+.. figure:: /_static/images/charts/img-browser-fps-css-transform.svg
+   :width: 100%
+   :alt: Bar chart of frames per second on the transform and opacity animation page: WebKit and Chrome both about 60 on the i.MX 95 and 8M Plus; on the i.MX 93 WebKit 52.4 and Chrome 19.1; STM32MP2 WebKit 43.
+
+   Animation the GPU can composite (the ``csst`` page). Both browsers reach the
+   panel's rate on the i.MX 95 and 8M Plus; on the i.MX 93, WPE WebKit is
+   almost three times faster.
+
+.. figure:: /_static/images/charts/img-browser-fps-css-repaint.svg
+   :width: 100%
+   :alt: Bar chart of frames per second on the repaint-heavy page: Chrome 59.8 and WebKit 13.1 on the i.MX 95, Chrome 28.7 and WebKit 7.7 on the 8M Plus, Chrome 8.3 and WebKit 0.4 on the i.MX 93, WebKit 7.8 on the STM32MP2.
+
+   A page that lays out and repaints every frame (the ``css`` page). Chrome is
+   much faster on every SoC it runs on.
+
+.. figure:: /_static/images/charts/img-browser-fps-webgl.svg
+   :width: 100%
+   :alt: Bar chart of WebGL frames per second: both 59.9 on the i.MX 95, Chrome 57.3 and WebKit 32.3 on the 8M Plus, WebKit 2.7 on the i.MX 93 where Chrome blocks WebGL, WebKit 26.2 on the STM32MP2.
+
+   A full-screen WebGL shader. On the i.MX 93, which has no 3D GPU, Chrome
+   turns WebGL off.
+
+.. figure:: /_static/images/charts/img-browser-cpu-per-frame.svg
+   :width: 100%
+   :alt: Log-scale bar chart of WebKit CPU time per frame for the three animated pages on each SoC; the i.MX 93 needs 4,660 ms per frame on the repaint-heavy page and 736 ms on WebGL, the others 10 to 220 ms.
+
+   WPE WebKit's CPU time per frame (CPU load times cores, divided by the frame
+   rate; log scale). The STM32MP2's GPU keeps it close to the i.MX 95 and
+   8M Plus; without a GPU, the i.MX 93 needs more than 20 times the CPU per frame on
+   repaint-heavy pages.
+
+.. figure:: /_static/images/charts/img-browser-memory.svg
+   :width: 100%
+   :alt: Bar chart of the largest browser memory (PSS) per SoC: i.MX 95 WebKit 340 and Chrome 364 MB, 8M Plus 356 and 459 MB, i.MX 93 558 and 431 MB, STM32MP2 WebKit 181 MB.
+
+   The most memory the browser used on any test page (proportional set size
+   of all its processes).
+
+.. figure:: /_static/images/charts/img-browser-1gb-free.svg
+   :width: 100%
+   :alt: Bar chart of the lowest free memory during the 1 GB runs: i.MX 93 WebKit 247 MB and Chrome 342 MB, STM32MP2 WebKit 339 MB.
+
+   The lowest available memory during the runs with 1 GB of RAM (emulated).
+   Every run kept more than 240 MB free.
+
 How It Was Measured
 -------------------
 
@@ -394,6 +447,12 @@ Nothing ran out of memory, the frame rates did not change, and startup was
 Image Size
 ----------
 
+.. figure:: /_static/images/charts/img-browser-image-size.svg
+   :width: 100%
+   :alt: Bar chart of installed size added to the image: WebKit 163 to 174 MB, trimmed WebKit 130.5 MB on the STM32MP2, Chrome 382 to 385 MB.
+
+   Installed size each browser adds to ``cargt-image-dev``.
+
 Installed size added to ``cargt-image-dev``:
 
 .. list-table::
@@ -433,6 +492,12 @@ Installed size added to ``cargt-image-dev``:
 
 Building WPE WebKit
 -------------------
+
+.. figure:: /_static/images/charts/img-browser-build-time.svg
+   :width: 100%
+   :alt: Bar chart of compile time on the build host: WebKit 63 minutes, Chromium 273 minutes.
+
+   Compile time on Cargt's build host, longest run of each.
 
 WPE WebKit comes from Igalia's `meta-webkit
 <https://github.com/Igalia/meta-webkit>`__ layer. Add it to
