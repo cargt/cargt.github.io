@@ -3,6 +3,10 @@
 Secure Boot (AHAB) on i.MX 9
 ============================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX 91` :bdg-primary:`i.MX 93` :bdg-primary:`i.MX 95`
+
 i.MX 91, i.MX 93 and i.MX 95 processors verify the boot image with
 AHAB (Advanced High Assurance Boot), implemented by the EdgeLock Secure
 Enclave (ELE). This page explains how AHAB works on Cargt SOMs and the steps

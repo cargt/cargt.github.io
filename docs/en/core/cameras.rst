@@ -3,6 +3,10 @@
 Cameras
 =======
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX 95` :bdg-primary:`STM32MP2`
+
 This page shows how to use a MIPI CSI-2 camera on a Cargt i.MX board with
 libcamera and GStreamer, and how to capture HDMI input on an STM32MP2 board
 (see :ref:`stm32mp2-hdmi-input`).

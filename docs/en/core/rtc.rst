@@ -3,6 +3,10 @@
 Real-Time Clock
 ===============
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 Linux keeps the time in the system clock while the board runs. To keep the
 time while the board is off, Cargt designs use a battery-backed real-time
 clock (RTC).

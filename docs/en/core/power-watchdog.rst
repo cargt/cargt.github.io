@@ -3,6 +3,10 @@
 Power-Off, Watchdog and Suspend
 ===============================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 This page explains what ``poweroff`` does on Cargt SOMs, how the hardware
 watchdog is used, and which suspend modes to use.
 

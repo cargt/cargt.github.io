@@ -3,6 +3,10 @@
 systemd Services and Timers
 ===========================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 Cargt images use systemd to start and supervise everything that runs on the
 board: Weston, Wi-Fi and Bluetooth bring-up, NetworkManager, SWUpdate and
 your own applications. Each of these is a **unit**, usually a ``.service``
@@ -83,6 +87,8 @@ log lines:
 ``Loaded`` shows the unit file and whether it is enabled; ``Active`` shows
 whether it runs. ``TriggeredBy`` means a socket unit can also start it on
 demand.
+
+.. _systemd-finding-problems:
 
 Finding Problems
 ----------------

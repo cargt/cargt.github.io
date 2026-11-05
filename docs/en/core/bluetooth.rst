@@ -3,6 +3,10 @@
 Bluetooth
 =========
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 Cargt SOMs with an NXP IW610 or IW612 module have Bluetooth 5 (Classic and
 Low Energy). On i.MX images, the Wi-Fi driver loads the module's combined
 Wi-Fi and Bluetooth firmware at boot. ``nxp-bluetooth.service`` then loads
@@ -300,6 +304,8 @@ Run it in a second terminal while you reproduce a problem:
    btmon -r /tmp/bt.snoop       # read a saved trace
 
 ``journalctl -u bluetooth`` shows the ``bluetoothd`` log.
+
+.. _bluetooth-no-hci0:
 
 When hci0 Does Not Appear
 -------------------------

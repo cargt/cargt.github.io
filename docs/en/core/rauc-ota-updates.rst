@@ -3,6 +3,10 @@
 RAUC A/B OTA Updates — STM32MP2 (00395-01-00365 / 00395-02-00365)
 ====================================================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`STM32MP2`
+
 .. note::
 
    **Verified on:** ``stm32mp25-cargt-00395-01-00365`` and
@@ -444,6 +448,8 @@ Cargt uses hawkBit as test infrastructure. Both 00395 boards ran more than
 110 consecutive automatic update cycles (about 18 hours) with no failures,
 and a later overnight run that also sabotaged a bank every fourth cycle
 passed 109 consecutive cycles.
+
+.. _rauc-troubleshooting:
 
 Troubleshooting
 ~~~~~~~~~~~~~~~~

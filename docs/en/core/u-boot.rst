@@ -3,6 +3,10 @@
 The U-Boot Command Line
 =======================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 U-Boot is the boot loader on every Cargt board: it starts the processor's
 memory, then loads the Linux kernel and device tree and starts Linux. Its
 command line is useful for trying a different device tree or root
@@ -129,6 +133,8 @@ example a different device tree:
 
 If the new setting works, make it permanent with ``fw_setenv`` from Linux,
 or with ``setenv`` and ``saveenv`` at the prompt.
+
+.. _u-boot-undo:
 
 Undoing a Bad Change
 ~~~~~~~~~~~~~~~~~~~~

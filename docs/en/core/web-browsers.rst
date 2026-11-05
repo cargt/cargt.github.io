@@ -3,6 +3,10 @@
 Web Browsers: WPE WebKit and Chrome
 ===================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 A product that shows its user interface as a web page needs a browser
 engine on the board. This page compares the two that run on Cargt SOMs,
 `WPE WebKit <https://wpewebkit.org/>`__ and Chromium (Chrome), measured by

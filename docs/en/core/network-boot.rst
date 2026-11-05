@@ -3,6 +3,10 @@
 Booting over the Network (TFTP and NFS)
 =======================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 During development it is often quicker to boot a board from your PC than to
 flash it after every change. U-Boot loads the kernel and device tree from a
 TFTP server, and Linux mounts its root file system from an NFS server. A

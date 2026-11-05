@@ -3,6 +3,10 @@
 Machine Learning on the i.MX 93 NPU
 ===================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX 93`
+
 The i.MX 93 has an Arm Ethos-U65 neural processing unit (NPU) for running
 quantized TensorFlow Lite models. Cargt images do not turn it on, because
 on the i.MX 93 the NPU is driven through the Cortex-M33 core, and many

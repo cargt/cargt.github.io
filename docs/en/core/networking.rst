@@ -3,6 +3,10 @@
 Networking with NetworkManager
 ==============================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 NetworkManager manages the Ethernet, Wi-Fi and cellular interfaces on Cargt
 images, for both i.MX and STM32MP2. On i.MX images, ``systemd-networkd`` also
 runs, but it is told to leave the Ethernet interfaces alone, and it only sets
@@ -776,6 +780,8 @@ Add ``my-network-config`` to ``IMAGE_INSTALL`` in your image. NetworkManager
 ignores keyfiles that other users can read, so keep the mode at ``0600``.
 
 On scarthgap builds, use ``${WORKDIR}`` in place of ``${UNPACKDIR}``.
+
+.. _networking-troubleshooting:
 
 Troubleshooting
 ---------------

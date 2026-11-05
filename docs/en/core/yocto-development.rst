@@ -3,6 +3,10 @@
 Everyday Yocto Development
 ==========================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 This page collects the Yocto tasks that come up once you have your own
 layer: running single bitbake tasks, finding out where a variable is set,
 changing the kernel configuration and device tree, building your own

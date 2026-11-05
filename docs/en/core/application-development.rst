@@ -3,6 +3,10 @@
 Developing Applications and Kernel Modules
 ==========================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 This page shows how to build your own programs and kernel modules for a
 Cargt board: directly on the board, which is quick for experiments, and as
 recipes in your own Yocto layer, which is how they belong in a product

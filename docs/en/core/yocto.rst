@@ -3,6 +3,10 @@
 Yocto Development
 =================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 .. _yocto-tutorial:
 
 Yocto Tutorial
@@ -66,27 +70,38 @@ Generic repo commands:
    repo init -u <manifest_url> -b <branch_name>
    repo sync
 
-Cargt example for NXP i.MX:
+For a Cargt design (see :doc:`releases` for every release and manifest):
 
-.. code-block:: bash
+.. tab-set::
+    :sync-group: platform
 
-   mkdir -p ~/yocto
-   cd ~/yocto
-   repo init -u https://github.com/cargt/imx_manifest -b wrynose -m cargt-imx-6.18.20-2.0.0.xml
-   repo sync
+    .. tab-item:: i.MX
+        :sync: imx
 
-This will download the necessary Yocto layers and source code for building images for Cargt's i.MX 91, i.MX 93, i.MX 95, and i.MX 8M Plus hardware designs.
+        .. code-block:: bash
 
-Cargt example for STM32MP2:
+           mkdir -p ~/yocto
+           cd ~/yocto
+           repo init -u https://github.com/cargt/imx_manifest -b wrynose -m cargt-imx-6.18.20-2.0.0.xml
+           repo sync
 
-.. code-block:: bash
+        This downloads the Yocto layers and source code for Cargt's i.MX 91,
+        i.MX 93, i.MX 95 and i.MX 8M Plus hardware designs. For an i.MX design
+        already qualified on scarthgap, use
+        ``-b scarthgap -m cargt-imx-6.6.36-2.1.0.xml`` instead.
 
-   mkdir -p ~/yocto
-   cd ~/yocto
-   repo init -u https://github.com/cargt/stm32mp_manifest -b scarthgap -m cargt-stm32mp2.xml
-   repo sync
+    .. tab-item:: STM32MP2
+        :sync: stm32mp2
 
-This will download the necessary Yocto layers and source code for building images for Cargt's STM32MP2 hardware designs.
+        .. code-block:: bash
+
+           mkdir -p ~/yocto
+           cd ~/yocto
+           repo init -u https://github.com/cargt/stm32mp_manifest -b scarthgap -m cargt-stm32mp2.xml
+           repo sync
+
+        This downloads the Yocto layers and source code for Cargt's STM32MP2
+        hardware designs.
 
 Initialize build environment for NXP processors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -304,6 +319,8 @@ Deploy to Target
 
 Advanced Yocto Usage
 ~~~~~~~~~~~~~~~~~~~~
+
+.. _yocto-build-fails:
 
 Build fails
 ^^^^^^^^^^^

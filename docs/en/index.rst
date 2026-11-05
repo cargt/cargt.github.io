@@ -11,7 +11,8 @@ Modern Electronics. Confidence at Every Step.
 
 New to a Cargt board? Read :doc:`core/getting-started` to flash and boot a
 pre-built image, then :doc:`core/identify-som` to find your Yocto ``MACHINE``,
-then :doc:`core/yocto` to build your own image.
+then :doc:`core/yocto` to build your own image. Every release and image is
+listed in :doc:`core/releases`.
 
 .. grid:: 1 2 2 3
     :gutter: 3
@@ -48,11 +49,11 @@ then :doc:`core/yocto` to build your own image.
 
         SWUpdate and RAUC field updates and production data.
 
-    .. grid-item-card:: Recovery and Troubleshooting
-        :link: core/flashing-troubleshooting
+    .. grid-item-card:: Troubleshooting
+        :link: core/troubleshooting
         :link-type: doc
 
-        Recover a board that won't flash or boot.
+        Find your symptom: flashing, booting, networking, updates or builds.
 
 .. toctree::
   :maxdepth: 1
@@ -60,6 +61,7 @@ then :doc:`core/yocto` to build your own image.
 
   core/getting-started
   core/identify-som
+  core/releases
   core/flashing-troubleshooting
 
 .. toctree::
@@ -124,7 +126,8 @@ then :doc:`core/yocto` to build your own image.
 
 .. toctree::
   :maxdepth: 1
-  :caption: Reference
+  :caption: Help and Reference
 
+  core/troubleshooting
   references/index
   core/planned-topics

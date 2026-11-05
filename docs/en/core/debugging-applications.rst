@@ -3,6 +3,10 @@
 Debugging Applications with gdb and VS Code
 ===========================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 This page shows how to step through your own program on a Cargt board with
 a debugger running on your PC: in VS Code, set up by ``devtool ide-sdk``,
 or with ``gdb`` on the command line. The program runs on the board under

@@ -3,6 +3,10 @@
 Package Management on a Cargt design
 ====================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 Cargt images use ``apt`` and ``dpkg`` with Debian (``.deb``) packages built
 by Yocto. This page shows how to install packages from the Cargt package
 repository, from your own Yocto build, and from a local directory.
