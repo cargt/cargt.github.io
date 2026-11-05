@@ -239,8 +239,3 @@ STM32MP2 00395 designs use RAUC with a dual-bank (A/B) partition layout
 instead of SWUpdate. Updates install to the inactive bank, and a bank that
 fails to boot falls back to the previous one automatically. See
 :doc:`rauc-ota-updates`.
-
-.. toctree::
-    :hidden:
-
-    rauc-ota-updates
