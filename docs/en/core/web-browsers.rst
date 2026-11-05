@@ -268,7 +268,9 @@ attached, WPE WebKit 2.52.6, Chromium 142.
 - Startup: WPE WebKit 1.2 s warm, 2.8 s cold; Chrome 1.3 s warm, 3.2 s
   cold.
 - WPE WebKit ran as ``cog`` under Weston.
-- Chrome disables WebGL on a software renderer.
+- Chrome's GPU blocklist disables WebGL on Mesa's software renderer, and
+  Chrome then composites in software too. ``--ignore-gpu-blocklist``
+  forces WebGL on, at 5.0 fps with 98% CPU.
 - The DSI output kept running and pacing frames without a panel, so the
   frame rates, CPU and memory are representative; the picture itself was
   not checked.
