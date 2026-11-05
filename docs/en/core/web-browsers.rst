@@ -62,9 +62,9 @@ Which Browser for Which SoC
        matter; Chrome for heavy web applications with a lot of repainting
        or WebGL.
 
-The **cheapest platform that runs a browser adequately** is the STM32MP2
-with 1 GB and WPE WebKit. The cheapest SoC on which Chrome performs well
-is the i.MX 8M Plus.
+The **least expensive platform that runs a browser adequately** is the
+STM32MP2 with 1 GB and WPE WebKit. The least expensive SoC on which Chrome
+performs well is the i.MX 8M Plus.
 
 How It Was Measured
 -------------------
