@@ -23,9 +23,8 @@ without the processor reaching its design limit.
        stress, application and NPU loads
    * - :ref:`00377 <00377>`
      - i.MX 8M Plus
-     - Tested: open air and enclosure, no heatsink; open air, passive
-       heatsink; stress, application and NPU loads. Passive heatsink in the
-       enclosure planned
+     - Tested: open air and enclosure, no heatsink and passive heatsink,
+       stress, application and NPU loads, throttling and an 18-hour burn-in
    * - :ref:`00363-93 <00363-93>`
      - i.MX 93
      - Tested: open air and enclosure, no heatsink, stress and application
@@ -111,7 +110,14 @@ For the i.MX 8M Plus (00377):
   least 42 °C room air; a touchscreen UI with video allows 51 °C. With CPU,
   GPU, memory and NPU all fully loaded it allows 35 °C at 1.6 GHz and 39 °C
   at 1.2 GHz.
+- **With the passive heatsink, every load allows at least 48 °C in the
+  enclosure.** The heatsink adds 6–13 °C of headroom; the worst case allows
+  48 °C at 1.6 GHz and 52 °C at 1.2 GHz.
 - **The NPU is again the largest single heat source**, adding 7–10 °C of ΔT.
+- **Design to stay below the throttle point.** The i.MX 8M Plus throttles in
+  one step: the CPU drops to 1.2 GHz and the GPU slows to about 1 frame per
+  second, so a touchscreen UI becomes unusable. Video playback is not
+  affected.
 
 For the i.MX 93 (00363):
 
@@ -452,7 +458,8 @@ Test setup
 
 The loads are those used for the i.MX 95, with the NPU loads running on the
 VIP8000 NPU through the TensorFlow Lite VX delegate. Every test ran to a
-steady die temperature and none throttled.
+steady die temperature, and none throttled except the throttle tests, which
+lowered the throttle point on purpose.
 
 Open air, no heatsink
 ~~~~~~~~~~~~~~~~~~~~~
@@ -698,7 +705,143 @@ room air outside the enclosure. Each test ran about 40 minutes to settle.
 - **Only the NPU worst case may need a heatsink.** CPU, GPU, memory and NPU
   all fully loaded allow 35 °C room air at 1600 MHz. Capping the CPU at
   1200 MHz raises that to 39 °C, at a cost of 20 % of CPU throughput; the NPU
-  rate is unchanged. For warmer rooms this case needs a heatsink.
+  rate is unchanged. For warmer rooms this case needs the passive heatsink
+  (below).
+
+Enclosure, passive heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The same loads in the same enclosure with the passive heatsink fitted. The
+CPU, GPU, memory and NPU rows are from 4-hour tests.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 34 12 20 34
+
+   * - Load
+     - CPU cap MHz
+     - ΔT °C (no heatsink → passive)
+     - Max ambient, no heatsink → passive
+   * - CPU + GPU + memory + NPU
+     - 1600
+     - 50.3 → 36.9
+     - 35 → **48 °C**
+   * - CPU + GPU + memory + NPU
+     - 1200
+     - 45.5 → 33.3
+     - 39 → **52 °C**
+   * - CPU + GPU + memory
+     - 1600
+     - 42.7 → 30.4
+     - 42 → 55 °C
+   * - CPU + GPU + memory
+     - 1200
+     - 38.4 → 27.7
+     - 47 → 57 °C
+   * - CPU, all cores
+     - 1600
+     - 37.1 → 26.8
+     - 48 → 58 °C
+   * - CPU, all cores
+     - 1200
+     - 31.4 → 23.2
+     - 54 → 62 °C
+   * - Image classification on the NPU
+     - 1600
+     - 37.1 → 25.8
+     - 48 → 59 °C
+   * - Touchscreen UI + 1080p30 video
+     - 1600
+     - 33.7 → 24.9
+     - 51 → 60 °C
+   * - GPU only
+     - 1600
+     - 33.2 → 24.2
+     - 52 → 61 °C
+   * - CPU at 50 %
+     - 1600
+     - 30.6 → 22.0
+     - 54 → 63 °C
+   * - 1080p30 video playback
+     - 1600
+     - 25.4 → 19.1
+     - 60 → 66 °C
+   * - Idle
+     - 1600
+     - 24.0 → 17.6
+     - 61 → 67 °C
+
+- **The heatsink lowers ΔT by 25–30 %** in the enclosure, which allows
+  6–13 °C warmer air, the most under the heaviest loads.
+- **No test throttled and performance was unchanged.** The hottest die
+  reading was 61 °C, 24 °C under the design limit. The air inside the
+  enclosure ran 2.4–4.4 °C above the room.
+- **The 4-hour tests ran 0.5–0.9 °C warmer** than 40-minute tests at the
+  same settings, as the enclosure air kept warming slowly.
+
+Throttling behavior
+~~~~~~~~~~~~~~~~~~~
+
+As for the i.MX 95, we lowered the throttle point (passive trip) to make the
+SOM throttle at room temperature. All runs were in the enclosure with the
+passive heatsink, CPU capped at 1600 MHz.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 14 16 40
+
+   * - Load
+     - Throttle point
+     - CPU MHz while throttled
+     - Performance while throttled
+   * - CPU + GPU + memory
+     - 49 °C
+     - 1284 (mean)
+     - CPU −13 %, memory −17 %, GPU 17 → 2.4 fps
+   * - CPU + GPU + memory
+     - 44 °C
+     - 1200
+     - CPU −17 %, memory −20 %, GPU 17 → 1 fps
+   * - CPU, all cores
+     - 42 °C
+     - 1200
+     - CPU −23 %
+   * - GPU only
+     - 40 °C
+     - 1200
+     - 19 → 1 fps
+   * - Touchscreen UI + video
+     - 40 °C
+     - 1200
+     - UI 34 → 1.3 fps; video still 30 fps
+
+- **Throttling is a single step.** Past the throttle point the kernel drops
+  the CPU from 1600 to 1200 MHz and the GPU to its throttled clock together;
+  there are no intermediate levels. With the throttle point 5 °C below the
+  load's unthrottled temperature, it switched between the two about half the
+  time and held the die just under the throttle point.
+- **The GPU loses almost everything.** Throttled, the GPU runs at about
+  1 frame per second, so a touchscreen UI becomes unusable, while the CPU
+  loses only 13–23 %. The video decoder is not throttled at these
+  temperatures.
+- **Throttling alone may not hold the die at the throttle point.** With the
+  throttle point at 44 °C or lower, the die stayed 1–6 °C above it even
+  fully throttled.
+- The SOM ran steadily for 40 minutes in each throttled test, with no errors
+  or crashes. Choose cooling so that a product's normal loads stay below the
+  throttle point.
+
+Long-term stability
+~~~~~~~~~~~~~~~~~~~
+
+- **18 hours at full load:** CPU + GPU + memory at 1600 MHz in the enclosure
+  with the passive heatsink, as two 9-hour runs with ``stress-ng --verify``.
+  There were no errors and no throttling. Throughput stayed constant: CPU
+  24.9–25.2 operations/s, GPU 17.0–17.2 fps.
+- **Consistent results:** ΔT was 31.3–31.5 °C in the 9-hour runs against
+  30.4 °C in a 40-minute run at the same settings.
 
 .. _thermal-00363-93:
 

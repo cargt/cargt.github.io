@@ -795,7 +795,7 @@ Enclosure (Polycase WA Series WA-42\*16), passive heatsink
      - cpu 44 ops/s, vm 15691 ops/s, glmark2 70 fps, NPU 671 inferences/s
    * - CPU + GPU + memory + NPU (performance)
      - 1404 / 1000
-     - 240
+     - 240 (4 h soak)
      - 23.2 / 28.6
      - 73.8 / 74.3
      - 50.6
@@ -813,7 +813,7 @@ Enclosure (Polycase WA Series WA-42\*16), passive heatsink
      - cpu 52 ops/s, vm 19665 ops/s, glmark2 70 fps, NPU 699 inferences/s
    * - CPU + GPU + memory + NPU (performance)
      - 1800 / 1000
-     - 240
+     - 240 (4 h soak)
      - 23.5 / 29.2
      - 80.2 / 81.2
      - 56.7
@@ -1411,6 +1411,249 @@ Enclosure (Polycase WA Series WA-42\*16), no heatsink
      - 35
      - 1600, 89 / –
      - cpu 22 ops/s, vm 15387 ops/s, glmark2 15 fps, NPU 211 inferences/s
+
+
+Enclosure (Polycase WA Series WA-42\*16), passive (ATS-CPX045045025-162-C2-R0) heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C) / enclosure air
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1600 / –
+     - 40
+     - 22.4 / 25.0
+     - 40.0 / 41.0
+     - 17.6
+     - 67
+     - 1214, 2 / –
+     - –
+   * - CPU, all cores at 50% (ondemand)
+     - 1600 / –
+     - 40
+     - 23.1 / 25.5
+     - 45.0 / 48.0
+     - 22.0
+     - 63
+     - 1450, 53 / –
+     - cpu 27 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1200 / –
+     - 40
+     - 22.8 / 25.7
+     - 46.0 / 46.0
+     - 23.2
+     - 62
+     - 1200, 100 / –
+     - cpu 40 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1600 / –
+     - 40
+     - 23.2 / 26.1
+     - 50.0 / 50.0
+     - 26.8
+     - 58
+     - 1600, 100 / –
+     - cpu 52 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1600 / –
+     - 40
+     - 23.4 / 26.5
+     - 47.5 / 48.0
+     - 24.2
+     - 61
+     - 1238, 4 / –
+     - glmark2 19 fps
+   * - CPU + GPU + memory (performance)
+     - 1200 / –
+     - 40
+     - 23.2 / 26.4
+     - 50.9 / 52.0
+     - 27.7
+     - 57
+     - 1200, 80 / –
+     - cpu 20 ops/s, vm 13341 ops/s, glmark2 17 fps
+   * - CPU + GPU + memory (performance)
+     - 1600 / –
+     - 41
+     - 23.5 / 26.8
+     - 53.9 / 55.0
+     - 30.4
+     - 55
+     - 1600, 79 / –
+     - cpu 25 ops/s, vm 16518 ops/s, glmark2 17 fps
+   * - CPU + GPU + memory, verified (burn-in) (performance)
+     - 1600 / –
+     - 540 (9 h burn-in)
+     - 22.2 / 26.0
+     - 53.7 / 55.0
+     - 31.5
+     - 53
+     - 1600, 79 / –
+     - cpu 25 ops/s, vm 16079 ops/s, glmark2 17 fps
+   * - CPU + GPU + memory, verified (burn-in) (performance)
+     - 1600 / –
+     - 540 (9 h burn-in)
+     - 21.3 / 24.9
+     - 52.6 / 55.0
+     - 31.3
+     - 54
+     - 1600, 79 / –
+     - cpu 25 ops/s, vm 16148 ops/s, glmark2 17 fps
+   * - Video playback, 1080p30 H.264 (VPU) (ondemand)
+     - 1600 / –
+     - 40
+     - 22.9 / 25.7
+     - 42.0 / 43.0
+     - 19.1
+     - 66
+     - 1217, 4 / –
+     - video 30 fps
+   * - Chromium kiosk HMI + 1080p30 video (ondemand)
+     - 1600 / –
+     - 40
+     - 22.9 / 26.3
+     - 47.8 / 49.0
+     - 24.9
+     - 60
+     - 1592, 46 / –
+     - UI 34 fps, video 30 fps
+   * - NPU inference, MobileNet v1 (VIP8000) (ondemand)
+     - 1600 / –
+     - 40
+     - 23.0 / 26.1
+     - 48.8 / 49.0
+     - 25.8
+     - 59
+     - 1235, 11 / –
+     - NPU 286 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1200 / –
+     - 40
+     - 23.0 / 26.6
+     - 55.7 / 56.0
+     - 32.8
+     - 52
+     - 1200, 88 / –
+     - cpu 17 ops/s, vm 12076 ops/s, glmark2 15 fps, NPU 212 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1200 / –
+     - 240 (4 h soak)
+     - 22.6 / 26.6
+     - 56.0 / 57.0
+     - 33.3
+     - 52
+     - 1200, 89 / –
+     - cpu 18 ops/s, vm 12068 ops/s, glmark2 15 fps, NPU 202 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1600 / –
+     - 41
+     - 23.1 / 26.9
+     - 59.1 / 60.0
+     - 36.0
+     - 49
+     - 1600, 89 / –
+     - cpu 22 ops/s, vm 15401 ops/s, glmark2 15 fps, NPU 211 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1600 / –
+     - 240 (4 h soak)
+     - 22.7 / 27.1
+     - 59.6 / 61.0
+     - 36.9
+     - 48
+     - 1600, 89 / –
+     - cpu 23 ops/s, vm 15143 ops/s, glmark2 15 fps, NPU 207 inferences/s
+
+
+Throttle tests (throttle point lowered): enclosure (Polycase WA Series WA-42\*16), passive (ATS-CPX045045025-162-C2-R0) heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Throttle point (°C)
+     - Test (min)
+     - Room air (°C) / enclosure air
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - CPU, all cores (matrixprod) (performance)
+     - 1600 / –
+     - 42
+     - 40
+     - 23.0 / 25.8
+     - 46.0 / 47.0
+     - 23.0
+     - throttled after 2 s (100 %)
+     - 1200, 100 / –
+     - cpu 40 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1600 / –
+     - 40
+     - 42
+     - 22.7 / 25.5
+     - 41.4 / 43.0
+     - 18.7
+     - throttled after 2 s (100 %)
+     - 1200, 3 / –
+     - glmark2 1 fps
+   * - CPU + GPU + memory (performance)
+     - 1600 / –
+     - 49
+     - 40
+     - 22.7 / 25.9
+     - 47.4 / 50.0
+     - 24.7
+     - throttled after 12 s (78 %)
+     - 1284, 79 / –
+     - cpu 22 ops/s, vm 13705 ops/s, glmark2 2 fps
+   * - CPU + GPU + memory (performance)
+     - 1600 / –
+     - 44
+     - 40
+     - 22.5 / 25.7
+     - 46.0 / 47.0
+     - 23.4
+     - throttled after 2 s (100 %)
+     - 1200, 79 / –
+     - cpu 21 ops/s, vm 13265 ops/s, glmark2 1 fps
+   * - CPU + GPU + memory (performance)
+     - 1600 / –
+     - 40
+     - 41
+     - 22.6 / 25.6
+     - 45.9 / 47.0
+     - 23.3
+     - throttled after 2 s (100 %)
+     - 1200, 79 / –
+     - cpu 20 ops/s, vm 13211 ops/s, glmark2 1 fps
+   * - Chromium kiosk HMI + 1080p30 video (ondemand)
+     - 1600 / –
+     - 40
+     - 40
+     - 23.0 / 25.6
+     - 42.0 / 43.0
+     - 19.1
+     - throttled after 2 s (100 %)
+     - 1200, 9 / –
+     - UI 1 fps, video 30 fps
 
 
 i.MX 93 (00363)
