@@ -27,6 +27,7 @@ Modern Electronics. Confidence at Every Step.
   core/power-watchdog
   core/secure-boot
   core/key-storage
+  core/selinux
   core/displays
   core/cameras
   core/npu
