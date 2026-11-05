@@ -62,3 +62,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # Pages sometimes takes more than the default 10 minutes to report
+          # a deployment, and the action then cancels it.
+          timeout: 1800000
