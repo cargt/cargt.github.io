@@ -26,8 +26,8 @@ then :doc:`core/yocto` to build your own image.
         :link: core/index
         :link-type: doc
 
-        SOMs, carrier boards, displays and thermal data, with the software
-        releases for each.
+        SOMs, carrier boards and thermal data, with the software releases
+        for each.
 
     .. grid-item-card:: Develop with Yocto
         :link: core/yocto
@@ -46,7 +46,7 @@ then :doc:`core/yocto` to build your own image.
         :link: core/software-updates
         :link-type: doc
 
-        SWUpdate and RAUC field updates, secure boot and production data.
+        SWUpdate and RAUC field updates and production data.
 
     .. grid-item-card:: Recovery and Troubleshooting
         :link: core/flashing-troubleshooting
@@ -67,7 +67,6 @@ then :doc:`core/yocto` to build your own image.
   :caption: Hardware
 
   core/index
-  core/displays
   core/thermal-characterization
 
 .. toctree::
@@ -89,6 +88,7 @@ then :doc:`core/yocto` to build your own image.
   core/bluetooth
   core/rtc
   core/power-watchdog
+  core/displays
   core/cameras
   core/npu
   core/systemd-services
@@ -101,6 +101,7 @@ then :doc:`core/yocto` to build your own image.
   core/yocto
   core/yocto-development
   core/application-development
+  core/web-browsers
   core/debugging-linux
   core/debugging-applications
   core/real-time-linux
@@ -111,6 +112,7 @@ then :doc:`core/yocto` to build your own image.
 
   core/secure-boot
   core/key-storage
+  core/selinux
 
 .. toctree::
   :maxdepth: 1

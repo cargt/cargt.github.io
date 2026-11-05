@@ -4,7 +4,8 @@ Cameras
 =======
 
 This page shows how to use a MIPI CSI-2 camera on a Cargt i.MX board with
-libcamera and GStreamer.
+libcamera and GStreamer, and how to capture HDMI input on an STM32MP2 board
+(see :ref:`stm32mp2-hdmi-input`).
 
 The examples are from an i.MX 95 00414 SOM on the 00365 carrier with an
 OmniVision OS08A20 camera module on CSI-1 and the 10.1" LVDS display,
@@ -318,3 +319,154 @@ On a Linux computer with GStreamer, save the stream to a file:
 ``config-interval=1`` repeats the stream headers with every key frame, so a
 receiver can join at any time. Frames received before the first key frame
 decode as a green, smeared picture.
+
+.. _stm32mp2-hdmi-input:
+
+HDMI Input on STM32MP2 (TC358743)
+---------------------------------
+
+.. note::
+
+   HDMI input support is not in the published STM32MP2 images or the
+   public layers yet. `Contact Cargt <https://www.cargt.com/cargt-about/contact-us>`__ for
+   the layer that adds it.
+
+An STM32MP257F 00395-01 or 00395-02 SOM on the 00365 carrier can capture
+HDMI through a Toshiba TC358743 HDMI to CSI-2 bridge. Cargt uses the
+Raspberry Pi TC358743XBG board (with a 27 MHz crystal) in the 00365's
+CSI_A camera connector (J21). The bridge is at I²C address 0x0f on the
+camera bus: ``i2c1`` on the 00395-01 and ``i2c3`` on the 00395-02.
+
+The support adds:
+
+- the ``tc358743`` kernel module (``kernel-module-tc358743``), with
+  patches for the STM32MP2 CSI-2 receiver;
+- a device tree per board;
+- ``cargt-hdmi-in.sh``, which sets up the capture pipeline, and a 1080p30
+  EDID (both in ``cargt-camera-raw``).
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Board
+     - Device tree
+   * - 00395-01 on the 00365
+     - ``stm32mp257f-cargt-00395-01-00365-tc358743.dtb``
+   * - 00395-02 on the 00365
+     - ``stm32mp257f-cargt-00395-02-00365-tc358743.dtb``
+   * - 00395-02 on the 00365, with the 10.1" LVDS display
+     - ``stm32mp257f-cargt-00395-02-00365-glt1011280800is1-tc358743.dtb``
+
+Select it with ``fdtfile``, as for a display (see :doc:`displays`), and
+reboot:
+
+.. code-block:: bash
+
+   fw_setenv fdtfile stm32mp257f-cargt-00395-02-00365-tc358743.dtb
+   reboot
+
+The kernel log then shows the board model and the CSI-2 receiver, and the
+module finds the bridge:
+
+.. code-block:: text
+
+   [    0.000000] Machine model: Cargt STM32MP257F SOM (00395-02) on 00365 with TC358743 HDMI input
+   [   10.020936] stm32-csi 48020000.csi: Probed CSI with 2 lanes
+   ...
+   [   78.814136] tc358743 2-000f: tc358743 found @ 0x1e (STM32F7 I2C(0x0000000040140000))
+
+The two device trees without a display don't enable the display
+controller, so there is no ``/dev/dri`` and Weston does not start, as with
+the 00395's default device tree. Capturing still works. Use the
+``glt1011280800is1`` device tree to have the 10.1" display as well.
+
+What the Bridge Can Take
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The bridge sends on two CSI-2 lanes at 972 Mbit/s each. That is enough for
+1920x1080 at 30 frames per second, but not at 60: 1080p60 needs three
+lanes, and its frames come out corrupt. The EDID that
+``cargt-hdmi-in.sh`` loads offers 1080p30 as the preferred mode and
+nothing faster, so a source picks a mode the bridge can take. Interlaced
+modes and pixel clocks over 165 MHz are not supported.
+
+Frames go from the bridge through the STM32MP2 CSI-2 receiver to the
+DCMIPP's auxiliary pipe, the one that accepts YUV, which writes YUYV (or
+NV12) frames at the input's size to a V4L2 device. libcamera is not used.
+
+Capturing
+~~~~~~~~~
+
+``cargt-hdmi-in.sh`` loads the EDID if the bridge has none, waits for the
+source, reads the timings the bridge detects, sets up the pipeline for
+them and streams 120 frames, printing the frame rate:
+
+.. code-block:: bash
+
+   cargt-hdmi-in.sh                       # stream 120 frames, print the frame rate
+   cargt-hdmi-in.sh -n 300 -o hdmi.yuv    # save 300 frames, after skipping 10
+   cargt-hdmi-in.sh -p NV12               # NV12 instead of YUYV
+   cargt-hdmi-in.sh status                # the bridge and CSI-2 receiver state
+
+``status`` logs the bridge's state (whether it sees a signal, the timings,
+the lanes in use) and the CSI-2 receiver's error counts to the kernel log,
+and prints them. Use it first if no picture arrives: a source that is off,
+a loose cable or a mode the bridge can't take all show there. Sources can
+take several seconds to read a new EDID and start sending. With a cable
+from a source whose HDMI output is off:
+
+.. code-block:: text
+
+   root@cargt-00395-02-00365-xxxxxxxxxxxx:~# cargt-hdmi-in.sh
+   EDID 1080p30 loaded; waiting for the source
+   no HDMI input the bridge can take (cable, source on, or a mode it can't: interlaced, or over 165 MHz); cargt-hdmi-in.sh status says more
+   root@cargt-00395-02-00365-xxxxxxxxxxxx:~# cargt-hdmi-in.sh status
+   ...
+   tc358743 2-000f: Cable detected (+5V power): yes
+   ...
+   tc358743 2-000f: TMDS signal detected: no
+   tc358743 2-000f: Stable sync signal: no
+   ...
+   tc358743 2-000f: No video detected
+
+``Cable detected`` shows the source's 5 V on the cable; ``TMDS signal
+detected`` shows whether it is sending video.
+
+If frames come out with broken lines, raise the FIFO level the bridge waits
+for before sending each line (default 374, at most 511):
+
+.. code-block:: bash
+
+   echo 450 > /sys/module/tc358743/parameters/fifo_level
+
+Measured by Cargt on an STM32MP257F 00395-02 on the 00365, with an i.MX
+8M Plus board's HDMI output as the source, capturing YUYV:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 50 50
+
+   * - Input mode
+     - Frames per second captured
+   * - 1920x1080, 30 Hz
+     - 30.00
+   * - 1280x720, 60 Hz
+     - 60.00
+   * - 720x480, 60 Hz
+     - 59.94
+   * - 640x480, 60 Hz
+     - 59.93
+
+There were no CSI-2 errors in any mode. A 24-hour run at 1080p30 captured
+2.81 million frames with none dropped, no CSI-2 errors and no stalls, with
+the SoC at 36 to 39 °C.
+
+The STM32MP25's hardware video encoder garbled these YUYV frames in
+Cargt's tests, so encode on the CPU. JPEG encoding on the two Cortex-A35
+cores keeps up with about 5 frames per second at 1080p and about 28 at
+640x480.
+
+The 00395-01 device tree has been built but not yet tested on a board.
