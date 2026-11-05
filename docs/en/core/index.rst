@@ -2,7 +2,7 @@ Product Catalog
 =================
 
 SOMs
-=====
+----
 
 .. grid:: 1 2 2 2
     :gutter: 3
@@ -28,7 +28,7 @@ SOMs
     catalog/soms/index
 
 Carrier Boards
-===============
+--------------
 
 .. grid:: 1 2 2 3
     :gutter: 3
@@ -63,13 +63,13 @@ Carrier Boards
     catalog/carrier-boards/index
 
 Displays
-========
+--------
 
 Cargt sells LVDS, MIPI-DSI and SPI touchscreen displays for its carrier boards. See
 :doc:`displays` for photos, wiring and device tree selection.
 
 Other Supported Boards
-======================
+----------------------
 
 The Cargt i.MX BSP also builds for the NXP FRDM i.MX 95
 development board (machine ``imx95-15x15-lpddr4x-frdm``), which is useful for
@@ -78,15 +78,10 @@ evaluating software before Cargt hardware is available:
 `real-time images <https://yocto.cargt.com/images/wrynose-rt/imx95-15x15-lpddr4x-frdm/>`__.
 
 Thermal Characterization
-========================
+------------------------
 
 Will your product need a heatsink? :doc:`thermal-characterization` gives the
 warmest air each Cargt SOM can run in for a range of loads, CPU frequency caps
 and cooling options, in open air and in a sealed enclosure. Results are
 available for the 00414 i.MX 95, the 00377 i.MX 8M Plus, the 00363
 i.MX 93 and the 00395 STM32MP257F.
-
-.. toctree::
-    :hidden:
-
-    thermal-characterization
