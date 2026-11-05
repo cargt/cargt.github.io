@@ -3,6 +3,10 @@
 Production Data
 ===============
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 SOM EEPROM
 ----------
 

@@ -3,6 +3,10 @@
 Using Hardware from Linux
 =========================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 This page shows how to use common hardware interfaces from Linux user
 space: GPIO lines, analog inputs, I²C devices and their kernel drivers,
 serial ports, and sysfs. Each topic is demonstrated with a MikroElektronika Click board in the

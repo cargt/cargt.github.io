@@ -3,6 +3,10 @@
 Debugging in Linux
 ==================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 When something on a board does not work, three places usually explain why:
 the kernel log (``dmesg``), the systemd journal (``journalctl``), and the
 kernel's view of the hardware in sysfs. The examples on this page are from
@@ -91,6 +95,8 @@ The journal collects the kernel log and the output of every systemd service.
 
 ``systemctl status <unit>`` shows a service's state together with its last
 few log lines, and ``systemctl --failed`` lists the services that failed.
+
+.. _journal-lost:
 
 The Journal Is Lost at Reboot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,6 +3,10 @@
 Wi-Fi
 =====
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 Cargt SOMs with an NXP IW610 or IW612 module have dual-band (2.4 and 5 GHz)
 Wi-Fi 6. NetworkManager manages it, as it does Ethernet; see
 :ref:`networking` for the basics of ``nmcli`` and ``nmtui``. Bluetooth on the

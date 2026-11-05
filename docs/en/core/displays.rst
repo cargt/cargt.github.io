@@ -1,6 +1,10 @@
 Supported Touchscreen Displays
 ==============================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 10” LVDS 1280×800 – GLT1011280800is1
 ------------------------------------
 

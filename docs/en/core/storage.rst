@@ -3,6 +3,10 @@
 Storage and Boot
 ================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX`
+
 This page describes how Cargt i.MX images lay out the eMMC or microSD card,
 where U-Boot keeps its environment and how the ``/data`` partition is
 managed. STM32MP2 00395 images use a different, RAUC-based layout; see

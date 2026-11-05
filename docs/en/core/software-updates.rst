@@ -3,6 +3,10 @@
 Software Updates
 ================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 Cargt i.MX designs use SWUpdate. Cargt STM32MP2 00395 designs use RAUC A/B updates.
 
 .. _Cargt Package Repository Images: https://yocto.cargt.com/images

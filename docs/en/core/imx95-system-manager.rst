@@ -3,6 +3,10 @@
 i.MX 95 Boot Firmware and System Manager
 ========================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX 95`
+
 The i.MX 95 boots differently from the i.MX 8M Plus, i.MX 91 and i.MX 93.
 Before U-Boot runs on the Cortex-A55 cores, two firmware stages run on the
 Cortex-M33: **OEI**, which trains the DDR, and the **System Manager**,

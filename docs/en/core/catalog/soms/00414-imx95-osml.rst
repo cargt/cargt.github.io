@@ -26,7 +26,8 @@
 Software Releases
 ------------------
 
-See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases.
+See :doc:`/core/releases` for every release and ``MACHINE`` side by side, and
+`yocto.cargt.com <https://yocto.cargt.com>`__ for the images and packages.
 
 .. grid:: 1 2 2 2
     :gutter: 2

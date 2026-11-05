@@ -3,6 +3,10 @@
 Flashing Troubleshooting and Recovery
 =====================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 This page helps when flashing a board does not work, and explains how to
 recover a board that no longer boots. For the normal flashing steps, see
 :ref:`running-linux`.
@@ -98,6 +102,8 @@ first line UUU prints is its version:
 
 With nothing listed, as here, UUU sees no board it can flash.
 
+.. _uuu-wait-for-device:
+
 "Wait for Known USB Device Appear..."
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -161,6 +167,8 @@ protocol it is using. The same i.MX 91 board, in the boot ROM (``SDPS:``):
 Once U-Boot's fastboot is running, the board is listed as ``FB:``
 (``1fc9:0152``) instead, as in the example in :ref:`running-linux`.
 
+.. _uuu-imx95:
+
 The i.MX 95
 ~~~~~~~~~~~
 
@@ -169,6 +177,8 @@ the boot ROM stage. Load the boot loader into RAM with the explicit script
 in :ref:`running-linux` instead. A complete procedure for flashing the eMMC
 of an i.MX 95 00414 over USB is not documented yet; contact Cargt if you
 need to recover one.
+
+.. _uuu-stops-partway:
 
 Flashing Stops Partway
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -181,6 +191,8 @@ Cargt.
 When flashing several boards at once from a host with little memory, UUU
 can run out of memory; flash one board at a time with ``-m``, as described
 in :ref:`running-linux`.
+
+.. _stm32cubeprog-troubleshooting:
 
 STM32MP2: STM32CubeProgrammer
 -----------------------------

@@ -3,6 +3,10 @@
 Secure Key Storage (EdgeLock and OP-TEE)
 ========================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX 91` :bdg-primary:`i.MX 93` :bdg-primary:`i.MX 95`
+
 i.MX 91, i.MX 93 and i.MX 95 processors have an EdgeLock Secure Enclave
 (ELE), a security subsystem with its own firmware. Cargt i.MX images also run
 OP-TEE, a trusted execution environment on the Cortex-A cores. Together they

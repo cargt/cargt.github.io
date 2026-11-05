@@ -3,6 +3,10 @@
 Real-Time Linux (PREEMPT_RT) on i.MX 95
 =======================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX 95`
+
 Cargt provides a real-time Linux build for i.MX 95 designs. It is based on
 `NXP Real-time Edge Software <https://www.nxp.com/design/design-center/software/development-software/real-time-edge-software:REALTIME-EDGE-SOFTWARE>`_
 3.5 and uses a fully preemptible (``PREEMPT_RT``) Linux kernel. This page
@@ -681,6 +685,8 @@ An EtherCAT master needs an Ethernet port of its own. See the NXP
 and the
 `IgH EtherCAT Master documentation <https://docs.etherlab.org/ethercat/1.6/doxygen/index.html>`_
 for how to configure the master and dedicate a port.
+
+.. _rt-troubleshooting:
 
 Troubleshooting
 ---------------

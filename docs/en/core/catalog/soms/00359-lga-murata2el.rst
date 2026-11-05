@@ -27,7 +27,8 @@
 Software Releases
 ------------------
 
-See `yocto.cargt.com <https://yocto.cargt.com>`__ for available images and releases.
+See :doc:`/core/releases` for every release and ``MACHINE`` side by side, and
+`yocto.cargt.com <https://yocto.cargt.com>`__ for the images and packages.
 **wrynose** is recommended for new designs; **scarthgap** remains available for existing designs already qualified on it.
 
 .. grid:: 1 2 2 2

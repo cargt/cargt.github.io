@@ -3,6 +3,10 @@
 SELinux (Evaluation)
 ====================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX 93`
+
 .. note::
 
    SELinux has been evaluated on Cargt i.MX boards with the wrynose BSP,

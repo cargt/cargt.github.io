@@ -197,3 +197,12 @@ footer span.commit tt, footer span.commit .rst-content tt, footer span.commit co
 .wy-nav-content:has(.cargt-wide-page) .rst-content table.docutils {
   font-size: 13px;
 }
+
+/* "Applies to" platform badges under a page title */
+.cargt-applies-to {
+  margin-top: -0.5em;
+  font-size: 0.95em;
+}
+.cargt-applies-to .sd-badge {
+  font-size: 0.85em;
+}

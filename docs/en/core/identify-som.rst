@@ -3,6 +3,10 @@
 Identifying Your SOM and Choosing the MACHINE
 =============================================
 
+.. rst-class:: cargt-applies-to
+
+**Applies to:** :bdg-primary:`i.MX` :bdg-primary:`STM32MP2`
+
 Every Cargt image and Yocto build is for one ``MACHINE``: a SOM on a
 carrier board, such as ``imx93-cargt-00363-00365``. Flash, update and build
 with the ``MACHINE`` that matches your hardware. This page shows how to
@@ -187,6 +191,8 @@ The image's device tree also names the hardware it describes:
 
 On STM32MP2 images, ``/etc/rauc/system.conf`` holds the machine's RAUC
 ``compatible`` string, such as ``cargt-stm32mp25-00395-02-00365``.
+
+.. _machine-mismatch:
 
 What a Mismatch Looks Like
 --------------------------
