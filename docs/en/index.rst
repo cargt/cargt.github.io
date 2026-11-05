@@ -29,6 +29,7 @@ Modern Electronics. Confidence at Every Step.
   core/key-storage
   core/selinux
   core/displays
+  core/web-browsers
   core/cameras
   core/npu
   core/linux-basics
