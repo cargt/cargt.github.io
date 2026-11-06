@@ -161,11 +161,37 @@ Measured on an i.MX 93 00363, against the same image without SELinux:
      - about 6 to 10 MB (the loaded policy, its kernel structures and
        ``auditd``)
 
-On the STM32MP257F 00395 the SELinux packages in ``cargt-image-dev`` add
-up to 43 MB installed: 28 MB for the policy and 13 MB for
-``python3-networkx``, which only the analysis tools use. ``systemd``
-reported loading the policy in 0.30 s. Cargt has not compared the
-STM32MP2's RAM use or kernel size with an image without SELinux.
+Measured on an STM32MP257F 00395. The sizes compare against the same
+build without SELinux; RAM compares the same image booted with and
+without ``selinux=0``, 2.5 minutes after boot:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Item
+     - Cost
+   * - Root file system
+     - +68 MB uncompressed, +16.8 MB compressed (``.tar.xz``)
+   * - Kernel image
+     - +386 KB (+147 KB compressed)
+   * - Policy load at boot
+     - about 0.30 s
+   * - RAM
+     - about 93 MB less available
+
+Of the STM32MP2's root file system increase, 28 MB is the policy and
+13 MB is ``python3-networkx``, which only the analysis tools use.
+
+Most of the STM32MP2's RAM cost is in user space, not the kernel: about
+11 MB is kernel memory, and about 87 MB is the memory of ``systemd``
+(PID 1 and the user manager), ``systemd-udevd``, ``systemd-logind`` and
+``systemd-resolved``, which grew by 12 to 43 MB each. Each of these
+loads the policy's file labeling rules into its own memory. The i.MX 93
+figure above was measured differently, and Cargt has not repeated this
+per-process comparison on i.MX. Measure RAM on your own image before
+planning a 512 MB product with SELinux.
 
 Most of the root file system increase is the Python tools and the policy
 store under ``/var/lib/selinux``, which is only needed to change the policy
@@ -237,11 +263,19 @@ from an image without SELinux:
 
 In permissive mode this only logs denials, mostly services that look up
 ``/usr/local``. ``restorecon`` fixed the files in the new slot and the
-``/boot`` and ``/vendor`` partitions at runtime. A product update should
-do the same as the i.MX script above: create ``/.autorelabel`` in the
-new slot when the running system has no SELinux, or relabel the files
-the post-install script changes when it does. The first-boot relabel was
-not tried on the STM32MP2.
+``/boot`` and ``/vendor`` partitions at runtime.
+
+**The first-boot relabel does not work on the STM32MP2 as built.**
+meta-selinux's ``fixfiles`` uses a bash feature (``export -f``) but starts
+with ``#!/bin/sh``, which is busybox on the Cargt STM32MP2 images. It
+fails at once, and the relabel script deletes ``/.autorelabel`` and
+reboots anyway, leaving the files unlabeled. Run with bash
+(``bash /sbin/fixfiles -F -f relabel``) it worked, and took 387 s,
+because it relabels every mounted ext4 partition, ``/usr/local``
+included. A product needs ``fixfiles`` to run under bash (or bash as
+``/bin/sh``) before relying on ``/.autorelabel``. Relabeling only the
+files the post-install script changes is faster, once the running system
+has SELinux.
 
 ``/data`` is created empty and has no labels. Services without a policy of
 their own don't notice, but confined ones are denied access to files
@@ -313,6 +347,21 @@ appeared on:
        looking up ``/usr/local``, which has no label. Label the
        partition (see `Software Updates`_).
 
+With enforcing set at boot on the STM32MP2 (``ssh_sysadm_login`` on), the
+board booted, SSH worked and all the partitions mounted, but:
+
+- the busybox ``syslogd`` and ``klogd`` services failed: they are the
+  busybox binary, labeled ``bin_t``, which their domains may not map.
+  The board had no system log service; the systemd journal kept working.
+- ``dnsmasq`` failed to start (denied reading ``systemd-resolved``'s
+  runtime directory).
+- NetworkManager could not watch ``systemd-logind``'s sessions.
+- ``netdata`` was denied ``io_uring``.
+- ``rauc status`` from an SSH shell timed out (see ``rauc`` above).
+
+Each needs an allow rule or a policy change before a product runs
+enforcing.
+
 On the board with the LTE modem, ModemManager, ``pppd``, the CMUX
 multiplexer and the ``ppp0`` connection raised no denials.
 
@@ -336,13 +385,15 @@ better, a domain of its own for the service.
 What Was Not Tested
 -------------------
 
-- Enforcing mode set at boot. Enforcing was tested at runtime, with
-  ``setenforce 1``, on the i.MX 93 00363 and the STM32MP2.
+- Enforcing mode set at boot on i.MX. Enforcing was tested at runtime,
+  with ``setenforce 1``, on the i.MX 93 00363; on the STM32MP2 it was
+  also set at boot (see `Denials Seen on Cargt Images`_).
 - Other i.MX processors, and the real-time kernel, which has its own
   configuration.
 - On the STM32MP2: the display and Weston (the test board's device tree
-  has no display), the first-boot relabel, an update between two SELinux images, and
-  updates through hawkBit.
+  has no display), the first-boot relabel with ``fixfiles`` fixed to use
+  bash, an update between two SELinux images, and updates through
+  hawkBit.
 - The camera applications, and any Cargt service confined by its own
   policy module.
 - An update between two SELinux images with the tarball-based update; the
