@@ -69,6 +69,13 @@ listed in :doc:`core/releases`.
   :caption: Hardware
 
   core/index
+
+.. toctree::
+  :maxdepth: 1
+  :caption: Performance
+
+  core/benchmarks
+  core/web-browsers
   core/thermal-characterization
 
 .. toctree::
@@ -103,7 +110,6 @@ listed in :doc:`core/releases`.
   core/yocto
   core/yocto-development
   core/application-development
-  core/web-browsers
   core/debugging-linux
   core/debugging-applications
   core/real-time-linux
