@@ -5,7 +5,7 @@ SOM Benchmarks
 
 .. rst-class:: cargt-applies-to
 
-**Applies to:** :bdg-primary:`i.MX 95` :bdg-primary:`i.MX 8M Plus` :bdg-primary:`i.MX 93` :bdg-primary:`STM32MP2`
+**Applies to:** :bdg-primary:`i.MX 95` :bdg-primary:`i.MX 8M Plus` :bdg-primary:`i.MX 93` :bdg-primary:`i.MX 91` :bdg-primary:`STM32MP2`
 
 Which Cargt SOM is fast enough for your product? This page runs the same
 tests on each SOM: CPU, memory, eMMC, boot time, GPU, NPU, Ethernet and
@@ -27,19 +27,21 @@ Summary
    :class: wrap-cells
    :header-rows: 1
    :stub-columns: 1
-   :widths: 22 16 16 16 16 16
+   :widths: 16 14 14 14 14 14 14
 
    * - Test
      - :ref:`00414 <00414>` i.MX 95
      - :ref:`00377 <00377>` i.MX 8M Plus
      - :ref:`00363-93 <00363-93>` i.MX 93
      - :ref:`00324 <00324>` i.MX 93
+     - :ref:`00363-91 <00363-91>` i.MX 91
      - :ref:`00395 <00395>` STM32MP257F
    * - CPU cores
      - 6 × Cortex-A55, 1.8 GHz
      - 4 × Cortex-A53, 1.6 GHz
      - 2 × Cortex-A55, 1.7 GHz
      - 2 × Cortex-A55, 1.7 GHz
+     - 1 × Cortex-A55, 1.4 GHz
      - 2 × Cortex-A35, 1.5 GHz
    * - RAM on the tested board
      - 16 GB
@@ -47,45 +49,53 @@ Summary
      - 2 GB
      - 1 GB
      - 2 GB
+     - 2 GB
    * - CoreMark, one core
      - 7,014
      - 5,446
      - 6,599
      - 6,596
+     - 5,413
      - 3,780
    * - CoreMark, all cores
      - 42,044
      - 21,475
      - 13,174
      - 13,091
+     - 5,400
      - 7,416
    * - Memory copy (memcpy), MB/s
      - 4,624
      - 2,556
      - 2,846
      - 3,029
+     - 1,816
      - 1,863
    * - eMMC sequential read / write, MB/s
      - 350 / 146
      - 325 / 38
      - 269 / 123
      - Reads only; see `Storage`_
+     - 352 / 128
      - 89 / 79
    * - eMMC random 4 KB read / write, IOPS
      - 5,522 / 9,942
      - 6,274 / 8,618
      - 5,826 / 15,462
      - Reads only; see `Storage`_
+     - 6,250 / 6,639
      - 3,673 / 2,747
    * - Kernel start to login prompt, s (lower is better)
      - 12.8
      - 12.3
      - 11.8
      - 11.1
+     - 17.1
      - 21.4
    * - GPU, glmark2 score
      - 689 (Mali-G310)
      - 722 (GC7000UL)
+     - No 3D GPU
      - No 3D GPU
      - No 3D GPU
      - 549 (GCNanoUltra)
@@ -94,24 +104,28 @@ Summary
      - 3.4
      - 3.9
      - Not measured
+     - No NPU
      - Not measured; see `NPU`_
    * - MobileNet v1 on all CPU cores, ms (lower is better)
      - 12.9
      - 47.6
      - 33.1
      - 32.9
+     - 77.5
      - Not measured
    * - Gigabit Ethernet, TCP send / receive, Mbit/s
      - 943 / 941
      - 942 / 941
      - 943 / 941
      - 942 / 941
+     - 940 / 941
      - 942 / 941
    * - Worst scheduling latency under load, µs (lower is better)
      - 332
      - 359
      - 391
      - 557
+     - 250
      - 1,184
 
 What the results show:
@@ -120,7 +134,8 @@ What the results show:
   faster than one Cortex-A53 core on the 8M Plus, and almost twice as fast as
   one Cortex-A35 core on the STM32MP257F. With all cores busy, the six-core
   i.MX 95 does about twice the work of the four-core 8M Plus, three times
-  that of the i.MX 93 and almost six times that of the STM32MP257F.
+  that of the i.MX 93 and almost six times that of the STM32MP257F. The
+  single-core i.MX 91, at 1.4 GHz, matches one 8M Plus core.
 - **Memory:** the i.MX 95 copies memory at least 50% faster than the others.
 - **eMMC:** results depend on the eMMC chip and the bus mode as much as on
   the SoC (see `Storage`_). The STM32MP257F image runs its eMMC in HS200
@@ -134,8 +149,7 @@ What the results show:
 - **The two i.MX 93 SOMs** (00363 OSM and 00324 SODIMM) perform the same,
   as expected for the same SoC.
 
-The i.MX 91 (:ref:`00363-91 <00363-91>`) is not measured yet; its board was
-in use for other tests. The :ref:`00359 <00359>` i.MX 93 LGA SOM is not
+The :ref:`00359 <00359>` i.MX 93 LGA SOM is not
 measured because no board was available; its i.MX 93 results should match the
 two i.MX 93 SOMs above.
 
@@ -147,51 +161,51 @@ under `Results by Test`_.
 
 .. figure:: /_static/images/charts/img-bench-coremark.svg
    :width: 100%
-   :alt: Bar chart of CoreMark iterations per second. One core: i.MX 95 7,014, i.MX 8M Plus 5,446, i.MX 93 00363 6,599, i.MX 93 00324 6,596, STM32MP257F 3,780. All cores: 42,044, 21,475, 13,174, 13,091 and 7,416.
+   :alt: Bar chart of CoreMark iterations per second. One core: i.MX 95 7,014, i.MX 8M Plus 5,446, i.MX 93 00363 6,599, i.MX 93 00324 6,596, i.MX 91 5,413, STM32MP257F 3,780. All cores: 42,044, 21,475, 13,174, 13,091, 5,400 and 7,416.
 
    CoreMark on one core and on all cores.
 
 .. figure:: /_static/images/charts/img-bench-memory.svg
    :width: 100%
-   :alt: Bar chart of tinymembench memcpy and memset bandwidth in MB/s. memcpy: i.MX 95 4,624, i.MX 8M Plus 2,556, i.MX 93 00363 2,846, i.MX 93 00324 3,029, STM32MP257F 1,863. memset: 15,559, 12,110, 5,099, 5,125 and 6,012.
+   :alt: Bar chart of tinymembench memcpy and memset bandwidth in MB/s. memcpy: i.MX 95 4,624, i.MX 8M Plus 2,556, i.MX 93 00363 2,846, i.MX 93 00324 3,029, i.MX 91 1,816, STM32MP257F 1,863. memset: 15,559, 12,110, 5,099, 5,125, 4,237 and 6,012.
 
    Memory bandwidth measured with tinymembench.
 
 .. figure:: /_static/images/charts/img-bench-emmc-seq.svg
    :width: 100%
-   :alt: Bar chart of eMMC sequential throughput in MB/s. Read: i.MX 95 350, i.MX 8M Plus 325, i.MX 93 269, STM32MP257F 89. Write: 146, 38, 123 and 79.
+   :alt: Bar chart of eMMC sequential throughput in MB/s. Read: i.MX 95 350, i.MX 8M Plus 325, i.MX 93 269, i.MX 91 352, STM32MP257F 89. Write: 146, 38, 123, 128 and 79.
 
    eMMC sequential read and write, 1 MB blocks.
 
 .. figure:: /_static/images/charts/img-bench-emmc-random.svg
    :width: 100%
-   :alt: Bar chart of eMMC random 4 KB IOPS. Read: i.MX 95 5,522, i.MX 8M Plus 6,274, i.MX 93 5,826, STM32MP257F 3,673. Write: 9,942, 8,618, 15,462 and 2,747.
+   :alt: Bar chart of eMMC random 4 KB IOPS. Read: i.MX 95 5,522, i.MX 8M Plus 6,274, i.MX 93 5,826, i.MX 91 6,250, STM32MP257F 3,673. Write: 9,942, 8,618, 15,462, 6,639 and 2,747.
 
    eMMC random read and write, 4 KB blocks.
 
 .. figure:: /_static/images/charts/img-bench-boot.svg
    :width: 100%
-   :alt: Bar chart of seconds from kernel start to the login prompt: i.MX 95 12.8, i.MX 8M Plus 12.3, i.MX 93 00363 11.8, i.MX 93 00324 11.1, STM32MP257F 21.4.
+   :alt: Bar chart of seconds from kernel start to the login prompt: i.MX 95 12.8, i.MX 8M Plus 12.3, i.MX 93 00363 11.8, i.MX 93 00324 11.1, i.MX 91 17.1, STM32MP257F 21.4.
 
-   Time from kernel start to the login prompt. The STM32MP257F was on its
-   first boot after an update; see `Boot Time`_.
+   Time from kernel start to the login prompt. The STM32MP257F and i.MX 91
+   were on a first boot; see `Boot Time`_.
 
 .. figure:: /_static/images/charts/img-bench-glmark2.svg
    :width: 100%
    :alt: Bar chart of glmark2-es2-wayland scores: i.MX 95 689, i.MX 8M Plus 722, STM32MP257F 549.
 
-   glmark2 score at 800×600. The i.MX 93 has no 3D GPU.
+   glmark2 score at 800×600. The i.MX 93 and i.MX 91 have no 3D GPU.
 
 .. figure:: /_static/images/charts/img-bench-mobilenet.svg
    :width: 100%
-   :alt: Log-scale bar chart of MobileNet v1 inference time in ms. NPU: i.MX 8M Plus 3.4, i.MX 93 3.9. CPU one core: i.MX 95 54.2, i.MX 8M Plus 161.6, i.MX 93 60.2. CPU all cores: 12.9, 47.6 and 33.1.
+   :alt: Log-scale bar chart of MobileNet v1 inference time in ms. NPU: i.MX 8M Plus 3.4, i.MX 93 3.9. CPU one core: i.MX 95 54.2, i.MX 8M Plus 161.6, i.MX 93 60.2, i.MX 91 77.5. CPU all cores: 12.9, 47.6, 33.1 and 77.5.
 
    MobileNet v1 inference time on the NPU and on the CPU (log scale). The
    i.MX 95 and STM32MP257F NPUs are not measured yet; see `NPU`_.
 
 .. figure:: /_static/images/charts/img-bench-latency.svg
    :width: 100%
-   :alt: Bar chart of the worst cyclictest latency in microseconds under stress-ng load: i.MX 95 332, i.MX 8M Plus 359, i.MX 93 00363 391, i.MX 93 00324 557, STM32MP257F 1,184.
+   :alt: Bar chart of the worst cyclictest latency in microseconds under stress-ng load: i.MX 95 332, i.MX 8M Plus 359, i.MX 93 00363 391, i.MX 93 00324 557, i.MX 91 250, STM32MP257F 1,184.
 
    Worst scheduling latency in 60 seconds under full load, standard kernel.
 
@@ -221,13 +235,15 @@ The boards and images tested:
    * - :ref:`00324 <00324>` i.MX 93
      - 00326 SODIMM carrier, no panel
      - A wrynose image with kernel 6.18
+   * - :ref:`00363-91 <00363-91>` i.MX 91
+     - 00365, no panel
+     - ``cargt-image-dev``, wrynose, kernel 6.18, freshly flashed
    * - :ref:`00395 <00395>` STM32MP257F
      - 00365, 5.5" MIPI panel
      - ``cargt-image-webkit``, scarthgap (OpenSTLinux), kernel 6.6
 
 All boards ran their default CPU frequency governor (``ondemand`` on i.MX,
-``schedutil`` on STM32MP2) and no application load. Weston ran on every board
-except the 00324, which had no display.
+``schedutil`` on STM32MP2) and no application load.
 
 CPU
 ~~~
@@ -268,6 +284,11 @@ board with ``-O2``: once for one core and once with one thread per core
      - 13,091
      - 325
      - 645
+   * - 00363-91 i.MX 91
+     - 5,413
+     - 5,400
+     - 265
+     - 268
    * - 00395 STM32MP257F
      - 3,780
      - 7,416
@@ -310,6 +331,11 @@ bandwidth, and ``mbw`` (memcpy of a 256 MiB buffer, average of five runs).
      - 5,125
      - 3,033
      - 2,821
+   * - 00363-91 i.MX 91
+     - 1,816
+     - 4,237
+     - 1,824
+     - 1,728
    * - 00395 STM32MP257F
      - 1,863
      - 6,012
@@ -358,6 +384,12 @@ eMMC chip fitted and on the bus mode the image uses, so the table lists both.
      - Not measured
      - 10,820 (raw device)
      - Not measured
+   * - 00363-91 i.MX 91
+     - IN032G, HS400 enhanced strobe, 200 MHz
+     - 352
+     - 128
+     - 6,250
+     - 6,639
    * - 00395 STM32MP257F
      - AS032G, HS200, 100 MHz
      - 89
@@ -411,6 +443,11 @@ time to the login prompt (``getty.target``), and the total that
      - 11.1
      - 130.2
      - ``systemd-networkd-wait-online``, 120 s timeout
+   * - 00363-91 i.MX 91
+     - 2.4
+     - 17.1
+     - 33.0
+     - Growing the data partition on first boot, 19.9 s
    * - 00395 STM32MP257F
      - 5.0
      - 21.4
@@ -423,14 +460,15 @@ delays only services that wait for the network, not the login prompt or
 Weston. Measure your own image with ``systemd-analyze critical-chain`` and
 ``systemd-analyze blame``. The STM32MP257F was measured on its first boot
 after an update, which includes one-time work such as generating SSH keys and
-resizing a partition.
+resizing a partition. The i.MX 91 was also on its first boot, just after
+flashing, which includes growing the data partition.
 
 GPU
 ~~~
 
 ``glmark2-es2-wayland --off-screen -s 800x600``, run under Weston, so that the
-panel size and refresh rate do not affect the score. The i.MX 93 has no 3D
-GPU.
+panel size and refresh rate do not affect the score. The i.MX 93 and
+i.MX 91 have no 3D GPU.
 
 .. list-table::
    :class: wrap-cells
@@ -487,6 +525,11 @@ run the same model without a delegate.
      - Not measured
      - 59.4
      - 32.9
+   * - 00363-91 i.MX 91
+     - No NPU
+     - No NPU
+     - 77.5
+     - 77.5 (one core)
    * - 00395 STM32MP257F
      - VeriSilicon, ST X-LINUX-AI
      - Not measured
@@ -501,7 +544,7 @@ The i.MX 95 NPU runs only models converted with NXP's eIQ Neutron converter
 (part of the eIQ Toolkit), which is not in the Cargt package feeds. With the
 unconverted model, the Neutron delegate leaves every operation on the CPU.
 The STM32MP257F NPU needs ST's X-LINUX-AI packages, which are not in the
-tested image. Neither NPU is measured yet.
+tested image. Neither NPU is measured yet. The i.MX 91 has no NPU.
 
 On the CPU, a Cortex-A55 core runs the quantized model about three times
 faster than the 8M Plus's Cortex-A53; the Cortex-A55 has dot-product
@@ -532,6 +575,9 @@ Linux PC on the same Gigabit switch. Every SOM reached Gigabit line rate:
      - 941
    * - 00324 i.MX 93
      - 942
+     - 941
+   * - 00363-91 i.MX 91
+     - 940
      - 941
    * - 00395 STM32MP257F
      - 942
@@ -567,6 +613,9 @@ are standard (``PREEMPT``) kernels, not real-time kernels.
    * - 00324 i.MX 93
      - 21 to 27
      - 557
+   * - 00363-91 i.MX 91
+     - 32
+     - 250
    * - 00395 STM32MP257F
      - 18 to 19
      - 1,184
