@@ -5,12 +5,13 @@ SELinux (Evaluation)
 
 .. rst-class:: cargt-applies-to
 
-**Applies to:** :bdg-primary:`i.MX 93`
+**Applies to:** :bdg-primary:`i.MX 93` :bdg-primary:`STM32MP2`
 
 .. note::
 
-   SELinux has been evaluated on Cargt i.MX boards with the wrynose BSP,
-   but it is not supported yet: it is not in any Cargt layer or image, and
+   SELinux has been evaluated on Cargt i.MX boards with the wrynose BSP
+   and on the STM32MP2 with the scarthgap BSP, but it is not supported
+   yet: it is not in any Cargt layer or image, and
    it has to be turned on in your own build. This page describes what
    Cargt tested and what it found. `Contact Cargt
    <https://www.cargt.com/cargt-about/contact-us>`__ if you plan to ship
@@ -21,9 +22,16 @@ kernel. Each process runs in a *domain* and each file has a *type*, and a
 policy says which domains may do what to which types. Anything the policy
 does not allow is denied, even for root.
 
-Cargt tested it on an i.MX 93 00363 on the 00365 carrier, and on an i.MX 93
-board with an LTE modem, with ``cargt-image-dev`` (wrynose) and the
-reference policy's ``targeted`` variant.
+Cargt tested it with ``cargt-image-dev`` and the reference policy's
+``targeted`` variant on:
+
+- an i.MX 93 00363 on the 00365 carrier, and an i.MX 93 board with an LTE
+  modem (wrynose);
+- an STM32MP257F 00395 on the 00365 carrier (scarthgap), installed as a
+  RAUC update to the B slot.
+
+The Cargt STM32MP2 images do not include SELinux: their kernel is built
+without it and ``systemd`` reports ``-SELINUX``.
 
 .. contents:: On this page
    :local:
@@ -33,7 +41,8 @@ Enabling SELinux in a Build
 ---------------------------
 
 **Layer.** Add ``meta-selinux`` (``git.yoctoproject.org/meta-selinux``,
-``wrynose`` branch) to ``bblayers.conf``. It needs ``meta-oe`` and
+``wrynose`` branch for i.MX, ``scarthgap`` for the STM32MP2) to
+``bblayers.conf``. It needs ``meta-oe`` and
 ``meta-python``, which Cargt builds already include. Adding the layer
 changes nothing until ``selinux`` is in ``DISTRO_FEATURES``.
 
@@ -63,8 +72,8 @@ install the policy and tools:
 production image can install a smaller set.
 
 **Kernel.** meta-selinux's kernel changes apply to ``linux-yocto`` only,
-so the ``linux-imx`` kernel needs a configuration fragment from your layer
-(see :doc:`yocto-development` for adding one):
+so the ``linux-imx`` and ``linux-stm32mp`` kernels need a configuration
+fragment from your layer (see :doc:`yocto-development` for adding one):
 
 .. code-block:: text
 
@@ -81,7 +90,10 @@ so the ``linux-imx`` kernel needs a configuration fragment from your layer
    CONFIG_TMPFS_XATTR=y
    CONFIG_LSM="landlock,lockdown,yama,loadpin,safesetid,selinux,ipe,bpf"
 
-The ``CONFIG_LSM`` line matters: ``imx_v8_defconfig`` sets an explicit
+On the STM32MP2's 6.6 kernel, which has no ``ipe``, use
+``CONFIG_LSM="landlock,lockdown,yama,loadpin,safesetid,selinux,bpf"``.
+
+The ``CONFIG_LSM`` line matters: both kernels' defconfigs set an explicit
 list of security modules to start, and without ``selinux`` in it SELinux
 is built into the kernel but never starts. ``EXT4_FS_SECURITY`` and
 ``TMPFS_XATTR`` let the root file system and ``/run`` hold the labels.
@@ -95,8 +107,18 @@ To add the fragment only when SELinux is on, in your ``linux-imx``
 
    SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'selinux', 'file://selinux.cfg', '', d)}"
 
+The ST kernel applies only the fragments listed in
+``KERNEL_CONFIG_FRAGMENTS``, so a ``linux-stm32mp`` ``.bbappend`` also
+names it there:
+
+.. code-block:: bash
+
+   SRC_URI += "${@bb.utils.contains('DISTRO_FEATURES', 'selinux', 'file://selinux.cfg;subdir=fragments/selinux', '', d)}"
+   KERNEL_CONFIG_FRAGMENTS:append = " ${@bb.utils.contains('DISTRO_FEATURES', 'selinux', '${WORKDIR}/fragments/selinux/selinux.cfg', '', d)}"
+
 **Expect a near-full rebuild.** The distro feature changes most recipes;
-in Cargt's test build 8284 of 12816 tasks ran again. Use a separate build
+in Cargt's i.MX test build 8284 of 12816 tasks ran again, and 6785 of
+10332 in the STM32MP2 build. Use a separate build
 directory for SELinux images.
 
 Checking It on the Board
@@ -110,7 +132,7 @@ Checking It on the Board
    ls -Z /usr/sbin/NetworkManager     # a file's label
    ps -eZ | grep NetworkManager       # a process's domain
 
-On Cargt's test board, ``sestatus`` reported SELinux enabled, the
+On Cargt's test boards, ``sestatus`` reported SELinux enabled, the
 ``targeted`` policy loaded and permissive mode, and the active security
 modules were ``capability,selinux``. ``NetworkManager``, ``sshd``,
 ``avahi``, ``udev``, D-Bus, ``systemd-logind`` and ``tee-supplicant`` ran
@@ -138,6 +160,12 @@ Measured on an i.MX 93 00363, against the same image without SELinux:
    * - RAM
      - about 6 to 10 MB (the loaded policy, its kernel structures and
        ``auditd``)
+
+On the STM32MP257F 00395 the SELinux packages in ``cargt-image-dev`` add
+up to 43 MB installed: 28 MB for the policy and 13 MB for
+``python3-networkx``, which only the analysis tools use. ``systemd``
+reported loading the policy in 0.30 s. Cargt has not compared the
+STM32MP2's RAM use or kernel size with an image without SELinux.
 
 Most of the root file system increase is the Python tools and the policy
 store under ``/var/lib/selinux``, which is only needed to change the policy
@@ -196,6 +224,25 @@ mounted the new slot:
 Without either step, the updated slot boots with no labels: permissive
 mode logs a flood of denials, and enforcing mode is unlikely to boot.
 
+**On the STM32MP2,** RAUC writes ext4 images into the B slot, so most
+files keep their labels, but some don't. In Cargt's test, after an update
+from an image without SELinux:
+
+- the Cargt RAUC post-install script rewrites ``/sbin/mount-partitions.sh``
+  in the new slot to point at that slot's partitions, and the rewritten
+  file has no label;
+- RAUC's ``/slot.raucs`` status file has no label;
+- the ``bootfs`` and ``vendorfs`` images are built without labels, and so
+  is the ``userfs`` partition at ``/usr/local``.
+
+In permissive mode this only logs denials, mostly services that look up
+``/usr/local``. ``restorecon`` fixed the files in the new slot and the
+``/boot`` and ``/vendor`` partitions at runtime. A product update should
+do the same as the i.MX script above: create ``/.autorelabel`` in the
+new slot when the running system has no SELinux, or relabel the files
+the post-install script changes when it does. The first-boot relabel was
+not tried on the STM32MP2.
+
 ``/data`` is created empty and has no labels. Services without a policy of
 their own don't notice, but confined ones are denied access to files
 there.
@@ -228,8 +275,8 @@ and in ``/etc/selinux/config`` (or ``DEFAULT_ENFORCING``) to keep it.
 Denials Seen on Cargt Images
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A small set, the same on every boot. All but the last appeared on both
-test boards:
+A small set, the same on every boot. The table says which boards each
+appeared on:
 
 .. list-table::
    :class: wrap-cells
@@ -238,22 +285,33 @@ test boards:
 
    * - Service
      - Denial and fix
-   * - ``sshd``
+   * - ``sshd`` (all boards)
      - Root logins over SSH are refused under enforcing. Set the boolean
        with ``setsebool -P ssh_sysadm_login on`` before switching a board
        without a serial console to enforcing, or you lose access to it.
-   * - NetworkManager
+       On the STM32MP2, logins failed under enforcing without it and
+       worked with it.
+   * - NetworkManager (i.MX)
      - Its BPF use (the ``bpf`` capability and BPF maps and programs).
        Needs a small allow rule.
-   * - ``tee-supplicant``
+   * - ``tee-supplicant`` (i.MX)
      - Its own logging socket. Set the ``tee_supplicant_qtee`` boolean.
-   * - ``ofono``
+   * - ``ofono`` (i.MX)
      - Replies over D-Bus to the console user's session. Needs a small
        allow rule, or remove ``ofono`` if the product doesn't use it.
-   * - ``udev`` (seen on the i.MX 93 00363)
+   * - ``udev`` (i.MX 93 00363 and STM32MP2)
      - The automount script writing to ``/tmp`` and creating
        ``/run/media``. Review rather than allow writes to ``/tmp``
        wholesale.
+   * - ``rauc`` (STM32MP2)
+     - Under enforcing, ``rauc status`` run from an SSH shell got no
+       answer: the RAUC service runs in ``initrc_t``, and its D-Bus reply
+       to the shell (``unconfined_t``) was denied. See
+       `Services Without a Policy`_.
+   * - Several services (STM32MP2)
+     - ``systemd-logind``, ``sshd``, ``systemd-timesyncd`` and others
+       looking up ``/usr/local``, which has no label. Label the
+       partition (see `Software Updates`_).
 
 On the board with the LTE modem, ModemManager, ``pppd``, the CMUX
 multiplexer and the ``ppp0`` connection raised no denials.
@@ -279,9 +337,12 @@ What Was Not Tested
 -------------------
 
 - Enforcing mode set at boot. Enforcing was tested at runtime, with
-  ``setenforce 1``, on the i.MX 93 00363.
+  ``setenforce 1``, on the i.MX 93 00363 and the STM32MP2.
 - Other i.MX processors, and the real-time kernel, which has its own
   configuration.
+- On the STM32MP2: the display and Weston (the test board's device tree
+  has no display), the first-boot relabel, an update between two SELinux images, and
+  updates through hawkBit.
 - The camera applications, and any Cargt service confined by its own
   policy module.
 - An update between two SELinux images with the tarball-based update; the
