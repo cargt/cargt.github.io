@@ -28,34 +28,46 @@ Preparing the Build
 -------------------
 
 The debugger needs the debug symbols of the libraries on the board, not
-only those of your program. Yocto can build them as a second root file
-system, ``rootfs-dbg``, next to the image. Add these lines to
-``conf/local.conf``:
+only those of your program. Yocto builds them as a second root file
+system, ``rootfs-dbg``, next to the image. ``cargt-image-dev`` does this by
+default: every build leaves ``rootfs-dbg`` in the image's work directory,
+which ``devtool ide-sdk`` uses, and deploys it as
+``cargt-image-dev-<machine>.rootfs-dbg.tar.zst`` next to the image. It
+adds about 2 GB to the deploy directory and a few minutes to
+``do_rootfs``; ``IMAGE_GEN_DEBUGFS = "0"`` in ``conf/local.conf`` turns it
+off.
+
+Add these lines to ``conf/local.conf``:
 
 .. code-block:: bash
 
-   IMAGE_GEN_DEBUGFS = "1"
-   IMAGE_FSTYPES_DEBUGFS = "tar.bz2"
+   # Put the libraries into rootfs-dbg next to their debug symbols
    IMAGE_CLASSES += "image-combined-dbg"
    # Build your program without optimizations that make stepping jump around
    DEBUG_BUILD:pn-hello-debug = "1"
-   # Workaround, see below
-   IMAGE_LINGUAS = ""
 
 ``DEBUG_BUILD`` is per recipe; replace ``hello-debug`` with the name of
-your recipe.
-
-.. note::
-
-   With ``IMAGE_GEN_DEBUGFS`` the image build fails at ``do_rootfs`` with
-   unmet dependencies of the ``locale-base-*`` packages on
-   ``glibc-binary-localedata-*``. ``IMAGE_LINGUAS = ""`` avoids this by
-   leaving the locales out of the image built for debugging. The board you
-   debug on can keep its normal image: the libraries are the same.
+your recipe. Without these lines, ``devtool ide-sdk`` warns that it
+cannot find the symbols in ``rootfs-dbg`` and that the recipe has a
+release build.
 
 The settings only change the image built in this build directory. You do
 not have to flash this image; the board needs to run an image built from
 the same layers, such as ``cargt-image-dev``.
+
+.. note::
+
+   The other Cargt images do not build ``rootfs-dbg`` by default. To debug
+   on one of them, turn it on for that image, for example:
+
+   .. code-block:: bash
+
+      IMAGE_GEN_DEBUGFS:pn-cargt-image-core = "1"
+
+   The Cargt distros handle the locale setting this needs. Under another
+   distro, such as ``poky``, also add ``IMAGE_LOCALES_ARCHIVE = "0"``, or
+   ``do_rootfs`` fails with unmet dependencies of the ``locale-base-*``
+   packages on ``glibc-binary-localedata-*``.
 
 The Example Program
 -------------------
@@ -283,6 +295,20 @@ program back to your source directory. Then debug as usual:
 
 ``Syms Read: Yes`` for the libraries means ``gdb`` found their symbols in
 ``rootfs-dbg``.
+
+If the image was built somewhere else, take the library symbols from its
+deployed files instead of the work directory. Extract the image's root file system and the ``rootfs-dbg``
+tarball over it into one directory, and use that directory as ``DBG``:
+
+.. code-block:: bash
+
+   mkdir sysroot
+   tar -C sysroot -xf cargt-image-dev-imx93-cargt-00363-00428.rootfs.tar.zst
+   tar -C sysroot -xf cargt-image-dev-imx93-cargt-00363-00428.rootfs-dbg.tar.zst
+   DBG=$PWD/sysroot
+
+The board has to run the image from the same build, so that its libraries
+match the symbols.
 
 For a quick look without the cross ``gdb``, ``gdb`` also runs on the board
 itself in ``cargt-image-dev``. It works without any setup, but the
