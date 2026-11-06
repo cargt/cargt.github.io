@@ -38,7 +38,10 @@ Summary
 - **i.MX 93 (no 3D GPU):** either browser handles static pages. Animation
   that only moves or fades elements runs at 52 frames per second with WPE
   WebKit and 19 with Chrome, with both CPU cores busy. Pages that repaint
-  every frame, and WebGL, are not usable.
+  every frame are not usable: Chrome manages 8 frames per second and WPE
+  WebKit less than 1. Neither browser can use WebGL. Without a GPU, WPE
+  WebKit draws it on the CPU at about 3 frames per second, and Chrome
+  turns WebGL off (forcing it on gives 5 frames per second).
 
 Which Browser for Which SoC
 ---------------------------
@@ -59,8 +62,9 @@ Which Browser for Which SoC
      - WPE WebKit or Chrome, for mostly static pages: dashboards with text
        and number updates. 1 GB is enough. Prefer WPE WebKit when flash
        matters and the page animates only with ``transform`` and
-       ``opacity``; prefer Chrome when the page repaints often. Anything
-       more animated, or WebGL, needs an SoC with a GPU.
+       ``opacity``; prefer Chrome when the page repaints often. Neither
+       browser can use WebGL on the i.MX 93. Pages that need WebGL or
+       heavier animation need an SoC with a GPU.
    * - i.MX 8M Plus and i.MX 95
      - Either. WPE WebKit for products where flash, RAM or build time
        matter; Chrome for heavy web applications with a lot of repainting
