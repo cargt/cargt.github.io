@@ -19,22 +19,84 @@ running ``cargt-image-dev`` (wrynose).
    :local:
    :depth: 1
 
-Supported Cameras
------------------
+Supported and Planned Cameras
+-----------------------------
+
+The status column means:
+
+- **Supported:** tested on a Cargt board running a published Cargt image.
+- **Tested on hardware:** captures images on a Cargt board, but isn't in
+  the published images or public layers yet. Image tuning may not be
+  calibrated. `Contact Cargt <https://www.cargt.com/cargt-about/contact-us>`__
+  for the layer.
+- **In development:** work on the driver or device tree has started.
+- **Planned:** chosen for support; work hasn't started.
 
 .. list-table::
    :class: wrap-cells
    :header-rows: 1
-   :widths: 30 25 45
+   :widths: 20 30 22 28
 
-   * - Board
-     - Camera
-     - Device trees (in ``/boot``)
-   * - i.MX 95 00414 on the 00365 carrier
-     - OmniVision OS08A20 (8 MP)
-     - ``imx95-cargt-00414-00365-os08a20-csi1.dtb`` (CSI-1, J21),
-       ``imx95-cargt-00414-00365-os08a20-csi2.dtb`` (CSI-2, J22),
-       ``imx95-cargt-00414-00365-os08a20-csi-dual.dtb`` (both)
+   * - Camera
+     - Description
+     - Board
+     - Status
+   * - OmniVision OS08A20
+     - 8 MP (3840 x 2160), color, rolling shutter, HDR
+     - i.MX 95 00414 on the 00365
+     - **Supported** on CSI-1. CSI-2 and both connectors at once are not
+       tested yet.
+   * - ST VD56G3
+     - 1.5 MP (1124 x 1364), monochrome, global shutter
+     - STM32MP2 00395 on the 00365
+     - **Tested on hardware** (00395-02)
+   * - ST VD5943
+     - 5.1 MP (2560 x 1984), monochrome
+     - STM32MP2 00395 on the 00365
+     - **Tested on hardware** (00395-02)
+   * - Sony IMX335 (ST B-CAMS-IMX module)
+     - 5 MP (2592 x 1944), color, rolling shutter
+     - STM32MP2 00395 on the 00365
+     - **Tested on hardware** (00395-02)
+   * - Toshiba TC358743 HDMI to CSI-2 bridge
+     - HDMI input, tested up to 1080p at 30 frames per second
+     - STM32MP2 00395 on the 00365
+     - **Tested on hardware** (00395-02). See
+       :ref:`stm32mp2-hdmi-input`.
+   * - ST VD1943
+     - 5.1 MP (2560 x 1984), color and near-infrared (RGB-IR)
+     - STM32MP2 00395 on the 00365
+     - **In development:** device trees are built, not yet run on a
+       board.
+   * - ST VD66GY
+     - 1.5 MP (1124 x 1364), color, global shutter
+     - STM32MP2 00395 on the 00365
+     - **In development**
+   * - ST VD56G3 and VD66GY
+     - See above
+     - i.MX 95 00414 on the 00365
+     - **In development**
+   * - ST VD5943 and VD1943
+     - See above
+     - i.MX 95 00414 on the 00365
+     - **In development**
+   * - OmniVision OX03C10 (GMSL module)
+     - 2.5 MP (1920 x 1280), color, 140 dB HDR, LED flicker mitigation
+     - i.MX 95 00414
+     - **Planned**
+   * - OmniVision OS05B10
+     - 5 MP (2592 x 1944), color with improved near-infrared
+       sensitivity, HDR
+     - i.MX 95 00414
+     - **Planned**
+
+The STM32MP2 has one CSI-2 receiver, so an STM32MP2 board takes one camera
+at a time, in the 00365's CSI_A connector (J21).
+
+The OS08A20 device trees, in ``/boot``, are
+``imx95-cargt-00414-00365-os08a20-csi1.dtb`` (CSI-1, J21),
+``imx95-cargt-00414-00365-os08a20-csi2.dtb`` (CSI-2, J22) and
+``imx95-cargt-00414-00365-os08a20-csi-dual.dtb`` (both).
 
 The OS08A20 uses the ``ox05b1s`` kernel driver. On the i.MX 95, frames
 from the camera pass through the image sensing interface (ISI) and, for
