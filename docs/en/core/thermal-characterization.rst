@@ -158,9 +158,10 @@ For the STM32MP257F (00395):
   and memory load it rises 26 °C above the room, against 33 °C for the
   i.MX 8M Plus and 58 °C for the i.MX 95 without heatsinks.
 - **The GPU and the NPU are its largest heat sources.** Each adds 6–7 °C
-  over idle. CPU, memory and NPU together run as warm as CPU, GPU and
-  memory, and also allow 74 °C. Capping the CPU at 1.2 GHz saves only about
-  2 °C.
+  over idle. They share one core, so loading both adds almost no heat: CPU,
+  GPU, memory and NPU together also rise 26 °C and allow 74 °C, but the NPU
+  then runs at a tenth of its full rate. Capping the CPU at 1.2 GHz saves
+  only about 2 °C.
 
 i.MX 95 (00414) results
 -----------------------
@@ -1227,8 +1228,10 @@ The NPU tests ran later on the same board and desk, on the Cargt
 OpenSTLinux Weston image with ST's X-LINUX-AI NPU runtime added. The NPU
 ran MobileNet v2 image classification (int8, precompiled for the NPU) with
 ``nbg_benchmark``. The other SOMs ran MobileNet v1, so the inference rates
-cannot be compared across SOMs. Idle and CPU + memory, repeated with this
-image, matched the earlier tests within 0.3 °C.
+cannot be compared across SOMs. For the test with the GPU, the LVDS display
+output was enabled with no panel connected, as in the earlier GPU tests.
+Idle, CPU + memory and CPU + GPU + memory, repeated with this image, matched
+the earlier tests within 0.3 °C.
 
 .. list-table:: Open air, no heatsink, NPU loads
    :class: wrap-cells
@@ -1240,6 +1243,12 @@ image, matched the earlier tests within 0.3 °C.
      - ΔT °C
      - Max ambient
      - Performance
+   * - CPU + GPU + memory + NPU
+     - 1500
+     - 26.3–26.4
+     - **74 °C**
+     - CPU 8.9–9.0 ops/s, memory 11,700–11,900 ops/s, GPU 5 fps,
+       9 inferences/s
    * - CPU + memory + NPU
      - 1500
      - 26.3
@@ -1264,8 +1273,14 @@ image, matched the earlier tests within 0.3 °C.
 - **The NPU adds about 7 °C over idle**, about as much as the GPU on its
   own.
 - **CPU + memory + NPU runs as warm as CPU + GPU + memory**, 26 °C above the
-  room, so it also allows 74 °C. The hottest die reading was 51 °C, 49 °C
-  under the design limit.
+  room, so it also allows 74 °C. The hottest die reading in any NPU test was
+  52 °C, 48 °C under the design limit.
+- **The GPU and the NPU share one core, so their heat does not add up.**
+  The STM32MP25's GPU and NPU are one Vivante core that takes turns between
+  them. With CPU, GPU, memory and NPU all loaded, the SOM runs only 0.6 °C
+  warmer than without the NPU, and still allows 74 °C. The NPU then gets
+  only about 9 inferences/s while ``glmark2`` runs, against 100 on its own.
+  A product that needs the NPU's full rate should keep 3D rendering light.
 - **With CPU and memory loaded, the NPU runs 15 % slower** (100 → 85
   inferences/s) without any throttling: the CPU stayed at 1500 MHz.
 - These tests are listed in full here; they are not in
