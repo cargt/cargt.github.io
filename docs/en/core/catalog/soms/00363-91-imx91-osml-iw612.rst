@@ -82,6 +82,12 @@ Source Code
 - `meta-imx-cargt <https://github.com/cargt/meta-imx-cargt>`__ - Cargt BSP layer
 
 
+Thermal Performance
+-------------------
+
+See :ref:`thermal-00363-91` in :doc:`/core/thermal-characterization` for
+how much air temperature and load this SOM handles without a heatsink.
+
 Compatible Carrier Boards
 --------------------------
 
