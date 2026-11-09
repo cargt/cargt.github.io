@@ -8,12 +8,12 @@ SOM Benchmarks
 **Applies to:** :bdg-primary:`i.MX 95` :bdg-primary:`i.MX 8M Plus` :bdg-primary:`i.MX 93` :bdg-primary:`i.MX 91` :bdg-primary:`STM32MP2`
 
 Which Cargt SOM is fast enough for your product? This page runs the same
-tests on each SOM: CPU, memory, eMMC, boot time, GPU, NPU, Ethernet and
-scheduling latency. Cargt measured every number on its own boards in
+tests on each SOM: CPU, memory, eMMC, boot time, GPU, NPU, Ethernet,
+scheduling latency and web browser speed. Cargt measured every number on its own boards in
 November 2026, with the tools and commands listed under
 `How It Was Measured`_, so you can run the same tests on your board.
 
-For browser frame rates and memory, see :doc:`web-browsers`. For how hot each
+For browser frame rates, memory and image size, see :doc:`web-browsers`. For how hot each
 SOM runs and when it needs a heatsink, see :doc:`thermal-characterization`.
 
 .. contents:: On this page
@@ -127,6 +127,13 @@ Summary
      - 557
      - 250
      - 1,184
+   * - Speedometer 3.1, WPE WebKit / Chromium
+     - 1.29 / 1.54 (one run)
+     - 1.15 / 1.41
+     - 0.696 / 0.921
+     - Not measured
+     - Not measured
+     - 0.838 / no Chromium
 
 What the results show:
 
@@ -146,6 +153,9 @@ What the results show:
   CPU alone takes 12.9 ms.
 - **Ethernet:** every SOM sends and receives at Gigabit line rate, so
   Ethernet does not set them apart.
+- **Web browsers:** Chromium scores 19 to 32% higher than WPE WebKit on
+  Speedometer 3.1 on every i.MX SOM. The i.MX 95 is the fastest, and the
+  i.MX 93, with no 3D GPU, the slowest. See `Web Browsers`_.
 - **The two i.MX 93 SOMs** (00363 OSM and 00324 SODIMM) perform the same,
   as expected for the same SoC.
 
@@ -208,6 +218,13 @@ under `Results by Test`_.
    :alt: Bar chart of the worst cyclictest latency in microseconds under stress-ng load: i.MX 95 332, i.MX 8M Plus 359, i.MX 93 00363 391, i.MX 93 00324 557, i.MX 91 250, STM32MP257F 1,184.
 
    Worst scheduling latency in 60 seconds under full load, standard kernel.
+
+.. figure:: /_static/images/charts/img-bench-speedometer.svg
+   :width: 100%
+   :alt: Bar chart of Speedometer 3.1 scores. WPE WebKit: i.MX 95 1.29, i.MX 8M Plus 1.15, i.MX 93 0.696, STM32MP257F 0.838. Chromium: i.MX 95 1.54, i.MX 8M Plus 1.41, i.MX 93 0.921.
+
+   Speedometer 3.1, the median of five to eight runs. The i.MX 95 results are
+   single runs. The STM32MP257F image has no Chromium.
 
 Results by Test
 ---------------
@@ -626,6 +643,86 @@ see :doc:`real-time-linux`. By the end of this test the i.MX 95 had reached
 87 °C and the 8M Plus, with its heatsink, 38 °C; see
 :doc:`thermal-characterization`.
 
+Web Browsers
+~~~~~~~~~~~~
+
+`Speedometer 3.1 <https://browserbench.org/Speedometer3.1/>`__ measures how
+fast a browser runs typical web-app work: JavaScript, DOM changes and layout.
+`MotionMark 1.3.1 <https://browserbench.org/MotionMark1.3.1/>`__ measures
+how much animated graphics a browser can draw while holding its frame rate.
+Both ran on ``cargt-image-webkit`` under Weston, with one browser full-screen
+at a time. WPE WebKit and Chromium took turns, with a 60-second pause between
+runs. Each score is the median of the runs listed, with the lowest and
+highest run in brackets.
+
+The i.MX 95 and STM32MP257F boards are the ones in the table above. The
+8M Plus and i.MX 93 runs used other boards with the same SOMs: the 8M Plus on
+the 00365 carrier with a 1280×800 LVDS panel, and the i.MX 93 on the 00428
+carrier.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 22 22 18 18 20
+
+   * - SOM and display
+     - Browser
+     - Speedometer 3.1
+     - MotionMark 1.3.1
+     - Runs
+   * - 00414 i.MX 95, 1280×800, Mali-G310
+     - WPE WebKit 2.52.6
+     - 1.29
+     - Not measured
+     - 1 Speedometer
+   * -
+     - Chromium 142
+     - 1.54
+     - Not measured
+     - 1 Speedometer
+   * - 00377 i.MX 8M Plus, 1280×800, GC7000UL
+     - WPE WebKit 2.52.6
+     - 1.15 (1.14 to 1.16)
+     - Not measured
+     - 5 Speedometer
+   * -
+     - Chromium 142
+     - 1.41 (1.40 to 1.42)
+     - Not measured
+     - 5 Speedometer
+   * - 00363-93 i.MX 93, 720×1280, no 3D GPU
+     - WPE WebKit 2.52.6
+     - 0.696 (0.691 to 0.700)
+     - 1.99 (1.61 to 2.03)
+     - 8 Speedometer, 3 MotionMark
+   * -
+     - Chromium 142
+     - 0.921 (0.905 to 0.929)
+     - 29.0 (22.1 to 33.3)
+     - 8 Speedometer, 3 MotionMark
+   * - 00395 STM32MP257F, 720×1280, GCNanoUltra
+     - WPE WebKit 2.54.2
+     - 0.838 (0.831 to 0.843)
+     - 65.3 (64.6 to 65.4)
+     - 8 Speedometer, 3 MotionMark
+
+On Speedometer, runs on the same board differed by less than 2%. Chromium 142
+scored higher than WPE WebKit 2.52 on every i.MX SOM: 19% on the i.MX 95, 23%
+on the 8M Plus and 32% on the i.MX 93. The STM32MP257F, with WPE WebKit 2.54,
+lands between the i.MX 93 and the 8M Plus.
+
+On the i.MX 93, both browsers draw on the CPU. WPE WebKit scored about 2 on
+MotionMark, the bottom of its scale, and Chromium 29. On the STM32MP257F, WPE
+WebKit draws with the GPU and scored 65 at 45 frames per second.
+
+MotionMark was not measured on the 8M Plus. During the series, the Vivante GPU
+driver (``galcore``) locked up: Weston and both browsers hung and could not be
+stopped, and only a reboot cleared it. Only the Speedometer runs before the
+hang are counted. MotionMark was not run on the i.MX 95.
+
+For frame rates on real pages, memory use and how to pick a browser for each
+SoC, see :doc:`web-browsers`.
+
 How It Was Measured
 -------------------
 
@@ -723,11 +820,22 @@ Scheduling latency:
    cyclictest -m -S -p 90 -i 1000 -D 60 -q
    wait
 
+Web browsers, on a board running Weston with the browser full-screen. Open
+each page, let it run to the end and read the score from the page:
+
+.. code-block:: text
+
+   https://browserbench.org/Speedometer3.1/?startAutomatically=true
+   https://browserbench.org/MotionMark1.3.1/
+
+Close the browser between runs, and give the board a minute to cool down.
+
 Caveats
 -------
 
-- **One board per SOM.** Each result is one run on one board. Expect a few
-  percent of variation between runs and boards.
+- **One board per SOM.** Except for the browser scores, each result is one
+  run on one board. Expect a few percent of variation between runs and
+  boards.
 - **The images are not identical.** The boards ran the images listed under
   `Results by Test`_; the STM32MP257F runs OpenSTLinux (scarthgap, kernel
   6.6), the i.MX boards wrynose with kernel 6.18.
