@@ -27,12 +27,12 @@ without the processor reaching its design limit.
        stress, application and NPU loads, throttling and an 18-hour burn-in
    * - :ref:`00363-93 <00363-93>`
      - i.MX 93
-     - Tested: open air and enclosure, no heatsink, stress and application
-       loads. NPU testing planned
+     - Tested: open air and enclosure, no heatsink, stress, application and
+       NPU loads and a 48-hour burn-in
    * - :ref:`00395 <00395>`
      - STM32MP257F
-     - Tested: open air, no heatsink, CPU, memory, GPU and video loads.
-       Enclosure and NPU testing planned
+     - Tested: open air, no heatsink, CPU, memory, GPU, video and NPU loads.
+       Enclosure testing planned
 
 Results for each SOM are added here as testing completes. Every test, with
 its full measurements, is listed in :doc:`thermal-test-data`.
@@ -128,6 +128,11 @@ For the i.MX 93 (00363):
   rises 19 °C above the room, against 31 °C for the i.MX 8M Plus at 1.6 GHz.
 - **The enclosure costs only about 3 °C of ambient.** The air inside it ran
   2–3 °C above the room.
+- **It needs no heatsink with the NPU either.** With CPU, memory and the
+  Ethos-U65 NPU all fully loaded it rises 24 °C above the room in open air
+  and 28 °C in the enclosure, so it allows 61 °C and 57 °C room air.
+- **48 hours at full CPU, memory and NPU load in the enclosure** ran with no
+  errors, no throttling and no drift in temperature rise or NPU rate.
 
 For the STM32MP257F (00395):
 
@@ -138,8 +143,10 @@ For the STM32MP257F (00395):
 - **It runs cooler than the i.MX 8M Plus and i.MX 95.** Under full CPU, GPU
   and memory load it rises 26 °C above the room, against 33 °C for the
   i.MX 8M Plus and 58 °C for the i.MX 95 without heatsinks.
-- **The GPU is its largest heat source.** Capping the CPU at 1.2 GHz saves
-  only about 2 °C.
+- **The GPU and the NPU are its largest heat sources.** Each adds 6–7 °C
+  over idle. CPU, memory and NPU together run as warm as CPU, GPU and
+  memory, and also allow 74 °C. Capping the CPU at 1.2 GHz saves only about
+  2 °C.
 
 i.MX 95 (00414) results
 -----------------------
@@ -861,7 +868,8 @@ Test setup
        mounted as the i.MX 8M Plus was. The display output was enabled with
        no panel connected.
    * - Software
-     - Cargt Linux BSP (NXP lf-6.18.20)
+     - Cargt Linux BSP (NXP lf-6.18.20). For the NPU tests, an image with the
+       Ethos-U65 NPU enabled.
    * - CPU frequency
      - The two Cortex-A55 cores run at a fixed 1.7 GHz; the i.MX 93 has no
        CPU frequency levels to cap or governor to choose. It has no 3D GPU or
@@ -870,14 +878,14 @@ Test setup
    * - Die temperature
      - The i.MX 93 CPU thermal sensor
    * - Ambient
-     - A Dracal USB-PTH450 sensor in the room, 22–24 °C. In the enclosure, a
-       second sensor measured the air inside it.
+     - A Dracal USB-PTH450 sensor in the room, 22–24 °C (19–24 °C for the NPU
+       tests). In the enclosure, a second sensor measured the air inside it.
 
 The loads are those used for the other SOMs, without the GPU. Every test ran
 to a steady die temperature and none throttled. The open-air tests of CPU and
 memory, all CPU cores and idle were repeated two or three times; repeats
-agreed within 0.5 °C, and the tables give their mean. NPU tests on the
-Ethos-U65 are planned.
+agreed within 0.5 °C, and the tables give their mean. The NPU tests are in
+`NPU loads`_ below.
 
 .. list-table:: Open air and enclosure, no heatsink
    :class: wrap-cells
@@ -925,6 +933,83 @@ Ethos-U65 are planned.
   to test it, the kernel held the die at the throttle point by idling the
   CPU, at a cost of 18–30 % of CPU throughput.
 
+NPU loads
+~~~~~~~~~
+
+The NPU loads are TensorFlow Lite inference on the Ethos-U65 NPU through the
+Ethos-U delegate, with models compiled by Vela: MobileNet v1 image
+classification, and SSD MobileNet object detection, which runs partly on the
+CPU. They ran on the same board, in open air and then in the enclosure.
+Idle and CPU + memory were run again with this image for comparison.
+
+.. list-table:: Open air and enclosure, no heatsink
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 16 16 16 22
+
+   * - Load
+     - ΔT °C (open air → enclosure)
+     - Max ambient, open air
+     - Max ambient, enclosure
+     - Performance (open air → enclosure)
+   * - Idle
+     - 13.7 → 15.7
+     - 71 °C
+     - 69 °C
+     - –
+   * - CPU + memory
+     - 20.7 → 23.4
+     - 64 °C
+     - 62 °C
+     - CPU 14 ops/s, memory 18,500 → 18,400 ops/s
+   * - Image classification on the NPU
+     - 18.7 → 21.9
+     - 66 °C
+     - 63 °C
+     - 259 inferences/s (3.9 ms each)
+   * - Object detection on the NPU
+     - 18.7 → 22.1
+     - 66 °C
+     - 63 °C
+     - 91 inferences/s
+   * - CPU + memory + NPU
+     - 23.6–23.8 → 27.3
+     - 61 °C
+     - 58 °C
+     - CPU 10–11 ops/s, memory 16,400–16,700 ops/s, 225–227 inferences/s
+   * - CPU + memory + NPU (4 hours)
+     - 24.4 → 27.8
+     - **61 °C**
+     - **57 °C**
+     - CPU 10 ops/s, memory 16,300–16,900 ops/s, 225 inferences/s
+
+- **No heatsink is needed with the NPU either.** The hottest die reading in
+  any NPU test was 50 °C, and 52 °C in the 48-hour burn-in, 33 °C under the
+  design limit.
+- **The NPU adds 5–6 °C of ΔT** over idle on its own, and 3–4 °C on top of
+  full CPU and memory load.
+- **With CPU and memory fully loaded, the NPU runs 13 % slower** (259 → 225
+  inferences/s) without any throttling. The CPU and memory loads lose 10–25 %
+  of their throughput.
+- **The enclosure air ran 1.5 °C above the room at idle** and 2.0–2.3 °C with
+  CPU, memory and NPU loaded.
+- **Over 4 hours the worst case settled under 1 °C hotter** than in the
+  20- and 40-minute tests.
+
+Long-term stability
+~~~~~~~~~~~~~~~~~~~
+
+- **48 hours at full load:** CPU + memory + NPU in the enclosure, with
+  ``stress-ng --verify`` checking the CPU and memory results. There were no
+  errors and no throttling. Throughput stayed constant: the NPU ran at
+  224–225 inferences/s in every hour, the CPU at 9.6 operations/s and memory
+  at 16,300 operations/s. Verification costs about 9 % of the CPU stressor's
+  rate.
+- **Consistent results:** over the 48 hours the room varied between 19 and
+  24 °C and the die followed it, between 47 and 51 °C. ΔT stayed between
+  27.0 and 28.1 °C, against 27.8 °C in the 4-hour test. The hottest die
+  reading was 52.4 °C.
+
 .. _thermal-00395:
 
 STM32MP257F (00395) results
@@ -955,8 +1040,9 @@ Test setup
 
 The loads are those used for the other SOMs: ``stress-ng`` on the CPU and
 memory, ``glmark2`` on the GPU and 1080p30 H.264 playback on the hardware
-video decoder. The touchscreen UI and NPU loads were not run. Every test ran
-to a steady die temperature and none throttled. Where a test was repeated,
+video decoder. The touchscreen UI was not run; the NPU loads are in
+`NPU loads (STM32MP257F)`_ below. Every test ran to a steady die temperature
+and none throttled. Where a test was repeated,
 the table gives the range.
 
 .. list-table:: Open air, no heatsink
@@ -1040,8 +1126,57 @@ the table gives the range.
 - **Capping the CPU at 1200 MHz saves only about 2 °C** and costs 16–20 % of CPU
   and memory throughput. The Cortex-A35 cores make little heat.
 - **Video costs about 2 °C** over idle with the display output enabled.
+
+NPU loads (STM32MP257F)
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The NPU tests ran later on the same board and desk, on the Cargt
+OpenSTLinux Weston image with ST's X-LINUX-AI NPU runtime added. The NPU
+ran MobileNet v2 image classification (int8, precompiled for the NPU) with
+``nbg_benchmark``. The other SOMs ran MobileNet v1, so the inference rates
+cannot be compared across SOMs. Idle and CPU + memory, repeated with this
+image, matched the earlier tests within 0.3 °C.
+
+.. list-table:: Open air, no heatsink, NPU loads
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 34 12 12 14 28
+
+   * - Load
+     - CPU cap MHz
+     - ΔT °C
+     - Max ambient
+     - Performance
+   * - CPU + memory + NPU
+     - 1500
+     - 26.3
+     - **74 °C**
+     - CPU 5.5–5.7 ops/s, memory 14,500–15,100 ops/s, 85 inferences/s
+   * - Image classification on the NPU
+     - 1500
+     - 21.6
+     - 78 °C
+     - 100 inferences/s (10 ms each)
+   * - CPU + memory
+     - 1500
+     - 20.1
+     - 80 °C
+     - CPU 6.1 ops/s, memory 15,600 ops/s
+   * - Idle
+     - 1500
+     - 14.3
+     - 86 °C
+     - –
+
+- **The NPU adds about 7 °C over idle**, about as much as the GPU on its
+  own.
+- **CPU + memory + NPU runs as warm as CPU + GPU + memory**, 26 °C above the
+  room, so it also allows 74 °C. The hottest die reading was 51 °C, 49 °C
+  under the design limit.
+- **With CPU and memory loaded, the NPU runs 15 % slower** (100 → 85
+  inferences/s) without any throttling: the CPU stayed at 1500 MHz.
 - These tests are listed in full here; they are not in
-  :doc:`thermal-test-data`. Enclosure and NPU tests are planned.
+  :doc:`thermal-test-data`. Enclosure tests are planned.
 
 Choosing cooling for your product
 ---------------------------------

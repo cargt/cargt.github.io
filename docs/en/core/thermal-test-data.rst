@@ -7,7 +7,7 @@ Thermal Test Data
 .. rst-class:: cargt-wide-page
 
 Every test behind :doc:`thermal-characterization`, one row per test, including repeats,
-4-hour soaks and the burn-in. The same data is available as a spreadsheet:
+4-hour soaks and the burn-ins. The same data is available as a spreadsheet:
 :download:`all test results (CSV) </_static/data/thermal-test-data.csv>`.
 
 How the tests ran
@@ -19,7 +19,7 @@ How the tests ran
   is within 0.3 °C of the mean five minutes earlier (0.15 °C for the
   enclosure, application and NPU tests, because enclosure air warms slowly).
   A test runs at least 20 minutes (40 minutes in an enclosure). Soaks run
-  4 hours and the burn-in 9 hours regardless.
+  4 hours and the burn-ins 9 or 48 hours regardless.
 - Temperatures are means over the last five minutes of the load. The die
   temperature is the higher of the SoC's die sensors.
 - **ΔT** is the die temperature minus the room air. **Max ambient** is the
@@ -1695,6 +1695,15 @@ Open air, no heatsink
      - 72
      - –, 3 / –
      - –
+   * - Idle (no load)
+     - – / –
+     - 20
+     - 23.7
+     - 37.4 / 38.4
+     - 13.7
+     - 71
+     - –, 3 / –
+     - –
    * - CPU, all cores at 50%
      - – / –
      - 20
@@ -1749,6 +1758,15 @@ Open air, no heatsink
      - 64
      - –, 100 / –
      - cpu 14 ops/s, vm 18769 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 24.1
+     - 44.8 / 45.9
+     - 20.7
+     - 64
+     - –, 100 / –
+     - cpu 14 ops/s, vm 18530 ops/s
    * - Chromium kiosk HMI (charts at 60 fps)
      - – / –
      - 20
@@ -1758,6 +1776,51 @@ Open air, no heatsink
      - 65
      - –, 83 / –
      - UI 13 fps
+   * - NPU inference, MobileNet v1 (Ethos-U65)
+     - – / –
+     - 20
+     - 23.5
+     - 42.2 / 42.9
+     - 18.7
+     - 66
+     - –, 7 / –
+     - NPU 259 inferences/s
+   * - NPU object detection, SSD MobileNet (Ethos-U65 + CPU)
+     - – / –
+     - 20
+     - 23.8
+     - 42.4 / 42.9
+     - 18.7
+     - 66
+     - –, 14 / –
+     - NPU 91 inferences/s
+   * - CPU + memory + NPU
+     - – / –
+     - 20
+     - 23.8
+     - 47.3 / 47.9
+     - 23.6
+     - 61
+     - –, 100 / –
+     - cpu 11 ops/s, vm 16680 ops/s, NPU 226 inferences/s
+   * - CPU + memory + NPU
+     - – / –
+     - 23
+     - 23.3
+     - 47.1 / 47.9
+     - 23.8
+     - 61
+     - –, 100 / –
+     - cpu 10 ops/s, vm 16650 ops/s, NPU 227 inferences/s
+   * - CPU + memory + NPU
+     - – / –
+     - 240 (4 h soak)
+     - 22.1
+     - 46.5 / 47.9
+     - 24.4
+     - 61
+     - –, 100 / –
+     - cpu 10 ops/s, vm 16850 ops/s, NPU 225 inferences/s
 
 
 Enclosure (Polycase WA Series WA-42\*16), no heatsink
@@ -1783,6 +1846,15 @@ Enclosure (Polycase WA Series WA-42\*16), no heatsink
      - 23.1 / 24.6
      - 39.1 / 40.4
      - 16.1
+     - 69
+     - –, 4 / –
+     - –
+   * - Idle (no load)
+     - – / –
+     - 40
+     - 21.2 / 22.8
+     - 37.0 / 38.4
+     - 15.7
      - 69
      - –, 4 / –
      - –
@@ -1822,6 +1894,15 @@ Enclosure (Polycase WA Series WA-42\*16), no heatsink
      - 61
      - –, 100 / –
      - cpu 13 ops/s, vm 18477 ops/s
+   * - CPU + memory
+     - – / –
+     - 40
+     - 21.5 / 23.2
+     - 44.9 / 45.9
+     - 23.4
+     - 62
+     - –, 100 / –
+     - cpu 14 ops/s, vm 18352 ops/s
    * - Chromium kiosk HMI (charts at 60 fps)
      - – / –
      - 40
@@ -1831,6 +1912,51 @@ Enclosure (Polycase WA Series WA-42\*16), no heatsink
      - 62
      - –, 85 / –
      - UI 12 fps
+   * - NPU inference, MobileNet v1 (Ethos-U65)
+     - – / –
+     - 40
+     - 21.6 / 23.5
+     - 43.5 / 44.4
+     - 21.9
+     - 63
+     - –, 8 / –
+     - NPU 259 inferences/s
+   * - NPU object detection, SSD MobileNet (Ethos-U65 + CPU)
+     - – / –
+     - 40
+     - 21.9 / 23.8
+     - 44.0 / 44.4
+     - 22.1
+     - 63
+     - –, 16 / –
+     - NPU 91 inferences/s
+   * - CPU + memory + NPU
+     - – / –
+     - 40
+     - 21.8 / 23.9
+     - 49.2 / 49.9
+     - 27.3
+     - 58
+     - –, 100 / –
+     - cpu 10 ops/s, vm 16420 ops/s, NPU 225 inferences/s
+   * - CPU + memory + NPU
+     - – / –
+     - 240 (4 h soak)
+     - 21.7 / 24.0
+     - 49.5 / 50.4
+     - 27.8
+     - 57
+     - –, 100 / –
+     - cpu 11 ops/s, vm 16326 ops/s, NPU 225 inferences/s
+   * - CPU + memory + NPU, verified (burn-in)
+     - – / –
+     - 2880 (48 h burn-in)
+     - 20.7 / 22.9
+     - 48.3 / 52.4
+     - 27.6
+     - 57
+     - –, 100 / –
+     - cpu 10 ops/s, vm 16286 ops/s, NPU 225 inferences/s
 
 
 Throttle tests (throttle point lowered): open air, no heatsink
