@@ -29,6 +29,9 @@ without the processor reaching its design limit.
      - i.MX 93
      - Tested: open air and enclosure, no heatsink, stress, application and
        NPU loads and a 48-hour burn-in
+   * - :ref:`00363-91 <00363-91>`
+     - i.MX 91
+     - Tested: open air, no heatsink, CPU and memory loads and a 4-hour soak
    * - :ref:`00395 <00395>`
      - STM32MP257F
      - Tested: open air, no heatsink, CPU, memory, GPU, video and NPU loads.
@@ -52,8 +55,8 @@ Each test runs one load until the die temperature is steady, which takes
 The **design limit** is 10 °C below the temperature at which the processor
 starts to throttle (its passive trip point). Below it, the SOM runs at full
 speed with margin to spare. For the i.MX 95 the passive trip is 105 °C, so
-the design limit is **95 °C**. For the i.MX 8M Plus and i.MX 93 the passive
-trip depends on the processor's temperature grade: U-Boot sets it 10 °C
+the design limit is **95 °C**. For the i.MX 8M Plus, i.MX 93 and i.MX 91 the
+passive trip depends on the processor's temperature grade: U-Boot sets it 10 °C
 below the grade's maximum junction temperature. The SOMs tested here have
 105 °C parts, so the passive trip is 95 °C and the design limit is
 **85 °C**. A part with a lower maximum has a lower trip point and design
@@ -133,6 +136,17 @@ For the i.MX 93 (00363):
   and 28 °C in the enclosure, so it allows 61 °C and 57 °C room air.
 - **48 hours at full CPU, memory and NPU load in the enclosure** ran with no
   errors, no throttling and no drift in temperature rise or NPU rate.
+
+For the i.MX 91 (00363):
+
+- **In open air, it needs no heatsink.** Under full CPU and memory load it
+  rises 13 °C above the room, so it allows 72 °C room air, although figures
+  that high are extrapolations.
+- **It runs cooler than the i.MX 93**, 13 °C above the room against 20.5 °C
+  under the same load, but it also does less work: its single 1.4 GHz core
+  does about a third of the i.MX 93's CPU and memory throughput.
+- **4 hours at full CPU and memory load** with ``stress-ng --verify`` ran with
+  no errors and no throttling.
 
 For the STM32MP257F (00395):
 
@@ -1009,6 +1023,85 @@ Long-term stability
   24 °C and the die followed it, between 47 and 51 °C. ΔT stayed between
   27.0 and 28.1 °C, against 27.8 °C in the 4-hour test. The hottest die
   reading was 52.4 °C.
+
+.. _thermal-00363-91:
+
+i.MX 91 (00363) results
+-----------------------
+
+Test setup
+~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :widths: 25 75
+
+   * - Hardware
+     - 00363 i.MX 91 OSM-L SOM on the 00365 carrier board, no heatsink, in
+       open air on a desk.
+   * - Software
+     - Cargt Linux BSP (NXP lf-6.18.20)
+   * - CPU frequency
+     - The single Cortex-A55 core runs at a fixed 1.4 GHz; the i.MX 91 has no
+       CPU frequency levels to cap or governor to choose. It has no 3D GPU,
+       NPU or video decoder, so there are no GPU, NPU or video tests.
+   * - Die temperature
+     - The i.MX 91 CPU thermal sensor
+   * - Ambient
+     - A Dracal USB-PTH450 sensor in the room, 22–24 °C
+
+The loads are those used for the i.MX 93, plus memory on its own. Every test
+ran to a steady die temperature and none throttled. CPU + memory and idle were
+run twice; repeats agreed within 0.3 °C, and the table gives their mean. The
+test logger kept the single core about 19 % busy at idle, so the idle figures
+are slightly warm.
+
+.. list-table:: Open air, no heatsink
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 34 14 16 36
+
+   * - Load
+     - ΔT °C
+     - Max ambient
+     - Performance
+   * - Memory
+     - 13.4
+     - **72 °C**
+     - Memory 13,400 ops/s
+   * - CPU + memory
+     - 13.0
+     - **72 °C**
+     - CPU 4 ops/s, memory 6,500 ops/s
+   * - CPU + memory (4 hours, ``stress-ng --verify``)
+     - 12.6
+     - 72 °C
+     - CPU 4 ops/s, memory 6,400 ops/s
+   * - CPU, all cores
+     - 12.6
+     - 72 °C
+     - 9 ops/s
+   * - CPU at 50 %
+     - 11.6
+     - 73 °C
+     - –
+   * - Idle
+     - 10.3
+     - 75 °C
+     - –
+
+- **No heatsink is needed** in open air: the hottest die reading in any test
+  was 38 °C, 47 °C under the design limit.
+- **It runs cooler than the i.MX 93 and does less work.** Under CPU and memory
+  load it rises 13 °C above the room against 20.5 °C for the i.MX 93. With
+  one Cortex-A55 core at 1.4 GHz against two at 1.7 GHz, it runs the CPU
+  stress test at 9 against 29 operations/s and the memory load at about a
+  third of the i.MX 93's rate.
+- **Memory traffic is its warmest load**, slightly warmer than CPU and memory
+  together.
+- **4 hours at full load:** CPU + memory with ``stress-ng --verify`` checking
+  the results ran with no errors and no throttling. ΔT was 12.6 °C, against
+  13.0 °C in the 20-minute tests, and the hottest die reading was 37.9 °C.
 
 .. _thermal-00395:
 

@@ -1997,3 +1997,98 @@ Throttle tests (throttle point lowered): open air, no heatsink
      - throttled after 4 s (100 %)
      - –, 100 / –
      - cpu 10 ops/s, vm 13425 ops/s
+
+
+i.MX 91 (00363)
+---------------
+
+
+Open air, no heatsink
+~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load)
+     - – / –
+     - 21
+     - 21.6
+     - 31.8 / 32.8
+     - 10.1
+     - 75
+     - –, 19 / –
+     - –
+   * - CPU, all cores at 50%
+     - – / –
+     - 20
+     - 22.1
+     - 33.6 / 34.5
+     - 11.6
+     - 73
+     - –, 69 / –
+     - cpu 6 ops/s
+   * - CPU, all cores (matrixprod)
+     - – / –
+     - 20
+     - 22.6
+     - 35.2 / 35.5
+     - 12.6
+     - 72
+     - –, 100 / –
+     - cpu 9 ops/s
+   * - Memory (vm, 2 workers, 50% RAM)
+     - – / –
+     - 20
+     - 23.1
+     - 36.5 / 37.7
+     - 13.4
+     - 72
+     - –, 100 / –
+     - vm 13379 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 23.6
+     - 36.6 / 37.2
+     - 13.0
+     - 72
+     - –, 100 / –
+     - cpu 4 ops/s, vm 6522 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 23.7
+     - 36.7 / 37.2
+     - 12.9
+     - 72
+     - –, 100 / –
+     - cpu 4 ops/s, vm 6493 ops/s
+   * - Idle (no load)
+     - – / –
+     - 20
+     - 23.8
+     - 34.2 / 35.2
+     - 10.4
+     - 75
+     - –, 19 / –
+     - –
+   * - CPU + memory, verified
+     - – / –
+     - 240 (4 h soak)
+     - 23.7
+     - 36.3 / 37.9
+     - 12.6
+     - 72
+     - –, 100 / –
+     - cpu 4 ops/s, vm 6400 ops/s
