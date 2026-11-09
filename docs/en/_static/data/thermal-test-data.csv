@@ -175,3 +175,17 @@ som,soc,environment,heatsink,load,governor,cpu_cap_mhz,gpu_cap_mhz,throttle_poin
 00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,Chromium kiosk HMI (charts at 60 fps),,,,,2026-10-29,to steady state,13.8,40.2,steady,23.52,25.75,46.72,47.35,23.2,85.0,61.8,,0.0,,84.7,,,,,,12.0,,
 00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,CPU + memory,,,,,2026-10-29,to steady state,14.4,40.3,steady,23.3,25.61,47.2,47.85,23.9,85.0,61.1,,0.0,,100.0,,,13.432604,18304.659293,,,,
 00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,CPU + memory,,,,,2026-10-29,to steady state,12.8,40.6,steady,23.42,26.04,47.44,48.35,24.01,85.0,60.99,,0.0,,100.0,,,13.288927,18477.181168,,,,
+00363,i.MX 93,open air,none,Idle (no load),,,,,2026-11-05,to steady state,5.0,20.0,steady,23.74,,37.4,38.35,13.66,85.0,71.34,,0.0,,2.7,,,,,,,,
+00363,i.MX 93,open air,none,CPU + memory,,,,,2026-11-05,to steady state,5.0,20.0,steady,24.1,,44.84,45.85,20.74,85.0,64.26,,0.0,,100.0,,,13.870831,18530.32721,,,,
+00363,i.MX 93,open air,none,"NPU inference, MobileNet v1 (Ethos-U65)",,,,,2026-11-05,to steady state,9.8,20.0,steady,23.54,,42.25,42.85,18.71,85.0,66.29,,0.0,,6.8,,,,,,,,259.3
+00363,i.MX 93,open air,none,"NPU object detection, SSD MobileNet (Ethos-U65 + CPU)",,,,,2026-11-05,to steady state,6.5,20.0,steady,23.77,,42.44,42.85,18.67,85.0,66.33,,0.0,,14.2,,,,,,,,90.9
+00363,i.MX 93,open air,none,CPU + memory + NPU,,,,,2026-11-05,to steady state,9.8,20.0,steady,23.76,,47.31,47.85,23.55,85.0,61.45,,0.0,,99.9,,,10.960471,16680.174572,,,,226.0
+00363,i.MX 93,open air,none,CPU + memory + NPU,,,,,2026-11-05,to steady state,7.2,23.2,steady,23.33,,47.07,47.85,23.75,85.0,61.25,,0.0,,99.9,,,10.403039,16649.837535,,,,226.7
+00363,i.MX 93,open air,none,CPU + memory + NPU,,,,,2026-11-05,4 h soak,6.8,240.0,steady,22.15,,46.52,47.85,24.37,85.0,60.63,,0.0,,100.0,,,10.382759,16850.245863,,,,225.3
+00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,Idle (no load),,,,,2026-11-06,to steady state,10.0,40.0,steady,21.25,22.78,36.95,38.35,15.7,85.0,69.3,,0.0,,3.8,,,,,,,,
+00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,CPU + memory,,,,,2026-11-06,to steady state,10.7,40.0,steady,21.49,23.24,44.93,45.85,23.44,85.0,61.56,,0.0,,100.0,,,13.595139,18352.23444,,,,
+00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,"NPU inference, MobileNet v1 (Ethos-U65)",,,,,2026-11-06,to steady state,10.0,40.0,steady,21.65,23.48,43.51,44.35,21.86,85.0,63.14,,0.0,,8.3,,,,,,,,258.6
+00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,"NPU object detection, SSD MobileNet (Ethos-U65 + CPU)",,,,,2026-11-06,to steady state,13.2,40.0,steady,21.85,23.75,43.97,44.35,22.13,85.0,62.87,,0.0,,15.5,,,,,,,,90.7
+00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,CPU + memory + NPU,,,,,2026-11-06,to steady state,10.4,40.0,steady,21.84,23.89,49.18,49.85,27.34,85.0,57.66,,0.0,,100.0,,,10.445507,16420.133068,,,,225.1
+00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,CPU + memory + NPU,,,,,2026-11-06,4 h soak,12.3,240.1,steady,21.69,23.99,49.49,50.35,27.8,85.0,57.2,,0.0,,100.0,,,10.510005,16326.358233,,,,224.7
+00363,i.MX 93,enclosure (Polycase WA Series WA-42*16),none,"CPU + memory + NPU, verified (burn-in)",,,,,2026-11-07,48 h burn-in,10.0,2880.0,max_time,20.74,22.85,48.3,52.35,27.57,85.0,57.43,,0.0,,100.0,,,9.574633,16286.297541,,,,225.2
