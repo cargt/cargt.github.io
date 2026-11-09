@@ -76,7 +76,15 @@ The status column means:
      - See above
      - i.MX 95 00414 on the 00365
      - **In development**
-   * - ST VD5943 and VD1943
+   * - ST VD1943
+     - 5.1 MP (2560 x 1984), color and near-infrared (RGB-IR): color,
+       infrared, or both from the same frame
+     - i.MX 95, so far on NXP's FRDM-IMX95 board
+     - **In development:** color, infrared, and color plus infrared run at
+       30 frames per second through the ISP. Image tuning is not
+       calibrated, and there is no device tree for the 00365 carrier yet.
+       See :ref:`the notes below the table <cameras-vd1943-imx95>`.
+   * - ST VD5943
      - See above
      - i.MX 95 00414 on the 00365
      - **In development**
@@ -89,6 +97,25 @@ The status column means:
        sensitivity, HDR
      - i.MX 95 00414
      - **Planned**
+
+.. _cameras-vd1943-imx95:
+
+The VD1943 on the i.MX 95 has three output modes, chosen while it runs:
+
+- **Color:** the sensor removes the infrared and sends a Bayer image.
+- **Infrared:** the sensor sends a grey near-infrared image (global shutter
+  only).
+- **Color plus infrared:** the sensor sends its native RGB-IR pattern, and
+  the i.MX 95's NEO ISP splits each frame into a color stream and an
+  infrared stream. libcamera shows this as one camera with two streams.
+
+On an FRDM-IMX95 with two CSI-2 lanes at 1.5 Gbit/s each, the link ran
+with no receiver errors. Each size reached the frame rate the sensor
+timing predicts: up to 50 frames per second at 2560 x 1984 (10-bit raw)
+and 111 at 1920 x 1080. All three modes ran at 30 frames per second
+through the ISP, color plus infrared included at the full 2560 x 1984. The
+VD1943's 4 x 4 RGB-IR pattern, measured on the sensor, is
+``G I G I / B G R G / G I G I / R G B G``.
 
 The STM32MP2 has one CSI-2 receiver, so an STM32MP2 board takes one camera
 at a time, in the 00365's CSI_A connector (J21).
