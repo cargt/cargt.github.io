@@ -219,12 +219,7 @@ under `Results by Test`_.
 
    Worst scheduling latency in 60 seconds under full load, standard kernel.
 
-.. figure:: /_static/images/charts/img-bench-speedometer.svg
-   :width: 100%
-   :alt: Bar chart of Speedometer 3.1 scores. WPE WebKit: i.MX 95 1.29, i.MX 8M Plus 1.15, i.MX 93 0.696, STM32MP257F 0.838. Chromium: i.MX 95 1.54, i.MX 8M Plus 1.41, i.MX 93 0.921.
-
-   Speedometer 3.1, the median of five to eight runs. The i.MX 95 results are
-   single runs. The STM32MP257F image has no Chromium.
+The Speedometer and MotionMark charts are under `Web Browsers`_.
 
 Results by Test
 ---------------
@@ -659,6 +654,20 @@ The i.MX 95 and STM32MP257F boards are the ones in the table above. The
 8M Plus and i.MX 93 runs used other boards with the same SOMs: the 8M Plus on
 the 00365 carrier with a 1280×800 LVDS panel, and the i.MX 93 on the 00428
 carrier.
+
+.. figure:: /_static/images/charts/img-bench-speedometer.svg
+   :width: 100%
+   :alt: Bar chart of Speedometer 3.1 scores, the median with the lowest and highest run. i.MX 95: WPE WebKit 1.29, Chromium 1.54 (one run each). i.MX 8M Plus: WPE WebKit 1.15 (1.14 to 1.16), Chromium 1.41 (1.40 to 1.42). i.MX 93: WPE WebKit 0.696 (0.691 to 0.700), Chromium 0.921 (0.905 to 0.929). STM32MP257F: WPE WebKit 0.838 (0.831 to 0.843); no Chromium in the image.
+
+   Speedometer 3.1, the median of five to eight runs, with whiskers from the
+   lowest to the highest run. The i.MX 95 results are single runs.
+
+.. figure:: /_static/images/charts/img-bench-motionmark.svg
+   :width: 100%
+   :alt: Bar chart of MotionMark 1.3.1 scores, the median with the lowest and highest run. i.MX 95: not measured. i.MX 8M Plus: not measured, because the GPU driver hung. i.MX 93: WPE WebKit 1.99 (1.61 to 2.03), Chromium 29.0 (22.1 to 33.3). STM32MP257F: WPE WebKit 65.3 (64.6 to 65.4); no Chromium in the image.
+
+   MotionMark 1.3.1, the median of three runs, with whiskers from the lowest
+   to the highest run.
 
 .. list-table::
    :class: wrap-cells
