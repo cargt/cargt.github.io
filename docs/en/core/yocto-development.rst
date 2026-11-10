@@ -153,6 +153,38 @@ picked up:
 recipe and its version, and ``show-layers`` lists the layers with their
 priorities.
 
+Choosing How to Change the Kernel
+---------------------------------
+
+Start with the lightest route that does the job; each route further down
+the table takes more work. A kernel you build yourself has its own release
+string, so modules from the Cargt package feeds do not load into it.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 40 30
+
+   * - You need
+     - Lightest route
+     - See
+   * - A driver that the Cargt kernel builds as a module, but your image
+       leaves out
+     - Install ``kernel-module-<name>`` from the feed, or add it to
+       ``IMAGE_INSTALL``
+     - :ref:`package-management-kernel-modules`
+   * - Your own driver
+     - An out-of-tree module recipe (``inherit module``), built against the
+       kernel of your build. ``devtool add`` creates one from a source
+       directory with a kernel module ``Makefile``.
+     - :doc:`application-development`, "A Recipe for a Kernel Module"
+   * - Different wiring or peripherals on your carrier
+     - A device tree change
+     - `Changing the Device Tree`_
+   * - A driver that is not enabled, a built-in option, or a kernel patch
+     - A configuration fragment or patch, and a full kernel rebuild
+     - `Changing the Kernel Configuration`_
+
 Changing the Kernel Configuration
 ---------------------------------
 
@@ -297,6 +329,48 @@ file system archive is half the size. With the empty root password and
 root login removed, nobody can log in until you add a way: for example an
 SSH key for root, or your own user, from your layer. Flash it like any
 other image; see :doc:`getting-started`.
+
+Sizing a Production Image
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``cargt-image-dev`` is built for development, not for size. Measured on
+November 8, 2026, the published i.MX ``cargt-image-dev`` images install
+1.4 to 1.5 GB on scarthgap and 1.6 to 2.5 GB on wrynose, and the wrynose-rt
+``cargt-image-rt`` images 2.2 to 2.8 GB.
+
+A few packages account for much of that. In ``cargt-image-dev`` for
+``imx93-cargt-00363-00428`` on scarthgap, on the same date:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 40 15 45
+
+   * - Package
+     - Installed
+     - What it is
+   * - ``teleport``
+     - 358 MB
+     - Teleport remote access, a single package
+   * - ``packagegroup-core-sdk``
+     - 169 MB
+     - Compilers and build tools for building on the board
+   * - ``packagegroup-imx-security``
+     - 99 MB
+     - NXP's i.MX security packages
+   * - ``kernel-devsrc``
+     - 91 MB
+     - Kernel source for building modules on the board
+   * - GStreamer
+     - 80 MB
+     - GStreamer and its plugins (``packagegroup-fsl-gstreamer1.0-full``)
+
+``cargt-image-core``, which the example above starts from, has no
+``teleport``, ``kernel-devsrc`` or GStreamer packagegroup, and the
+example's ``IMAGE_FEATURES:remove`` drops ``tools-sdk``, which installs
+``packagegroup-core-sdk``. It still has ``packagegroup-imx-security``;
+leave it out if your product does not use it. Check your image's
+``.manifest`` for the rest.
 
 Upgrading a Recipe
 ------------------

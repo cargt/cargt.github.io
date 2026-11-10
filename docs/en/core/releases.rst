@@ -138,8 +138,15 @@ i.MX
      - —
    * - NXP FRDM i.MX 95 (see :doc:`index`)
      - ``imx95-15x15-lpddr4x-frdm``
-     - `Images <https://yocto.cargt.com/images/wrynose/imx95-15x15-lpddr4x-frdm/>`__
+     - `Images <https://yocto.cargt.com/images/wrynose/imx95-15x15-lpddr4x-frdm/>`__ ·
+       `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx95_15x15_lpddr4x_frdm/>`__
      - `Images <https://yocto.cargt.com/images/wrynose-rt/imx95-15x15-lpddr4x-frdm/>`__
+     - —
+   * - NXP FRDM i.MX 95 Pro (see :doc:`yocto`)
+     - ``imx95-19x19-lpddr5-frdm-pro``
+     - `Images <https://yocto.cargt.com/images/wrynose/imx95-19x19-lpddr5-frdm-pro/>`__ ·
+       `Packages <https://yocto.cargt.com/linux-imx/wrynose/imx95_19x19_lpddr5_frdm_pro/>`__
+     - —
      - —
 
 STM32MP2
@@ -184,5 +191,45 @@ holds the files for one ``MACHINE``:
   eMMC, the ``.wic`` image for an SD card, and the RAUC bundle for field
   updates. See :doc:`getting-started` and :doc:`rauc-ota-updates`.
 
+Both also hold these files, which describe the build:
+
+- ``BUILD-INFO.txt``: the build's project, cycle and date, the
+  ``repo init`` command for its manifest, the commit of each Cargt layer
+  (``meta-imx-cargt`` on i.MX; ``meta-st-cargt`` and
+  ``meta-cargt-stm32mp-addons`` on STM32MP2), and fingerprints of the other
+  layer revisions (``source-fp``) and of the build configuration
+  (``config-fp``). Only the Cargt layers are pinned to a commit. The
+  manifest is given as a branch, so ``repo init`` with it fetches the
+  other layers as they are today, not as they were for this build.
+- ``<image>-<machine>.rootfs.manifest``: every package in the root file
+  system, one per line, with its architecture and version.
+- The SPDX software bill of materials for the root file system:
+  ``<image>-<machine>.rootfs.spdx.json`` on wrynose and wrynose-rt,
+  ``<image>-<machine>.rootfs.spdx.tar.zst`` on scarthgap (i.MX and
+  STM32MP2).
+
+.. warning::
+
+   ``CRT.key``, ``CRT.crt`` and ``CRT.esl`` in most i.MX directories are the
+   key pair and certificate that NXP's U-Boot source ships for UEFI capsule
+   updates. They are sample keys, and the private key is public: use them
+   for development only, and never to sign anything you ship.
+
+Builds Are Nightly
+~~~~~~~~~~~~~~~~~~
+
+The image directories and the package feeds are updated by nightly builds,
+and they keep only the latest build: each nightly replaces the files it
+rebuilt, and nothing older is kept. A file is replaced only when a nightly
+publishes it again, so the files in one directory can come from different
+nightlies. The dates in the directory listing show when each file was
+last replaced, and ``BUILD-INFO.txt`` describes the latest nightly.
+
+Save every file you ship or test with, together with that directory's
+``BUILD-INFO.txt``, ``.manifest`` and SBOM, because the same file names
+will hold a different build tomorrow.
+
 The package feeds hold the same release's packages for installing software
-on a running board; see :doc:`package-management`.
+on a running board; see :doc:`package-management`. A board flashed from an
+older nightly can differ from the feed, and kernel modules in particular
+need a matching kernel; see :ref:`package-management-kernel-modules`.
