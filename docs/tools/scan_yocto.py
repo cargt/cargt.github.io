@@ -8,7 +8,7 @@ read-only, and writes JSON that the page loads:
   <out>/index.json                   releases, boards, images and files
   <out>/<release>/<machine>.json     package lists from each image's .manifest
 
-Usage: python3 docs/tools/scan_yocto.py [--out docs/en/_static/data/yocto]
+Usage: python3 docs/tools/scan_yocto.py [--out docs/image-finder-scan]
 
 Standard library only, so it runs in the docs CI job without extra packages.
 """
@@ -271,7 +271,7 @@ def scan(out):
 def main():
     here = os.path.dirname(os.path.abspath(__file__))
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--out", default=os.path.join(here, "..", "en", "_static", "data", "yocto"))
+    parser.add_argument("--out", default=os.path.join(here, "..", "image-finder-scan"))
     args = parser.parse_args()
     return scan(os.path.normpath(args.out))
 
