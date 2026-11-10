@@ -90,6 +90,71 @@ Other useful commands:
    numbers. Do not run ``apt-get upgrade`` against them; point the board
    at your own build's feeds instead (see below).
 
+.. _package-management-kernel-modules:
+
+Kernel Modules
+--------------
+
+Each kernel module is a package in the machine's feed. The package name
+and its ``Depends`` include the kernel's release string (the output of
+``uname -r``), and ``Provides`` gives a name without it. In the wrynose
+feed for ``imx93-cargt-00363-00428`` on November 10, 2026:
+
+.. code-block:: text
+
+   Package: kernel-module-can-dev-6.18.20-2.0.0-g7296eff56fe2-dirty
+   Version: 6.18.20+git0+b096ce610e-r0.5
+   Provides: kernel-module-can-dev
+   Depends: kernel-6.18.20-2.0.0-g7296eff56fe2-dirty
+
+The package puts the module in ``/usr/lib/modules/<release>/``. The kernel
+looks for modules only in the directory named after its own release, and
+refuses a module built for a different kernel.
+
+``cargt-image-dev`` already has every module package from its build. To add
+a driver to a board running an image with fewer modules, such as your own
+product image, install the package for the running kernel by its full name,
+then load the module:
+
+.. code-block:: bash
+
+   apt-get update
+   apt-get install kernel-module-can-dev-$(uname -r)
+   modprobe can-dev
+
+If ``apt-get`` reports ``Unable to locate package``, the feed holds modules
+for a different kernel than the one on the board. This is common on
+wrynose, where release strings end in ``-dirty`` and change from one
+nightly build to the next: in November 2026, i.MX 93 00363 boards on the
+00428 carrier, flashed from three earlier wrynose nightlies, ran three
+different kernels, and none of them matched the feed. You can then:
+
+- update the board to the current image and check again (see
+  :doc:`software-updates`); files in an image directory can come from
+  different nightlies, so the image and the feed may still differ (see
+  :doc:`releases`)
+- build the module with your own image, in your own build (see
+  :doc:`yocto-development`)
+
+If the driver is not in the feed under any release, it is not enabled in
+the kernel configuration; see :doc:`yocto-development` to enable it.
+
+.. warning::
+
+   Do not install a module by its name without the release, such as
+   ``apt-get install kernel-module-can-dev``, on a board whose kernel does
+   not match the feed. ``apt`` then also installs the feed's kernel: the
+   module depends on ``kernel-<release>``, which recommends
+   ``kernel-image-<release>``, and ``apt`` installs recommended packages
+   by default. That package's install script points ``/boot/Image`` at the
+   new kernel, which U-Boot loads at the next boot, without the new
+   kernel's other modules. If this has happened, point ``/boot/Image``
+   back at the running kernel before you reboot:
+
+   .. code-block:: bash
+
+      ln -sf Image-$(uname -r) /boot/Image
+
 Hosting Packages from Your Own Build
 ------------------------------------
 

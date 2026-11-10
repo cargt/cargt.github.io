@@ -23,24 +23,27 @@ Cargt i.MX images use the A/B root partition layout described in
 :doc:`storage`: two identical root partitions and a ``data`` partition. The
 board runs from one root partition while an update is written to the other.
 
-A ``.swu`` file is a CPIO archive with three parts:
+A ``.swu`` file is a CPIO archive with four parts:
 
-- ``sw-description``, which names the machine the update is for and lists
-  its contents
+- ``sw-description``, which names the machine the update is for, lists
+  its contents and gives the SHA-256 checksum of each file
 - the root file system as ``<image>-<machine>.rootfs.tar.zst``
 - ``update.sh``, a post-install script
+- ``update-machine.sh``, a step for one machine that ``update.sh`` runs; on
+  most machines it does nothing
 
-SWUpdate checks that the ``.swu`` matches the board's machine name, then
-writes the root file system archive to ``/data/swupdate/update.tar.zst``.
-``update.sh`` then:
+SWUpdate checks that the ``.swu`` matches the board's machine name and
+hardware revision, then writes the root file system archive to
+``/data/swupdate/update.tar.zst``. ``update.sh`` then:
 
 1. Reads the running root partition from ``root=`` in ``/proc/cmdline``.
 2. Formats the other root partition (``1`` becomes ``2``, ``2`` becomes
    ``1``) as ext4.
 3. Extracts the archive into it.
-4. Runs ``fw_setenv mmcpart <new partition>`` so U-Boot boots it next.
+4. Runs ``update-machine.sh``.
+5. Runs ``fw_setenv mmcpart <new partition>`` so U-Boot boots it next.
 
-On the i.MX 93 00363 on the 00428 carrier, ``update.sh`` also moves
+On the i.MX 93 00363 on the 00428 carrier, ``update-machine.sh`` moves
 ``fdtfile`` from the device tree without a display to the 5.5" display's
 device tree, if the board was still using the former.
 
@@ -53,6 +56,27 @@ reported as failed and ``mmcpart`` is not changed.
    This scheme does not roll back automatically. If the new root
    file system boots but does not work, set ``mmcpart`` back to the
    previous partition from the U-Boot prompt or with ``fw_setenv``.
+
+Three more limits apply to the published i.MX updates and to the ``-swu``
+recipes they come from:
+
+- **Updates are not signed.** The ``.swu`` files have no
+  ``sw-description.sig``, and ``public-key-file`` is commented out in the
+  ``swupdate.cfg`` that Cargt images install. The checksums in
+  ``sw-description`` catch a damaged file, but a board installs any
+  ``.swu`` made for its machine, whoever built it. For a product, sign your
+  updates and make SWUpdate check them; see `Update images from verified
+  source <https://sbabic.github.io/swupdate/signed_images.html>`__ in the
+  SWUpdate documentation.
+- **The bootloader is not updated.** A ``.swu`` writes only the root file
+  system, which holds the kernel and device trees in ``/boot``.
+  ``imx-boot`` (U-Boot and the firmware it is packed with) stays as it was
+  flashed; to change it, flash the board again (see :doc:`getting-started`).
+- **The hardware revision is 1.0 on every board.** ``sw-description`` lists
+  ``hardware-compatibility`` ``"1.0"``, and ``/etc/hwrevision`` is
+  ``<machine> 1.0`` on every machine. The check keeps an update off the
+  wrong machine, but it does not tell board revisions of one machine apart.
+  To do that, set your own revision in both from your layer.
 
 Getting an Update File
 ~~~~~~~~~~~~~~~~~~~~~~
