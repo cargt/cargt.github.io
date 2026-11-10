@@ -6,3 +6,6 @@ docs/_site
 __pycache__/
 *.pyc
 .venv/
+
+# Image Finder data, made by docs/tools/scan_yocto.py at build time
+docs/en/_static/data/yocto/
