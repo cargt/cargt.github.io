@@ -640,7 +640,8 @@ Open air, passive heatsink
   As on the i.MX 95, the gain is largest under the heaviest loads.
 - **Performance is unchanged:** no test throttled with or without the
   heatsink. The hottest die reading with the heatsink was 52 °C.
-- Tests of the heatsink in the sealed enclosure are planned.
+- In the sealed enclosure the heatsink allows 6–13 °C warmer room air; see
+  `Enclosure, passive heatsink`_.
 
 Enclosure, no heatsink
 ~~~~~~~~~~~~~~~~~~~~~~
