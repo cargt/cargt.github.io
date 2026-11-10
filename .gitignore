@@ -7,5 +7,7 @@ __pycache__/
 *.pyc
 .venv/
 
-# Image Finder data, made by docs/tools/scan_yocto.py at build time
-docs/en/_static/data/yocto/
+# Image Finder, assembled at build time (docs/tools/image-maps/README.md)
+docs/image-finder-scan/
+docs/image-maps-data/
+docs/en/_extra/

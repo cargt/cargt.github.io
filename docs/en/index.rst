@@ -12,8 +12,8 @@ Modern Electronics. Confidence at Every Step.
 New to a Cargt board? Read :doc:`core/getting-started` to flash and boot a
 pre-built image, then :doc:`core/identify-som` to find your Yocto ``MACHINE``,
 then :doc:`core/yocto` to build your own image. Every release and image is
-listed in :doc:`core/releases`, and :doc:`core/image-finder` gives the files
-and commands for one board.
+listed in :doc:`core/releases`, and :doc:`core/image-finder` has each image's files,
+commands and package sizes.
 
 .. grid:: 1 2 2 3
     :gutter: 3
@@ -25,11 +25,11 @@ and commands for one board.
         Flash a pre-built image to an i.MX or STM32MP2 board and log in.
 
     .. grid-item-card:: Image Finder
-        :link: core/image-finder
-        :link-type: doc
+        :link: image-finder/index.html
+        :link-type: url
 
-        Pick a board and get its nightly image, update file, SBOM and the
-        commands to flash it.
+        Pick a board and get its nightly image and the commands to flash
+        it, with every package, its dependencies and installed size.
 
     .. grid-item-card:: Product Catalog
         :link: core/index

@@ -1,0 +1,67 @@
+name: Refresh Image Finder size and dependency data
+
+# Measures installed sizes and dependencies for every image on yocto.cargt.com
+# (docs/tools/image-maps/refresh.sh) and stores the result on the
+# image-maps-data branch as a single commit, replacing the previous one, so
+# the branch does not grow. The deploy workflow reads it. A run streams the
+# rootfs tarballs that changed since the last run, up to about 8.5 GB.
+on:
+  schedule:
+    - cron: '0 8 * * 0'  # Sundays 08:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: image-maps
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Check out the previous data (size cache)
+        continue-on-error: true
+        uses: actions/checkout@v7
+        with:
+          ref: image-maps-data
+          path: previous
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install zstandard requests
+
+      - name: Measure sizes and build the map data
+        run: |
+          mkdir -p work/sizes
+          [ -d previous/work/sizes ] && cp -r previous/work/sizes/. work/sizes/
+          bash docs/tools/image-maps/refresh.sh "$PWD/work" "$PWD/out/site"
+
+      - name: Replace the image-maps-data branch
+        run: |
+          mkdir -p out/work
+          cp -r work/sizes out/work/sizes
+          cd out
+          git init -q -b image-maps-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Image Finder data read $(cat site/read-date.txt)"
+          git push --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" image-maps-data
+
+      # A push made with the workflow token does not start other workflows,
+      # so start the deploy explicitly.
+      - name: Rebuild the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-docs.yml --ref main --repo ${{ github.repository }}
