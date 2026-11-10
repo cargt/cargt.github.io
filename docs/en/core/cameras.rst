@@ -44,8 +44,9 @@ The status column means:
    * - OmniVision OS08A20
      - 8 MP (3840 x 2160), color, rolling shutter, HDR
      - i.MX 95 00414 on the 00365
-     - **Supported** on CSI-1. CSI-2 and both connectors at once are not
-       tested yet.
+     - **Supported** on CSI-1, including a 10-hour stream at 1920 x 1080
+       and 60 fps with no dropped frames. CSI-2 and both connectors at once
+       are not tested yet.
    * - ST VD56G3
      - 1.5 MP (1124 x 1364), monochrome, global shutter
      - STM32MP2 00395 on the 00365
