@@ -21,10 +21,13 @@ import os
 import re
 import sys
 import time
+import urllib.error
 import urllib.request
 
 BASE = "https://yocto.cargt.com"
-RELEASES = ["wrynose", "wrynose-rt", "scarthgap"]
+# Releases are the folders under /images/. These come first, in this order
+# (as on releases.rst); any other release folder follows, by name.
+RELEASE_ORDER = ["wrynose", "wrynose-rt", "scarthgap"]
 
 # SOM / carrier names and catalog pages, as on releases.rst. A MACHINE that
 # is published but not listed here is shown by its MACHINE name.
@@ -68,6 +71,8 @@ def get(url, timeout=120, tries=3):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 return resp.read().decode("utf-8", "replace")
+        except urllib.error.HTTPError:
+            raise  # a 404 is an answer, not a network problem
         except OSError:
             if attempt == tries - 1:
                 raise
@@ -202,8 +207,12 @@ def scan_board(release, machine, feed_root, feed_dirs):
 
 def scan(out):
     os.makedirs(out, exist_ok=True)
+    found = [n.rstrip("/") for n in listing("images/") if n.endswith("/")]
+    known = [r for r in RELEASE_ORDER if r in found]
+    release_names = known + sorted(r for r in found if r not in known)
+
     feed_roots = {"imx": {}, "stm32mp2": {}}
-    for release in RELEASES:
+    for release in release_names:
         for fam, root in (("imx", f"linux-imx/{release}/"),
                           ("stm32mp2", f"openstlinux/{release}/")):
             try:
@@ -214,7 +223,7 @@ def scan(out):
     jobs = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         releases = []
-        for release in RELEASES:
+        for release in release_names:
             # Boards in BOARDS order (as on releases.rst), then any others.
             order = list(BOARDS)
             machines = sorted((n.rstrip("/") for n in listing(f"images/{release}/")
