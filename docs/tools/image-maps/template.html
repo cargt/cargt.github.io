@@ -1,0 +1,1086 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Finder — Cargt Developer Documentation</title>
+<meta name="description" content="Pre-built Cargt images from the yocto.cargt.com nightly builds: downloads, flashing and update commands, installed sizes and package dependencies.">
+<link rel="icon" href="../_static/favicon.ico">
+<style>
+@font-face { font-family: "Manrope"; src: url("../_static/fonts/Manrope-Variable.woff2") format("woff2-variations"), url("../_static/fonts/Manrope-Variable.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
+/* Layout: Cargt brand band (Kaitoke Green) with logo, title and machine/image pickers, then one reading column (max 1120px): selected image, cost bars, dependency graph, feed lookup, ownership map, package table, all-images table.
+   Colors follow the Cargt Brand Guidelines (May 2026): Kaitoke Green #004437 headers and band, Emerald #00AC69 and Circuit Green #26FF91 data, Electric Blue #2424FF interactive states, Mid Gray #9FA4AA and Light Gray #F7F9FA neutrals. Photon Orange is reserved for primary calls to action, which this page has none of. Type: Manrope, as on the rest of dev.cargt.com. */
+:root {
+  --bg: #F7F9FA; --surface: #FFFFFF; --ink: #13100E; --muted: #5A6067; --faint: #7D838A;
+  --rule: #E1E4E7; --rule-strong: #C4C8CD; --edge: #9FA4AA;
+  --heading: #004437; --band: #004437; --band-ink: #FFFFFF; --band-muted: #BFE8D6; --band-rule: rgba(38, 255, 145, .32);
+  --accent: #2424FF; --accent-soft: #ECECFF; --accent-ink: #2424FF;
+  --sel-fill: #E3FAEF; --sel-stroke: #004437;
+  --data: #00AC69; --shared-bar: #9FA4AA;
+  --own-1: #7FE6B9; --own-2: #A7F0CF; --own-3: #CBF7E2; --own-4: #E4FBF0; --own-ink: #00332A;
+  --shr-1: #C9CDD2; --shr-2: #D8DBDF; --shr-3: #E5E7EA; --shr-4: #F0F2F4; --shr-ink: #1F2328;
+  --tip-bg: #004437; --tip-ink: #FFFFFF;
+  --good: #00AC69; --warning: #F2A900; --critical: #D03B3B;
+  --lm-c: #004437; --lm-arrow: #00AC69; --lm-word: #13100E;
+  --font-display: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1814; --surface: #0F221C; --ink: #EEF3F1; --muted: #A7B5AF; --faint: #7E8C86;
+    --rule: #1C342D; --rule-strong: #2B4840; --edge: #4E6660;
+    --heading: #F0FAF5; --band: #004437; --band-ink: #FFFFFF; --band-muted: #BFE8D6; --band-rule: rgba(38, 255, 145, .32);
+    --accent: #8E8EFF; --accent-soft: #1D1D52; --accent-ink: #ABABFF;
+    --sel-fill: #0E3A2E; --sel-stroke: #26FF91;
+    --data: #26FF91; --shared-bar: #7C838A;
+    --own-1: #0E7A55; --own-2: #0B6447; --own-3: #08523B; --own-4: #06422F; --own-ink: #E8FFF4;
+    --shr-1: #4A5258; --shr-2: #40474D; --shr-3: #363C42; --shr-4: #2D3237; --shr-ink: #E6E9EC;
+    --tip-bg: #E6F7EF; --tip-ink: #00261E;
+    --lm-c: #FFFFFF; --lm-arrow: #26FF91; --lm-word: #FFFFFF;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1814; --surface: #0F221C; --ink: #EEF3F1; --muted: #A7B5AF; --faint: #7E8C86;
+  --rule: #1C342D; --rule-strong: #2B4840; --edge: #4E6660;
+  --heading: #F0FAF5; --band: #004437; --band-ink: #FFFFFF; --band-muted: #BFE8D6; --band-rule: rgba(38, 255, 145, .32);
+  --accent: #8E8EFF; --accent-soft: #1D1D52; --accent-ink: #ABABFF;
+  --sel-fill: #0E3A2E; --sel-stroke: #26FF91;
+  --data: #26FF91; --shared-bar: #7C838A;
+  --own-1: #0E7A55; --own-2: #0B6447; --own-3: #08523B; --own-4: #06422F; --own-ink: #E8FFF4;
+  --shr-1: #4A5258; --shr-2: #40474D; --shr-3: #363C42; --shr-4: #2D3237; --shr-ink: #E6E9EC;
+  --tip-bg: #E6F7EF; --tip-ink: #00261E;
+  --lm-c: #FFFFFF; --lm-arrow: #26FF91; --lm-word: #FFFFFF;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15.5px/1.55 var(--font-body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--band); }
+.page { max-width: 1120px; margin: 0 auto; padding-block: 28px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 44px; }
+.mono { font-family: var(--font-mono); }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+h1, h2 { font-family: var(--font-display); font-weight: 600; letter-spacing: 0; }
+h1 { font-size: clamp(30px, 4.4vw, 44px); line-height: 1.05; font-weight: 400; }
+h2 { font-size: 26px; line-height: 1.15; color: var(--heading); }
+.section-head h2::after { content: ""; display: block; width: 44px; height: 3px; margin-top: 10px; background: var(--data); border-radius: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button { font: inherit; color: inherit; }
+
+.band { background: var(--band); color: var(--band-ink); }
+.band-inner { max-width: 1120px; margin: 0 auto; padding-block: 22px 26px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+.band-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding-bottom: 14px; border-bottom: 1px solid var(--band-rule); }
+.band .logo { height: 34px; width: auto; display: block; }
+.band .logo .lm-c, .band .logo .lm-word { fill: #FFFFFF; }
+.band .logo .lm-arrow { fill: #26FF91; }
+.band .eyebrow { color: var(--band-muted); }
+.band .docs-link { color: var(--band-ink); font-size: 14px; font-weight: 600; text-decoration: none; }
+.band .docs-link::before { content: "← "; color: var(--data); }
+.band .docs-link:hover { text-decoration: underline; }
+.band h1 { color: var(--band-ink); margin-top: 6px; }
+.band .lead { color: var(--band-muted); max-width: 76ch; }
+.band .figures dd { color: var(--band-ink); font-weight: 600; }
+.band .figures dt { color: var(--band-muted); }
+.band .field label { color: var(--band-muted); }
+.band select.pick { background: #FFFFFF; color: #13100E; border-color: transparent; }
+.band select.pick:focus-visible { outline: 2px solid #26FF91; outline-offset: 2px; }
+.logo .lm-c, .mark .lm-c { fill: var(--lm-c); } .logo .lm-arrow, .mark .lm-arrow { fill: var(--lm-arrow); } .logo .lm-word { fill: var(--lm-word); }
+.eyebrow { font: 500 12.5px/1.4 var(--font-mono); color: var(--muted); overflow-wrap: anywhere; }
+.lead { margin: 0; max-width: 72ch; color: var(--muted); }
+.figures { display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 0; }
+.figures div { display: flex; flex-direction: column-reverse; gap: 2px; }
+.figures dt { font-size: 12.5px; color: var(--muted); }
+.figures dd { margin: 0; font: 600 28px/1.05 var(--font-display); font-variant-numeric: tabular-nums; color: var(--heading); }
+
+section { display: grid; gap: 14px; min-width: 0; }
+.section-head { display: grid; gap: 6px; }
+.section-head p { margin: 0; color: var(--muted); max-width: 74ch; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; min-width: 0; }
+
+/* Status pills: always a dot plus words */
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border: 1px solid var(--rule-strong); border-radius: 99px; font-size: 12px; line-height: 1.5; white-space: nowrap; color: var(--ink); }
+.pill::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--dot, var(--faint)); flex: none; }
+.pill.ok { --dot: var(--good); } .pill.warn { --dot: var(--warning); } .pill.bad { --dot: var(--critical); }
+
+/* All-images table */
+.ov-wrap { overflow: auto; max-height: 470px; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); }
+.ov { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+.ov th, .ov td { padding: 7px 10px; border-bottom: 1px solid var(--rule); text-align: left; white-space: nowrap; vertical-align: middle; }
+.ov th { position: sticky; top: 0; z-index: 1; background: var(--surface); font: 600 12px var(--font-body); color: var(--muted); }
+.ov tr.sel td { background: var(--sel-fill); }
+.ov tr.rel td { padding-top: 12px; font: 600 12px var(--font-body); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; background: var(--bg); }
+.ov .img-btn { border: 0; background: none; padding: 0; font: 13px var(--font-mono); color: var(--accent-ink); cursor: pointer; text-align: left; }
+.ov .img-btn:hover { text-decoration: underline; }
+.ov .board { font-family: var(--font-mono); }
+.sizecell { display: flex; align-items: center; gap: 8px; min-width: 170px; }
+.minibar { height: 8px; border-radius: 0 3px 3px 0; background: var(--data); flex: none; }
+.num { text-align: right; }
+
+/* Selected image band */
+.pick-band { display: grid; gap: 14px; padding: 20px; background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--data); border-radius: 10px; }
+.pick-row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.pick-row label { font: 600 12px var(--font-body); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.pick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 16px; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font: 600 12px var(--font-body); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+select.pick { flex: 1 1 340px; width: 100%; min-width: 0; max-width: 100%; font: 14px var(--font-mono); padding: 8px 10px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--surface); color: var(--ink); }
+.cur-name { font: 600 clamp(20px, 2.6vw, 26px)/1.2 var(--font-mono); overflow-wrap: anywhere; margin: 0; color: var(--heading); }
+.notes { display: grid; gap: 6px; }
+.note { display: flex; gap: 10px; align-items: baseline; margin: 0; font-size: 13.5px; color: var(--muted); max-width: 92ch; }
+.note .pill { flex: none; }
+.loading { color: var(--muted); font-size: 14px; }
+
+/* Get this image: downloads, flash and update commands */
+.get-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 14px; }
+.get-grid .panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; align-content: start; }
+.get-grid h3 { font: 600 15px var(--font-body); color: var(--heading); }
+.get-grid p { margin: 0; font-size: 14px; color: var(--muted); }
+.get-grid p a, .get-grid .note a { color: var(--accent-ink); }
+.files { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.files li { display: grid; grid-template-columns: 9.5em minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--rule); font-size: 13.5px; }
+.files li:last-child { border-bottom: 0; }
+.files .kind { color: var(--muted); }
+.files a { font: 12.5px var(--font-mono); color: var(--accent-ink); overflow-wrap: anywhere; text-decoration: none; }
+.files a:hover { text-decoration: underline; }
+.files .meta { color: var(--faint); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .files li { grid-template-columns: minmax(0, 1fr) auto; } .files .kind { grid-column: 1 / -1; font-size: 12px; } }
+.cmd { border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); min-width: 0; }
+.cmd-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 6px 4px 12px; border-bottom: 1px solid var(--rule); font: 600 11.5px var(--font-body); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.cmd-head .btn { padding: 3px 10px; font-size: 12px; text-transform: none; letter-spacing: 0; }
+.cmd pre { margin: 0; padding: 10px 12px; overflow-x: auto; font: 12.5px/1.6 var(--font-mono); color: var(--ink); }
+.get-grid select.pick { flex: none; }
+
+/* Cost bars */
+.bars { display: grid; gap: 2px; }
+.bar-row { display: grid; grid-template-columns: minmax(140px, 290px) minmax(0, 1fr); gap: 14px; align-items: center; width: 100%; padding: 6px 8px; border: 0; border-radius: 6px; background: none; text-align: left; cursor: pointer; }
+.bar-row:hover, .bar-row:focus-visible { background: var(--accent-soft); }
+.bar-row:disabled { cursor: default; background: none; }
+.bar-row .label { font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-row .label.mono { font-size: 13px; }
+.bar-row .track { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bar-row .bar { flex: none; height: 14px; min-width: 2px; border-radius: 0 4px 4px 0; background: var(--data); }
+.bar-row.shared .bar { background: var(--shared-bar); }
+.bar-row.shared .label { font-weight: 600; }
+.bar-row.unk .bar { background: none; border: 1px dashed var(--rule-strong); }
+.bar-row .val { font-size: 12.5px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bars-foot { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; margin-top: 8px; font-size: 12.5px; color: var(--muted); }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; }
+@media (max-width: 560px) { .bar-row { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+
+/* Controls */
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.search { flex: 1 1 280px; min-width: 0; font: 14px var(--font-mono); padding: 9px 12px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--surface); color: var(--ink); }
+.search::placeholder { color: var(--faint); }
+.btn { font: 500 13.5px var(--font-body); padding: 8px 12px; border: 1px solid var(--rule-strong); border-radius: 8px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-ink); }
+.btn:disabled { opacity: .45; cursor: default; }
+.qmsg { min-height: 1.2em; margin: 0; font-size: 13px; color: var(--muted); }
+
+/* Graph */
+.graph-wrap { overflow-x: auto; }
+.graph-wrap svg { display: block; }
+svg text { font-family: var(--font-mono); }
+.colhead { fill: var(--muted); font-family: var(--font-body); font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.colsub { fill: var(--faint); font-family: var(--font-body); font-size: 11.5px; }
+.node { cursor: pointer; outline: none; }
+.node rect { fill: var(--surface); stroke: var(--rule-strong); stroke-width: 1; }
+.node text { fill: var(--ink); font-size: 12px; }
+.node .edge { fill: none; stroke: var(--edge); stroke-width: 1.25; }
+.node.rec rect, .node.rec .edge { stroke-dasharray: 4 3; }
+.node.unk rect { stroke-dasharray: 1 3; }
+.node.unk text { fill: var(--faint); }
+.node.inst rect { fill: var(--sel-fill); stroke: var(--data); }
+.node.static { cursor: default; }
+.node.static:hover rect { stroke: var(--rule-strong); stroke-width: 1; }
+.node.static:hover .edge { stroke: var(--edge); stroke-width: 1.25; }
+.node:hover rect, .node:focus-visible rect { stroke: var(--accent); stroke-width: 2; }
+.node:hover .edge, .node:focus-visible .edge { stroke: var(--accent); stroke-width: 2; }
+.node.more rect { fill: none; stroke-dasharray: 2 3; }
+.node.more text { fill: var(--accent-ink); font-family: var(--font-body); }
+.center rect { fill: var(--sel-fill); stroke: var(--sel-stroke); stroke-width: 2; }
+.center text { fill: var(--ink); }
+.center .sub { fill: var(--muted); }
+.empty { fill: var(--faint); font-family: var(--font-body); font-size: 12.5px; }
+
+/* Details */
+.details { display: grid; gap: 16px; margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.pkg-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.pkg-title h3 { font: 600 20px/1.3 var(--font-mono); overflow-wrap: anywhere; }
+.badge { font: 600 11px/1 var(--font-body); padding: 5px 8px; border-radius: 99px; background: var(--sel-fill); color: var(--heading); letter-spacing: .04em; text-transform: uppercase; }
+.badge.shared { background: var(--shr-3); color: var(--shr-ink); }
+.desc { margin: 0; color: var(--muted); max-width: 80ch; }
+.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px 18px; margin: 0; }
+.facts div { min-width: 0; }
+.facts dt { font-size: 12px; color: var(--muted); }
+.facts dd { margin: 0; font: 13px/1.4 var(--font-mono); overflow-wrap: anywhere; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.metric { display: grid; gap: 3px; align-content: start; padding: 12px 14px; background: var(--surface); }
+.metric b { font: 600 24px/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.metric span { font-size: 12.5px; color: var(--muted); }
+.route, .kept { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.k { font-size: 12.5px; color: var(--muted); margin-right: 4px; }
+.sep { color: var(--faint); font-size: 12px; }
+.chip { font: 12.5px/1.25 var(--font-mono); padding: 4px 8px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+.chip:hover, .chip:focus-visible { border-color: var(--accent); color: var(--accent-ink); }
+.chip.dashed { border-style: dashed; }
+.chip.here { cursor: default; background: var(--sel-fill); border-color: var(--sel-stroke); }
+.lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.list { min-width: 0; }
+.list h4 { margin: 0 0 8px; font: 600 11.5px var(--font-body); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; max-height: 230px; overflow: auto; align-content: flex-start; padding: 1px; }
+.none { margin: 0; font-size: 13px; color: var(--faint); }
+.impact { display: grid; gap: 10px; justify-items: start; }
+
+/* Ownership map */
+.crumbs { display: flex; flex-wrap: wrap; gap: 2px 4px; align-items: center; min-height: 28px; }
+.crumbs button { font: 12.5px var(--font-mono); padding: 3px 5px; border: 0; border-radius: 4px; background: none; color: var(--accent-ink); cursor: pointer; }
+.crumbs button:hover { background: var(--accent-soft); }
+.crumbs .cur { font: 600 12.5px var(--font-mono); padding: 3px 5px; }
+.ice-wrap svg { display: block; width: 100%; height: auto; }
+.cell { cursor: pointer; }
+.cell rect { stroke: none; }
+.cell:hover rect { stroke: var(--accent); stroke-width: 2; }
+.cell text { font-size: 11.5px; pointer-events: none; }
+.cell text.sz { font-size: 11px; opacity: .8; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 12.5px; color: var(--muted); }
+
+/* Package table */
+details.all > summary { cursor: pointer; font: 600 15px var(--font-body); padding: 4px 0; }
+.table-tools { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 12px 0; }
+.table-tools .search { flex: 0 1 340px; }
+.tcount { font-size: 13px; color: var(--muted); }
+.table-wrap { overflow: auto; max-height: 560px; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+.pk { border-collapse: collapse; width: 100%; font-size: 13px; font-variant-numeric: tabular-nums; }
+.pk th, .pk td { padding: 6px 10px; border-bottom: 1px solid var(--rule); text-align: left; white-space: nowrap; }
+.pk th { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+.pk th button { border: 0; background: none; padding: 0; font: 600 12px var(--font-body); color: var(--muted); cursor: pointer; }
+.pk th[aria-sort="ascending"] button, .pk th[aria-sort="descending"] button { color: var(--ink); }
+.link { border: 0; background: none; padding: 0; font: 13px var(--font-mono); color: var(--accent-ink); cursor: pointer; text-align: left; }
+.link:hover { text-decoration: underline; }
+.flag { font-size: 11.5px; color: var(--muted); margin-left: 6px; }
+
+/* Feed lookup */
+.lres { display: grid; gap: 2px; max-height: 380px; overflow: auto; }
+.lrow { display: grid; grid-template-columns: auto auto auto; grid-template-areas: "n v p" "d d d"; justify-content: start; gap: 2px 10px; align-items: baseline; width: 100%; padding: 7px 10px; border: 0; border-radius: 6px; background: none; text-align: left; cursor: pointer; }
+.lrow:hover, .lrow:focus-visible { background: var(--accent-soft); }
+.lrow .ln { grid-area: n; font: 13.5px var(--font-mono); overflow-wrap: anywhere; }
+.lrow .lver { grid-area: v; font: 12px var(--font-mono); color: var(--muted); }
+.lrow .pill { grid-area: p; }
+.lrow .ldesc { grid-area: d; font-size: 12.5px; color: var(--muted); }
+.lrow.on { background: var(--sel-fill); }
+.chip.inst { background: var(--sel-fill); border-color: var(--data); }
+.chip.missing { cursor: default; color: var(--faint); border-style: dotted; }
+.inline-btn { border: 0; background: none; padding: 0; font: inherit; color: var(--accent-ink); cursor: pointer; text-decoration: underline; }
+.ships { display: flex; flex-wrap: wrap; gap: 4px; }
+
+footer { font-size: 12.5px; color: var(--muted); display: grid; gap: 6px; padding-top: 16px; border-top: 1px solid var(--rule); }
+footer p { max-width: 88ch; }
+.foot-brand { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); }
+.foot-brand .mark { height: 26px; width: auto; }
+.foot-brand .copy { margin-left: auto; }
+footer p { margin: 0; }
+footer a { color: var(--accent-ink); }
+
+.tip { position: fixed; z-index: 20; left: 0; top: 0; pointer-events: none; max-width: 320px; padding: 8px 10px; border-radius: 6px; background: var(--tip-bg); color: var(--tip-ink); font-size: 12.5px; line-height: 1.45; box-shadow: 0 6px 18px rgb(0 0 0 / .18); }
+.tip b { display: block; font: 600 12.5px var(--font-mono); overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<header class="band">
+  <div class="band-inner">
+    <div class="band-top"><svg class="logo" viewBox="658 418 1040 244" role="img" aria-label="Cargt"><path class="lm-c" fill-rule="nonzero" d="M 836.72 606.81 L 865.06 655.91 C 866.11 657.72 864.80 660 862.70 660 L 730.43 660 C 729.46 660 728.56 659.48 728.07 658.63 L 697.36 605.45 L 660.36 541.36 C 659.87 540.51 659.87 539.48 660.36 538.63 L 728.07 421.36 C 728.56 420.51 729.46 420 730.43 420 L 862.70 420 C 864.80 420 866.11 422.27 865.06 424.08 L 836.72 473.18 C 836.23 474.02 835.33 474.54 834.35 474.54 L 754.06 474.54 C 753.08 474.54 752.19 475.06 751.70 475.91 C 728.80 515.57 728.80 564.42 751.70 604.08 C 752.19 604.93 753.08 605.45 754.06 605.45 L 834.35 605.45 C 835.33 605.45 836.23 605.97 836.72 606.81"/><path class="lm-arrow" fill-rule="nonzero" d="M 935.92 541.36 L 888.68 623.18 C 887.63 625 885.01 625 883.96 623.18 L 855.61 574.08 C 855.12 573.24 854.23 572.72 853.25 572.72 L 772.96 572.72 C 771.98 572.72 771.08 572.20 770.59 571.36 C 759.39 551.95 759.39 528.04 770.59 508.63 C 771.08 507.79 771.98 507.27 772.96 507.27 L 853.25 507.27 C 854.23 507.27 855.12 506.75 855.61 505.91 L 883.96 456.81 C 885.01 455 887.63 455 888.68 456.81 L 935.92 538.63 C 936.41 539.48 936.41 540.51 935.92 541.36"/><path class="lm-word" fill-rule="nonzero" d="M 1154.47 515.45 L 1154.47 496.36 C 1154.47 484.31 1144.70 474.54 1132.65 474.54 L 1045.38 474.54 C 1033.33 474.54 1023.56 484.31 1023.56 496.36 L 1023.56 583.63 C 1023.56 595.68 1033.33 605.45 1045.38 605.45 L 1132.65 605.45 C 1144.70 605.45 1154.47 595.68 1154.47 583.63 L 1154.47 564.54 C 1154.47 563.03 1153.25 561.81 1151.74 561.81 L 1129.92 561.81 C 1128.42 561.81 1127.19 563.03 1127.19 564.54 L 1127.19 578.17 C 1127.19 581.19 1124.75 583.63 1121.74 583.63 L 1056.29 583.63 C 1053.27 583.63 1050.83 581.19 1050.83 578.17 L 1050.83 501.81 C 1050.83 498.80 1053.27 496.36 1056.29 496.36 L 1121.74 496.36 C 1124.75 496.36 1127.19 498.80 1127.19 501.81 L 1127.19 515.45 C 1127.19 516.96 1128.42 518.17 1129.92 518.17 L 1151.74 518.17 C 1153.25 518.17 1154.47 516.96 1154.47 515.45 M 1203.56 556.36 L 1203.56 578.17 C 1203.56 581.19 1206.00 583.63 1209.01 583.63 L 1279.92 583.63 L 1279.92 589.08 C 1279.92 598.12 1272.60 605.45 1263.56 605.45 L 1198.10 605.45 C 1186.05 605.45 1176.29 595.68 1176.29 583.63 L 1176.29 550.91 C 1176.29 538.85 1186.05 529.08 1198.10 529.08 L 1279.92 529.08 L 1279.92 550.91 L 1209.01 550.91 C 1206.00 550.91 1203.56 553.35 1203.56 556.36 M 1318.10 586.36 L 1318.10 602.72 C 1318.10 604.23 1316.88 605.45 1315.38 605.45 L 1296.28 605.45 C 1287.25 605.45 1279.92 598.12 1279.92 589.08 L 1279.92 501.81 C 1279.92 498.80 1277.48 496.36 1274.47 496.36 L 1214.47 496.36 C 1211.46 496.36 1209.01 498.80 1209.01 501.81 L 1209.01 510 C 1209.01 511.50 1207.79 512.72 1206.28 512.72 L 1184.47 512.72 C 1182.96 512.72 1181.74 511.50 1181.74 510 L 1181.74 496.36 C 1181.74 484.31 1191.51 474.54 1203.56 474.54 L 1285.38 474.54 C 1297.43 474.54 1307.19 484.31 1307.19 496.36 L 1307.19 580.91 C 1307.19 582.41 1308.42 583.63 1309.92 583.63 L 1315.38 583.63 C 1316.88 583.63 1318.10 584.85 1318.10 586.36 M 1361.74 477.27 L 1361.74 602.72 C 1361.74 604.23 1360.52 605.45 1359.01 605.45 L 1337.19 605.45 C 1335.69 605.45 1334.47 604.23 1334.47 602.72 L 1334.47 477.27 C 1334.47 475.76 1335.69 474.54 1337.19 474.54 L 1359.01 474.54 C 1360.52 474.54 1361.74 475.76 1361.74 477.27 M 1416.28 477.27 L 1416.28 493.63 C 1416.28 495.14 1415.07 496.36 1413.56 496.36 L 1361.74 496.36 C 1361.74 484.31 1371.51 474.54 1383.56 474.54 L 1413.56 474.54 C 1415.07 474.54 1416.28 475.76 1416.28 477.27 M 1361.74 496.36 L 1378.10 496.36 C 1373.59 496.36 1369.49 498.19 1366.53 501.15 C 1363.57 504.11 1361.74 508.21 1361.74 512.72 Z M 1361.74 496.36 M 1279.92 583.63 L 1263.56 583.63 C 1268.07 583.63 1272.17 581.80 1275.13 578.84 C 1278.09 575.88 1279.92 571.78 1279.92 567.27 Z M 1279.92 583.63 M 1536.28 583.63 L 1519.92 583.63 C 1524.44 583.63 1528.53 581.80 1531.5 578.84 C 1534.45 575.88 1536.28 571.78 1536.28 567.27 Z M 1536.28 583.63 M 1536.28 496.36 L 1519.92 496.36 C 1524.44 496.36 1528.53 498.19 1531.5 501.15 C 1534.45 504.11 1536.28 508.21 1536.28 512.72 Z M 1536.28 496.36 M 1563.56 477.27 L 1563.56 638.17 C 1563.56 650.23 1553.79 660 1541.74 660 L 1459.92 660 C 1447.87 660 1438.10 650.23 1438.10 638.17 L 1438.10 624.54 C 1438.10 623.03 1439.33 621.81 1440.83 621.81 L 1462.65 621.81 C 1464.16 621.81 1465.38 623.03 1465.38 624.54 L 1465.38 632.72 C 1465.38 635.73 1467.82 638.17 1470.83 638.17 L 1530.83 638.17 C 1533.84 638.17 1536.29 635.73 1536.29 632.72 L 1536.29 477.27 C 1536.29 475.76 1537.51 474.54 1539.01 474.54 L 1560.83 474.54 C 1562.34 474.54 1563.56 475.76 1563.56 477.27 M 1459.92 501.81 L 1459.92 578.17 C 1459.92 581.19 1462.37 583.63 1465.38 583.63 L 1536.29 583.63 L 1536.29 589.08 C 1536.29 598.12 1528.96 605.45 1519.92 605.45 L 1454.47 605.45 C 1442.42 605.45 1432.65 595.68 1432.65 583.63 L 1432.65 496.36 C 1432.65 484.31 1442.42 474.54 1454.47 474.54 L 1519.92 474.54 C 1528.96 474.54 1536.29 481.87 1536.29 490.91 L 1536.29 496.36 L 1465.38 496.36 C 1462.37 496.36 1459.92 498.80 1459.92 501.81 M 1661.74 586.36 L 1661.74 602.72 C 1661.74 604.23 1660.52 605.45 1659.01 605.45 L 1618.10 605.45 C 1606.05 605.45 1596.28 595.68 1596.28 583.63 L 1596.28 496.36 L 1582.65 496.36 C 1581.14 496.36 1579.92 495.14 1579.92 493.63 L 1579.92 477.27 C 1579.92 475.76 1581.14 474.54 1582.65 474.54 L 1596.28 474.54 L 1596.28 444.54 C 1596.28 443.03 1597.51 441.81 1599.01 441.81 L 1620.83 441.81 C 1622.34 441.81 1623.56 443.03 1623.56 444.54 L 1623.56 474.54 L 1653.56 474.54 C 1655.07 474.54 1656.28 475.76 1656.28 477.27 L 1656.28 493.63 C 1656.28 495.14 1655.07 496.36 1653.56 496.36 L 1623.56 496.36 L 1623.56 578.17 C 1623.56 581.19 1626.00 583.63 1629.01 583.63 L 1659.01 583.63 C 1660.52 583.63 1661.74 584.85 1661.74 586.36 M 1686.25 588.93 C 1681.55 588.93 1678.10 592.49 1678.10 597.19 C 1678.10 601.90 1681.55 605.45 1686.25 605.45 C 1690.95 605.45 1694.40 601.90 1694.40 597.19 C 1694.40 592.49 1690.95 588.93 1686.25 588.93 M 1686.25 604.19 C 1682.23 604.19 1679.37 601.21 1679.37 597.19 C 1679.37 593.18 1682.23 590.19 1686.25 590.19 C 1690.26 590.19 1693.13 593.18 1693.13 597.19 C 1693.13 601.21 1690.26 604.19 1686.25 604.19 M 1689.81 595.70 C 1689.81 594.09 1688.55 592.83 1686.71 592.83 L 1683.04 592.83 L 1683.04 601.44 L 1684.30 601.44 L 1684.30 598.45 L 1685.45 598.45 L 1688.43 601.44 L 1690.03 601.44 L 1687.05 598.45 C 1688.66 598.34 1689.81 597.19 1689.81 595.70 M 1684.30 597.19 L 1684.30 594.09 L 1686.71 594.09 C 1687.85 594.09 1688.55 594.78 1688.55 595.70 C 1688.55 596.62 1687.97 597.19 1686.71 597.19 Z M 1684.30 597.19"/></svg><a class="docs-link" href="../index.html">Cargt Developer Documentation</a></div>
+    <div class="eyebrow">Nightly builds on yocto.cargt.com · files read __SCAN_DATE__ · sizes and dependencies read __MAPS_DATE__</div>
+    <h1>Image Finder</h1>
+    <p class="lead">Every image in the nightly builds on yocto.cargt.com. Pick a board and an image to get its files and the commands to flash and update it, then see what is inside it: every package, what each one needs, what each top-level package costs in installed size, and what adding a package from the board's feed would pull in.</p>
+    <dl class="figures" id="site-figures"></dl>
+    <div class="pick-grid">
+      <div class="field"><label for="pick-m">Machine</label><select id="pick-m" class="pick"></select></div>
+      <div class="field"><label for="pick">Image</label><select id="pick" class="pick"></select></div>
+    </div>
+  </div>
+</header>
+<div class="page">
+
+
+  <section id="selected" aria-labelledby="cur-name">
+    <div class="pick-band">
+      <div class="eyebrow" id="cur-meta"></div>
+      <p class="cur-name" id="cur-name"></p>
+      <dl class="figures" id="figures"></dl>
+      <div class="notes" id="notes"></div>
+    </div>
+  </section>
+
+  <section id="get" aria-labelledby="get-h">
+    <div class="section-head">
+      <h2 id="get-h">Get this image</h2>
+      <p>The files for this image from its board folder on yocto.cargt.com, and the commands to flash a board with them or update a running one. These are nightly development builds and only the latest is kept, so save the files you ship.</p>
+    </div>
+    <div class="get-grid" id="get-body"><p class="loading">Loading…</p></div>
+  </section>
+
+  <section id="cost" aria-labelledby="cost-h">
+    <div class="section-head">
+      <h2 id="cost-h">What each top-level package costs</h2>
+      <p>Bars show what would leave the image if a top-level package were dropped from the image recipe: the package plus everything only it needs. The gray bar is the shared base that several top-level packages need. Sizes are installed sizes: the files each package puts on the device. Click a bar to open it in the map.</p>
+    </div>
+    <div class="panel">
+      <div class="bars" id="bars"><p class="loading">Loading…</p></div>
+      <div class="bars-foot">
+        <button class="btn" id="bars-toggle" type="button">Show all</button>
+        <span><i class="swatch" style="background: var(--data)"></i>One top-level package</span>
+        <span><i class="swatch" style="background: var(--shared-bar)"></i>Shared base</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="explore" aria-labelledby="explore-h">
+    <div class="section-head">
+      <h2 id="explore-h">Dependency map</h2>
+      <p>The selected package sits in the middle. Packages that need it are on the left; packages it needs are on the right. Solid lines are Depends, dashed lines are Recommends, and dotted boxes are packages whose links are unknown. Click any box to move to it.</p>
+    </div>
+    <div class="panel">
+      <div class="toolbar">
+        <input id="q" class="search" list="pkglist" placeholder="Search packages, e.g. libc6 or swupdate" autocomplete="off" spellcheck="false" aria-label="Search packages">
+        <datalist id="pkglist"></datalist>
+        <button class="btn" id="back" type="button" disabled>Back</button>
+        <button class="btn" id="home" type="button">Whole image</button>
+      </div>
+      <p class="qmsg" id="qmsg" role="status"></p>
+      <div class="graph-wrap" id="graph"><p class="loading">Loading…</p></div>
+      <div class="details" id="details"></div>
+    </div>
+  </section>
+
+  <section id="lookup" aria-labelledby="lookup-h">
+    <div class="section-head">
+      <h2 id="lookup-h">Look up any package in the feed</h2>
+      <p>Search every package Cargt publishes for this board, including ones no image ships. For each one you see what it needs, what needs it, which images already ship it, and what adding it to the selected image would pull in.</p>
+    </div>
+    <div class="panel">
+      <div class="toolbar">
+        <input id="lq" class="search" placeholder="Search the feed, e.g. nginx or python3-flask" autocomplete="off" spellcheck="false" aria-label="Search the board's feed">
+      </div>
+      <p class="qmsg" id="lscope" role="status"></p>
+      <div class="lres" id="lres"></div>
+      <div class="details" id="ldetails" hidden></div>
+    </div>
+  </section>
+
+  <section id="map" aria-labelledby="map-h">
+    <div class="section-head">
+      <h2 id="map-h">Who keeps what in the image</h2>
+      <p>Each package sits under the nearest package that every route from the image passes through, so a block's width is everything that would leave with it. Blue blocks belong to a single top-level package; gray blocks are the shared base. Click a block to zoom in, or the top row to zoom out.</p>
+    </div>
+    <div class="panel">
+      <nav class="crumbs" id="crumbs" aria-label="Zoom level"></nav>
+      <div class="ice-wrap" id="ice"></div>
+      <div class="legend" style="margin-top: 10px">
+        <span><i class="swatch" style="background: var(--own-2)"></i>Owned by one top-level package</span>
+        <span><i class="swatch" style="background: var(--shr-1)"></i>Shared base</span>
+        <span>Width = installed size of the block and everything under it</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="table" aria-label="All packages in this image">
+    <details class="all" id="all">
+      <summary id="all-sum">All packages</summary>
+      <div class="table-tools">
+        <input id="tf" class="search" placeholder="Filter by package or recipe" autocomplete="off" spellcheck="false" aria-label="Filter packages">
+        <span class="tcount" id="tcount"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="pk">
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <section id="images" aria-labelledby="images-h">
+    <div class="section-head">
+      <h2 id="images-h">All images on yocto.cargt.com</h2>
+      <p>Installed sizes; "≈" marks images where some sizes are estimates. "Feed match" says how many of the image's packages were found in the current feed at the same version; where the feed has moved on, links are taken from the newer package or inferred, and the image's notes say which.</p>
+    </div>
+    <div class="ov-wrap">
+      <table class="ov">
+        <thead><tr><th scope="col">Image</th><th scope="col">Board</th><th scope="col" class="num">Packages</th><th scope="col">Installed size</th><th scope="col" class="num">Top-level</th><th scope="col">Largest top-level package</th><th scope="col">Feed match</th></tr></thead>
+        <tbody id="ov-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Source: every <span class="mono">*.rootfs.manifest</span> under <a href="https://yocto.cargt.com/images/" target="_blank" rel="noopener">yocto.cargt.com/images</a> (scarthgap, wrynose, wrynose-rt), each board folder's BUILD-INFO.txt, and the deb feeds <span class="mono">linux-imx/scarthgap</span>, <span class="mono">linux-imx/wrynose</span> and <span class="mono">openstlinux/scarthgap</span>, read __MAPS_DATE__. Downloads and file dates are read __SCAN_DATE__. Initramfs manifests and the ST boot, user and vendor partition images are left out. wrynose-rt images are matched against the <span class="mono">linux-imx/wrynose</span> feed, because no RT feed is published. <span class="mono">stm32mp25-cargt-00395-00365v3</span> has no image manifest.</p>
+    <p>Links come from each package's Depends and Recommends fields, resolved through Provides. "Top-level" means nothing else in the image depends on it. Packages that only depend on each other in a cycle count one member as top-level. "Kept in the image by" and "only in the image because of it" come from a dominator tree over all links. Kernel packages built for a different kernel than the feed's are matched to the same package in the feed with the kernel version swapped.</p>
+    <p>Installed sizes are measured from each image's published root filesystem: the total size of the files dpkg records for each package. Images without a published root filesystem (the container and Xen guest images) reuse the measurement of the same package build from another image. Packages that no image ships, and builds that were never measured, are estimated from the uncompressed size of the package's data archive, read from the end of the .deb; those sizes are marked "≈" and run slightly high for small packages.</p>
+    <p>The feed lookup covers each board's feed folders (all, its CPU tune, its SoC and the board itself). "Would be added" follows Depends and Recommends from the package, skipping anything the selected image already has or provides, and picks the first available choice where a dependency offers alternatives. Debug, source, documentation, test, static-library and translation packages are left out of the lookup.</p>
+    <div class="foot-brand"><svg class="mark" viewBox="658 418 280 244" aria-hidden="true"><path class="lm-c" fill-rule="nonzero" d="M 836.72 606.81 L 865.06 655.91 C 866.11 657.72 864.80 660 862.70 660 L 730.43 660 C 729.46 660 728.56 659.48 728.07 658.63 L 697.36 605.45 L 660.36 541.36 C 659.87 540.51 659.87 539.48 660.36 538.63 L 728.07 421.36 C 728.56 420.51 729.46 420 730.43 420 L 862.70 420 C 864.80 420 866.11 422.27 865.06 424.08 L 836.72 473.18 C 836.23 474.02 835.33 474.54 834.35 474.54 L 754.06 474.54 C 753.08 474.54 752.19 475.06 751.70 475.91 C 728.80 515.57 728.80 564.42 751.70 604.08 C 752.19 604.93 753.08 605.45 754.06 605.45 L 834.35 605.45 C 835.33 605.45 836.23 605.97 836.72 606.81"/><path class="lm-arrow" fill-rule="nonzero" d="M 935.92 541.36 L 888.68 623.18 C 887.63 625 885.01 625 883.96 623.18 L 855.61 574.08 C 855.12 573.24 854.23 572.72 853.25 572.72 L 772.96 572.72 C 771.98 572.72 771.08 572.20 770.59 571.36 C 759.39 551.95 759.39 528.04 770.59 508.63 C 771.08 507.79 771.98 507.27 772.96 507.27 L 853.25 507.27 C 854.23 507.27 855.12 506.75 855.61 505.91 L 883.96 456.81 C 885.01 455 887.63 455 888.68 456.81 L 935.92 538.63 C 936.41 539.48 936.41 540.51 935.92 541.36"/></svg><span>Image dependency maps</span><span class="copy">© 2026 Cargt Inc. All Rights Reserved.</span></div>
+  </footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script id="index" type="application/json">__INDEX__</script>
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmtInt = n => n.toLocaleString('en-US');
+  const plural = (n, w) => fmtInt(n) + ' ' + w + (n === 1 ? '' : 's');
+  const fmtBytes = b => b >= 1e8 ? (b / 1e6).toFixed(0) + ' MB' : b >= 1e6 ? (b / 1e6).toFixed(1) + ' MB' : b >= 1e3 ? Math.round(b / 1e3) + ' kB' : b + ' B';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scrollToEl = sel => { const el = $(sel); if (el) el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); };
+
+  // ---------- Index of all images ----------
+  const INDEX = JSON.parse($('#index').textContent);
+  const RELS = ['wrynose', 'wrynose-rt', 'scarthgap'];
+  const imageRank = im => im.startsWith('cargt-image') ? 0 : im.startsWith('xen') ? 2 : 1;
+  INDEX.sort((a, b) => RELS.indexOf(a.release) - RELS.indexOf(b.release) || a.machine.localeCompare(b.machine) || imageRank(a.image) - imageRank(b.image) || a.image.localeCompare(b.image));
+  const bySlug = new Map(INDEX.map(x => [x.slug, x]));
+  const DEFAULT = 'wrynose-cargt-image-dev-imx93-cargt-00363-00365';
+  const shortImage = im => im.replace('-cargt-openstlinux-weston', ' (openstlinux-weston)');
+  const socOf = m => m.startsWith('stm32mp25') ? 'STM32MP25' : m.startsWith('imx8mp') ? 'i.MX 8M Plus' : m.startsWith('imx91') ? 'i.MX 91' : m.startsWith('imx93') ? 'i.MX 93' : m.startsWith('imx95') ? 'i.MX 95' : 'Other';
+  const SOCS = ['i.MX 8M Plus', 'i.MX 91', 'i.MX 93', 'i.MX 95', 'STM32MP25', 'Other'];
+  const matchPill = m => m.missing ? `<span class="pill bad">${fmtInt(m.missing)} unknown</span>` : m.inferred ? `<span class="pill warn">${fmtInt(m.inferred)} inferred</span>` : m.newer ? `<span class="pill warn">${fmtInt(m.newer)} newer in feed</span>` : '<span class="pill ok">Exact</span>';
+  {
+    const boards = new Set(INDEX.map(x => x.machine)).size;
+    $('#site-figures').innerHTML = [[fmtInt(INDEX.length), 'images'], [fmtInt(boards), 'boards'], [fmtInt(RELS.length), 'releases']].map(([v, l]) => `<div><dt>${l}</dt><dd>${v}</dd></div>`).join('');
+    const maxB = Math.max(...INDEX.map(x => x.bytes));
+    let html = '', last = '';
+    for (const x of INDEX) {
+      if (x.release !== last) { last = x.release; html += `<tr class="rel"><td colspan="7">${esc(x.release)}</td></tr>`; }
+      const top = x.top[0];
+      html += `<tr data-slug="${esc(x.slug)}"><td><button class="img-btn" type="button" data-pick="${esc(x.slug)}">${esc(shortImage(x.image))}</button></td><td class="board">${esc(x.machine)}</td><td class="num">${fmtInt(x.packages)}</td>` +
+        `<td><span class="sizecell"><span class="minibar" style="width: ${Math.max(2, Math.round(110 * x.bytes / maxB))}px"></span>${x.sizes && (x.sizes.estimate || x.sizes.unknown) ? '≈ ' : ''}${fmtBytes(x.bytes)}</span></td><td class="num">${fmtInt(x.roots)}</td>` +
+        `<td>${top ? `<span class="mono">${esc(top[0])}</span> · ${fmtBytes(top[1])}` : ''}</td><td>${matchPill(x.match)}</td></tr>`;
+    }
+    $('#ov-body').innerHTML = html;
+    const machines = [...new Set(INDEX.map(x => x.machine))].sort();
+    $('#pick-m').innerHTML = SOCS.map(sc => { const ms = machines.filter(m => socOf(m) === sc); return ms.length ? `<optgroup label="${sc}">${ms.map(m => `<option value="${esc(m)}">${esc(m)} · ${plural(INDEX.filter(x => x.machine === m).length, 'image')}</option>`).join('')}</optgroup>` : ''; }).join('');
+  }
+
+  // ---------- Per-image state ----------
+  let M, D, N = 0, IMG = 0, SHARED = 1, dep, rec, rdep, recBy, isRoot, isMiss, isInf, zApprox, zUnk, total = 0;
+  let sharedIds = [], sharedBytes = 0, sharedCount = 0, kids, inShared, par;
+  let cur = 0, hist = [], focus = 0, barsAll = false, tableReady = false;
+  const fmtSize = i => zUnk[i] ? 'unknown' : (zApprox[i] ? '≈ ' : '') + fmtBytes(D.sz[i]);
+  const nm = i => i === IMG ? M.image : i === SHARED ? 'Shared base' : D.n[i];
+  const cmpName = (a, b) => (D.n[a] < D.n[b] ? -1 : D.n[a] > D.n[b] ? 1 : 0);
+
+  function init(meta, data) {
+    M = meta; D = data; N = D.n.length; IMG = N; SHARED = N + 1;
+    dep = D.dep; rec = D.rec;
+    rdep = Array.from({ length: N }, () => []);
+    recBy = Array.from({ length: N }, () => new Set());
+    dep.forEach((ds, i) => { for (const j of ds) rdep[j].push(i); });
+    rec.forEach((rs, i) => { for (const j of rs) { rdep[j].push(i); recBy[j].add(i); } });
+    isRoot = new Uint8Array(N); D.roots.forEach(i => { isRoot[i] = 1; });
+    isMiss = new Uint8Array(N); D.miss.forEach(i => { isMiss[i] = 1; });
+    isInf = new Uint8Array(N); (D.inf || []).forEach(i => { isInf[i] = 1; });
+    zApprox = new Uint8Array(N); (D.za || []).forEach(i => { zApprox[i] = 1; });
+    zUnk = new Uint8Array(N); (D.zu || []).forEach(i => { zUnk[i] = 1; });
+    total = D.sz.reduce((a, b) => a + b, 0);
+    sharedIds = []; for (let i = 0; i < N; i++) if (D.idom[i] === -1 && !isRoot[i]) sharedIds.push(i);
+    sharedBytes = sharedIds.reduce((a, i) => a + D.ret[i], 0);
+    sharedCount = sharedIds.reduce((a, i) => a + D.rc[i], 0);
+    kids = Array.from({ length: N }, () => []);
+    for (let i = 0; i < N; i++) if (D.idom[i] >= 0) kids[D.idom[i]].push(i);
+    inShared = new Uint8Array(N);
+    { const st = sharedIds.slice(); while (st.length) { const u = st.pop(); inShared[u] = 1; for (const k of kids[u]) st.push(k); } }
+    par = new Int32Array(N).fill(-1);
+    { const seen = new Uint8Array(N), q = [];
+      D.roots.slice().sort((a, b) => D.ret[b] - D.ret[a]).forEach(r => { seen[r] = 1; par[r] = IMG; q.push(r); });
+      for (let h = 0; h < q.length; h++) { const u = q[h]; for (const w of dep[u].concat(rec[u])) if (!seen[w]) { seen[w] = 1; par[w] = u; q.push(w); } } }
+    cur = IMG; hist = []; focus = IMG; barsAll = false;
+  }
+  const routeTo = i => { const p = []; let u = i, guard = 0; while (u !== IMG && u >= 0 && guard++ <= N) { p.push(u); u = par[u]; } p.push(IMG); return p.reverse(); };
+  const revClosure = i => { const s = new Uint8Array(N), st = [i], out = []; s[i] = 1; while (st.length) { const u = st.pop(); for (const w of rdep[u]) if (!s[w]) { s[w] = 1; out.push(w); st.push(w); } } return out; };
+
+
+  // ---------- Get this image (from docs/tools/scan_yocto.py) ----------
+  // Files, flashing and update commands for the selected image. The scan is
+  // refreshed daily, the size and dependency data weekly, so they can differ.
+  const DOCS = '../core/';
+  let SCAN = null;
+  const scanReady = fetch('yocto/index.json').then(r => r.ok ? r.json() : null).then(d => { SCAN = d; }).catch(() => {});
+  const day = d => (d || '').slice(0, 10);
+  const doc = (page, text, anchor) => `<a href="${DOCS}${page}.html${anchor ? '#' + anchor : ''}">${esc(text)}</a>`;
+  const cmdBlock = (title, lines) => `<div class="cmd"><div class="cmd-head"><span>${esc(title)}</span><button class="btn" type="button" data-copy>Copy</button></div><pre>${esc(lines.join('\n'))}</pre></div>`;
+  const fileRow = (kind, f) => `<li><span class="kind">${esc(kind)}</span><a href="${esc(f.url)}">${esc(f.name)}</a><span class="meta">${esc(day(f.date))}${f.size ? ' · ' + esc(f.size) : ''}</span></li>`;
+
+  function scanBoard(meta) {
+    const rel = SCAN && SCAN.releases.find(r => r.name === meta.release);
+    const board = rel && rel.boards.find(b => b.machine === meta.machine);
+    return { board, image: board && board.images.find(i => i.name === meta.image) };
+  }
+
+  async function renderGet() {
+    const meta = M;
+    await scanReady;
+    if (meta !== M) return;
+    const box = $('#get-body');
+    const folder = `https://yocto.cargt.com/images/${encodeURIComponent(meta.release)}/${encodeURIComponent(meta.machine)}/`;
+    const { board: b, image: im } = scanBoard(meta);
+    if (!b || !im) {
+      box.innerHTML = `<div class="panel"><h3>Files</h3><p>${SCAN ? 'This image has no disk image to flash: container and Xen guest images are used from a running board.' : 'The file list could not be loaded.'} Its files are in <a href="${folder}">${esc(folder)}</a>.</p></div>`;
+      return;
+    }
+    const f = im.files, imx = b.family === 'imx', panels = [];
+
+    // Downloads
+    const rows = [];
+    if (b.bootloader) rows.push(fileRow('Bootloader', b.bootloader));
+    if (f.wic_zst) rows.push(fileRow('Disk image', f.wic_zst));
+    if (f.wic_bz2) rows.push(fileRow('Disk image (SD card)', f.wic_bz2));
+    if (f.bmap) rows.push(fileRow('Block map', f.bmap));
+    if (f.swu) rows.push(fileRow('SWUpdate file', f.swu));
+    b.bundles.forEach(x => rows.push(fileRow('RAUC bundle', x)));
+    if (f.sbom) rows.push(fileRow('SBOM (SPDX)', f.sbom));
+    if (f.licenses) rows.push(fileRow('Licenses', f.licenses));
+    if (f.manifest) rows.push(fileRow('Package list', f.manifest));
+    if (b.build_info.file) rows.push(fileRow('Build info', b.build_info.file));
+    const disk = f.wic_zst || f.wic_bz2 || f.wic, upd = f.swu || b.bundles[0];
+    const mixed = disk && upd && day(disk.date) !== day(upd.date);
+    panels.push(`<div class="panel"><h3>Downloads</h3>` +
+      (mixed ? `<p class="note"><span class="pill warn">Different nightlies</span>The disk image is from ${esc(day(disk.date))} and the update file from ${esc(day(upd.date))}. Each file is the latest build of that file.</p>` : '') +
+      `<ul class="files">${rows.join('')}</ul><p>All files: <a href="${esc(b.folder)}">${esc(b.folder.replace('https://', ''))}</a>` +
+      (b.build_info.built ? ` · last build ${esc(b.build_info.built)}` : '') + `</p></div>`);
+
+    // Flash
+    let flash = '<div class="panel"><h3>Flash a board</h3>';
+    if (imx && /^imx95/.test(b.machine)) {
+      flash += `<p>On the i.MX 95, <span class="mono">uuu imx-boot</span> and uuu's built-in <span class="mono">-b</span> scripts stop after the boot ROM stage. To load the bootloader into RAM over USB, save this as <span class="mono">imx95-boot.uuu</span> next to <span class="mono">imx-boot</span> and run <span class="mono">uuu imx95-boot.uuu</span>:</p>` +
+        cmdBlock('imx95-boot.uuu', ['uuu_version 1.5.0', 'SDPS: boot -f imx-boot', 'SDPV: write -f imx-boot -skipspl', 'SDPV: jump']) +
+        `<p>A complete procedure for flashing the eMMC of an i.MX 95 over USB is not documented yet; see ${doc('flashing-troubleshooting', 'Flashing Troubleshooting', 'uuu-imx95')}.</p>`;
+    } else if (imx) {
+      const boot = b.bootloader ? b.bootloader.name : 'imx-boot.tagged', img = f.wic_zst ? f.wic_zst.name : '<image>.wic.zst';
+      flash += `<p>Put the board in USB download mode and check that <span class="mono">uuu -lsusb</span> lists it (see ${doc('getting-started', 'Getting Started')}). Flashing erases the target storage.</p>` +
+        cmdBlock('eMMC', [`uuu -bmap -b emmc_all ${boot} ${img}`]) + cmdBlock('SD card', [`uuu -bmap -b sd_all ${boot} ${img}`]) +
+        `<p>If uuu waits or fails, see ${doc('flashing-troubleshooting', 'Flashing Troubleshooting')}.</p>`;
+    } else {
+      const ab = b.flash_layouts.find(l => l.image === im.name && /FlashLayout_emmc_/.test(l.path) && !/-glt[0-9a-z]+-optee\.tsv$/.test(l.path));
+      flash += `<p>Download the whole folder (the flash layout refers to the files next to it), put the board in USB boot mode, and flash the eMMC with STM32CubeProgrammer:</p>` +
+        (ab ? cmdBlock('eMMC', [`STM32_Programmer_CLI -c port=usb1 -w ${ab.path}`]) +
+          `<p>This is the only eMMC layout with the A and B partitions that RAUC updates need; the <span class="mono">-glt…</span> display layouts have one set. See ${doc('rauc-ota-updates', 'RAUC A/B Updates')}.</p>` : '<p>No eMMC flash layout was found in this folder.</p>') +
+        (f.wic_bz2 ? cmdBlock('SD card, from a Linux host', [`bmaptool copy ${f.wic_bz2.name} /dev/sdX`]) : '') +
+        `<p>If the board is not found, see ${doc('flashing-troubleshooting', 'Flashing Troubleshooting', 'stm32cubeprog-troubleshooting')}.</p>`;
+    }
+    panels.push(flash + '</div>');
+
+    // Update
+    let upd2 = '<div class="panel"><h3>Update a running board</h3>';
+    if (imx && f.swu) {
+      upd2 += `<p>Install the SWUpdate file to the other root partition, then reboot. You can also drag it onto the SWUpdate page at <span class="mono">http://&lt;board-ip&gt;:8080/</span>.</p>` +
+        cmdBlock('SWUpdate', [`scp ${f.swu.name} root@<board-ip>:/data/`, `ssh root@<board-ip> swupdate -v -i /data/${f.swu.name}`, 'ssh root@<board-ip> reboot']) +
+        `<p class="note"><span class="pill warn">No rollback</span>SWUpdate on Cargt i.MX images updates the root file system only and does not roll back by itself. See ${doc('software-updates', 'Software Updates')}.</p>`;
+    } else if (b.bundles.length) {
+      const n = b.bundles[0].name;
+      upd2 += `<p>On a board flashed with the A/B layout, install the bundle to the inactive bank, then reboot. A bank that fails to boot falls back to the previous one.</p>` +
+        cmdBlock('RAUC', [`scp ${n} root@<board-ip>:/usr/local/`, `ssh root@<board-ip> rauc install /usr/local/${n}`, 'ssh root@<board-ip> reboot']) +
+        `<p>See ${doc('rauc-ota-updates', 'RAUC A/B Updates')}.</p>`;
+    } else upd2 += '<p>This folder has no update file for this image.</p>';
+    panels.push(upd2 + '</div>');
+
+    // Device tree and package feeds
+    let more = '<div class="panel"><h3>Device tree and package feeds</h3>';
+    if (b.device_trees.length) {
+      const base = b.device_trees.reduce((a, n) => n.length < a.length ? n : a);
+      more += `<p>Each display or camera variant is its own device tree. To boot another one, set <span class="mono">fdtfile</span> and reboot (see ${doc('displays', 'Displays')}):</p>` +
+        `<select class="pick" id="get-dtb" aria-label="Device tree">${b.device_trees.map(n => `<option${n === base ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>` +
+        `<div id="get-dtb-cmd">${cmdBlock('Device tree', [`fw_setenv fdtfile ${imx ? 'boot/' : ''}${base}`, 'reboot'])}</div>`;
+    }
+    more += im.feeds.length
+      ? `<p>The board's apt feeds, as in its <span class="mono">/etc/apt/sources.list</span> (see ${doc('package-management', 'Package Management')}):</p>` + cmdBlock('sources.list', im.feeds.map(u => `deb [trusted=yes] ${u} ./`))
+      : '<p>No package feed is published for this release.</p>';
+    panels.push(more + '</div>');
+
+    box.innerHTML = panels.join('');
+    const sel = $('#get-dtb');
+    if (sel) sel.addEventListener('change', () => { $('#get-dtb-cmd').innerHTML = cmdBlock('Device tree', [`fw_setenv fdtfile ${imx ? 'boot/' : ''}${sel.value}`, 'reboot']); });
+  }
+  document.addEventListener('click', e => {
+    const c = e.target.closest('[data-copy]');
+    if (!c) return;
+    navigator.clipboard.writeText(c.closest('.cmd').querySelector('pre').textContent).then(() => { c.textContent = 'Copied'; setTimeout(() => { c.textContent = 'Copy'; }, 1500); });
+  });
+
+  // ---------- Tooltip ----------
+  const tip = $('#tip');
+  const moveTip = ev => { const pad = 14; const r = tip.getBoundingClientRect(); let x = ev.clientX + pad, y = ev.clientY + pad; if (x + r.width > innerWidth - 8) x = ev.clientX - r.width - pad; if (y + r.height > innerHeight - 8) y = ev.clientY - r.height - pad; tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px'; };
+  const showTip = (html, ev) => { tip.innerHTML = html; tip.hidden = false; moveTip(ev); };
+  const hideTip = () => { tip.hidden = true; };
+
+  // ---------- Selected image header ----------
+  function renderHeader() {
+    const linkCount = dep.reduce((a, d) => a + d.length, 0), recCount = rec.reduce((a, r) => a + r.length, 0);
+    $('#cur-name').textContent = M.image;
+    $('#cur-meta').textContent = [M.machine, M.release, `manifest ${M.manifestDate}`, M.bsp, M.buildId && `build ${M.buildId}`, M.kernel && `kernel ${M.kernel}`].filter(Boolean).join(' · ');
+    $('#figures').innerHTML = [
+      [fmtInt(N), 'packages installed'], [fmtInt(D.r.length), 'recipes'], [fmtInt(D.roots.length), 'top-level packages'],
+      [fmtInt(linkCount + recCount), `dependency links (${fmtInt(recCount)} Recommends)`], [(M.sizes && (M.sizes.estimate || M.sizes.unknown) ? '≈ ' : '') + fmtBytes(total), 'installed'],
+    ].map(([v, l]) => `<div><dt>${l}</dt><dd>${v}</dd></div>`).join('');
+    const m = M.match, notes = [];
+    if (!m.missing && !m.inferred && !m.newer) notes.push(`<p class="note"><span class="pill ok">Exact</span>All ${fmtInt(N)} packages match the current feed at the same version.</p>`);
+    if (m.inferred) notes.push(`<p class="note"><span class="pill warn">Inferred</span>${fmtInt(m.inferred)} kernel packages were built for kernel ${esc(M.kernel)}, but the feed now has ${esc(M.feedKernel)}. Their links and sizes are taken from the same packages in the feed.</p>`);
+    if (m.missing) notes.push(`<p class="note"><span class="pill bad">Unknown</span>${fmtInt(m.missing)} packages are not in the ${esc(M.feed)} feed${/-rt/.test(M.kernel) ? ', which has no RT kernel packages' : ''}. Their links are unknown, so they appear as top-level packages and are grouped in one row of the cost chart.</p>`);
+    const zs = M.sizes || {};
+    if (zs.estimate || zs.unknown) notes.push(`<p class="note"><span class="pill warn">Estimated sizes</span>${zs.exact ? `${fmtInt(zs.exact)} installed sizes are measured; ` : ''}${fmtInt(zs.estimate || 0)} are estimated${zs.unknown ? ` and ${fmtInt(zs.unknown)} are unknown` : ''}, because ${/container|xen/.test(M.image) ? 'this image has no published root filesystem' : 'those package builds were never measured'}. Estimated sizes show with "≈".</p>`);
+    else notes.push(`<p class="note"><span class="pill ok">Measured</span>Installed sizes come from this image's own root filesystem.</p>`);
+    if (m.newer) notes.push(`<p class="note"><span class="pill warn">Newer</span>${fmtInt(m.newer)} packages have a newer version in the feed than in this image; their links come from the newer version.</p>`);
+    $('#notes').innerHTML = notes.join('');
+    $('#all-sum').textContent = `All ${fmtInt(N)} packages in ${M.image}`;
+    $('#q').placeholder = `Search ${fmtInt(N)} packages, e.g. libc6 or swupdate`;
+    $('#pick-m').value = M.machine; fillImages(M.machine); $('#pick').value = M.slug;
+    document.querySelectorAll('#ov-body tr[data-slug]').forEach(tr => { const on = tr.dataset.slug === M.slug; tr.classList.toggle('sel', on); if (on) tr.setAttribute('aria-current', 'true'); else tr.removeAttribute('aria-current'); });
+    $('#pkglist').innerHTML = D.n.map(n => `<option value="${esc(n)}"></option>`).join('');
+    $('#q').value = ''; $('#qmsg').textContent = ''; $('#tf').value = '';
+  }
+
+  // ---------- Cost bars ----------
+  const isTrans = i => /-locale-/.test(D.n[i]);
+  function renderBars() {
+    const rows = sharedBytes ? [{ label: 'Shared base', bytes: sharedBytes, count: sharedCount, shared: true, go: SHARED }] : [];
+    const known = D.roots.filter(i => !isMiss[i]);
+    const trans = known.filter(isTrans), unk = D.roots.filter(i => isMiss[i]);
+    known.filter(i => !isTrans(i)).forEach(i => rows.push({ label: D.n[i], bytes: D.ret[i], count: D.rc[i], go: i, mono: true }));
+    if (trans.length) rows.push({ label: `Translations (${trans.length} packages)`, bytes: trans.reduce((a, i) => a + D.ret[i], 0), count: trans.reduce((a, i) => a + D.rc[i], 0), go: null });
+    if (unk.length) rows.push({ label: `Not in the feed, links unknown (${unk.length} packages)`, bytes: unk.reduce((a, i) => a + D.sz[i], 0), count: unk.length, go: null, unk: true });
+    rows.sort((a, b) => b.bytes - a.bytes);
+    const max = Math.max(1, ...rows.map(r => r.bytes)), show = barsAll ? rows : rows.slice(0, 12);
+    $('#bars').innerHTML = show.map(r => `<button class="bar-row${r.shared ? ' shared' : ''}${r.unk ? ' unk' : ''}" type="button"${r.go === null ? ' disabled' : ` data-go="${r.go}"`}>` +
+      `<span class="label${r.mono ? ' mono' : ''}" title="${esc(r.label)}">${esc(r.label)}</span>` +
+      `<span class="track"><span class="bar" style="width: calc((100% - 150px) * ${(r.bytes / max).toFixed(4)})"></span><span class="val">${fmtBytes(r.bytes)} · ${plural(r.count, 'package')}</span></span></button>`).join('');
+    $('#bars-toggle').hidden = rows.length <= 12;
+    $('#bars-toggle').textContent = barsAll ? 'Show the 12 largest' : `Show all ${rows.length}`;
+  }
+  $('#bars-toggle').addEventListener('click', () => { barsAll = !barsAll; renderBars(); });
+
+  // ---------- Dependency graph ----------
+  function sides(i) {
+    if (i === IMG) return { left: [], right: D.roots.map(j => ({ j, rec: false })).sort((a, b) => D.ret[b.j] - D.ret[a.j] || cmpName(a.j, b.j)) };
+    const byPull = (a, b) => D.fw[b.j] - D.fw[a.j] || cmpName(a.j, b.j);
+    const right = dep[i].map(j => ({ j, rec: false })).sort(byPull).concat(rec[i].map(j => ({ j, rec: true })).sort(byPull));
+    const left = (isRoot[i] ? [{ j: IMG, rec: false }] : []).concat(rdep[i].slice().sort(cmpName).map(j => ({ j, rec: recBy[i].has(j) })));
+    return { left, right };
+  }
+  function graphSVG(wrap, o) {
+    const W = Math.max(660, Math.min(wrap.clientWidth || 900, 1100));
+    const MAXV = 12, ROW = 30, BOX = 24, TOP = 48;
+    const colW = Math.round(W * 0.29), cxL = Math.round(W * 0.37), cxR = W - cxL, rx = W - colW;
+    const L = o.left.slice(0, MAXV), R = o.right.slice(0, MAXV);
+    const moreL = o.left.length - L.length, moreR = o.right.length - R.length;
+    const nL = L.length + (moreL ? 1 : 0), nR = R.length + (moreR ? 1 : 0);
+    const rows = Math.max(nL, nR, 3), H = TOP + rows * ROW + 8, midY = TOP + rows * ROW / 2;
+    const yL = k => TOP + (rows - nL) * ROW / 2 + k * ROW + (ROW - BOX) / 2;
+    const yR = k => TOP + (rows - nR) * ROW / 2 + k * ROW + (ROW - BOX) / 2;
+    const fit = (t, px, cw) => { const c = Math.floor(px / cw); return t.length > c ? t.slice(0, Math.max(1, c - 1)) + '…' : t; };
+    const bez = (x1, y1, x2, y2) => { const dx = (x2 - x1) / 2; return `M${x1} ${y1}C${x1 + dx} ${y1} ${x2 - dx} ${y2} ${x2} ${y2}`; };
+    const node = (it, x, y, edge) => {
+      const cls = `node${it.rec ? ' rec' : ''}${it.cls ? ' ' + it.cls : ''}${it.attr ? '' : ' unk static'}`;
+      const act = it.attr ? ` tabindex="0" role="button" ${it.attr} aria-label="${esc(it.label)}${it.rec ? ' (recommended)' : ''}"` : '';
+      return `<g class="${cls}"${act}><title>${esc(it.title || it.label)}</title><path class="edge" d="${edge}"/><rect x="${x}" y="${y}" width="${colW}" height="${BOX}" rx="6"/><text x="${x + 9}" y="${y + 16}">${esc(fit(it.label, colW - 18, 7.25))}</text></g>`;
+    };
+    const more = (n, x, y) => `<g class="node more" tabindex="0" role="button" ${o.moreAttr} aria-label="${fmtInt(n)} more, listed below"><rect x="${x}" y="${y}" width="${colW}" height="${BOX}" rx="6"/><text x="${x + 9}" y="${y + 16}">+${fmtInt(n)} more, listed below</text></g>`;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-label="${esc(o.aria)}">`;
+    s += `<text class="colhead" x="0" y="16">${esc(o.leftHead)} · ${fmtInt(o.left.length)}</text>`;
+    s += `<text class="colhead" x="${rx}" y="16">${esc(o.rightHead)}</text>`;
+    if (o.rightSub) s += `<text class="colsub" x="${rx}" y="33">${esc(o.rightSub)}</text>`;
+    L.forEach((it, k) => { const y = yL(k); s += node(it, 0, y, bez(colW, y + BOX / 2, cxL, midY)); });
+    if (moreL) s += more(moreL, 0, yL(L.length));
+    R.forEach((it, k) => { const y = yR(k); s += node(it, rx, y, bez(cxR, midY, rx, y + BOX / 2)); });
+    if (moreR) s += more(moreR, rx, yR(R.length));
+    if (!o.left.length) s += `<text class="empty" x="0" y="${midY + 4}">${esc(o.emptyLeft)}</text>`;
+    if (!o.right.length) s += `<text class="empty" x="${rx}" y="${midY + 4}">${esc(o.emptyRight)}</text>`;
+    const ch = 52, cy = midY - ch / 2, cw = cxR - cxL, mx = (cxL + cxR) / 2;
+    s += `<g class="center"><rect x="${cxL}" y="${cy}" width="${cw}" height="${ch}" rx="8"/><text x="${mx}" y="${cy + 22}" text-anchor="middle" font-weight="600" font-size="13">${esc(fit(o.center, cw - 16, 7.9))}</text><text class="sub" x="${mx}" y="${cy + 39}" text-anchor="middle" font-size="11.5">${esc(fit(o.sub, cw - 16, 6.95))}</text></g>`;
+    wrap.innerHTML = s + '</svg>';
+  }
+  const gtitle = j => j === IMG ? `${M.image}: the image recipe` : isMiss[j] ? `${D.n[j]}: not in the feed, links unknown` : `${D.n[j]}: pulls in ${plural(D.fw[j], 'package')}, needed by ${plural(D.rv[j], 'package')}, ${fmtSize(j)} installed`;
+  function renderGraph() {
+    const { left, right } = sides(cur);
+    const item = x => ({ attr: `data-go="${x.j}"`, label: nm(x.j), rec: x.rec, cls: x.j < N && isMiss[x.j] ? 'unk' : '', title: gtitle(x.j) });
+    const depN = cur === IMG ? D.roots.length : dep[cur].length, recN = cur === IMG ? 0 : rec[cur].length;
+    graphSVG($('#graph'), {
+      left: left.map(item), right: right.map(item), leftHead: 'Required by',
+      rightHead: `${cur === IMG ? 'Top-level packages' : 'Depends on'} · ${fmtInt(depN)}`,
+      rightSub: recN ? `+ ${fmtInt(recN)} recommended (dashed)` : cur === IMG ? 'largest first' : '',
+      emptyLeft: cur === IMG ? 'The image itself' : 'Nothing in the image needs it',
+      emptyRight: cur < N && isMiss[cur] ? 'Links unknown' : 'No dependencies',
+      center: nm(cur), sub: cur === IMG ? plural(N, 'package') : D.v[cur],
+      aria: `Dependencies of ${nm(cur)}`, moreAttr: 'data-more="1"',
+    });
+  }
+  const metric = (b, t) => `<div class="metric"><b>${b}</b><span>${t}</span></div>`;
+  const fact = (k, v) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`;
+  const chipList = (title, arr, dashed) => `<div class="list"><h4>${title} · ${fmtInt(arr.length)}</h4>${arr.length ? `<div class="chips">${arr.map(j => `<button class="chip${dashed ? ' dashed' : ''}" type="button" data-go="${j}">${esc(D.n[j])}</button>`).join('')}</div>` : '<p class="none">None</p>'}</div>`;
+  function renderDetails() {
+    const i = cur, el = $('#details');
+    if (i === IMG) {
+      el.innerHTML = `<div class="pkg-title"><h3>${esc(M.image)}</h3><span class="badge">Image</span></div>` +
+        `<p class="desc">${esc(M.machine)} · ${esc(M.release)}. Pick a top-level package on the right, search for any package, or click a bar above.</p>` +
+        `<div class="metrics">${metric(fmtInt(N), 'packages installed')}${metric(fmtInt(D.roots.length), 'top-level packages: nothing else in the image needs them')}${metric(fmtBytes(sharedBytes), `shared base: needed by several top-level packages (${plural(sharedCount, 'package')})`)}</div>`;
+      return;
+    }
+    const owner = D.idom[i];
+    const kept = isRoot[i] ? '<span>the image recipe (top-level package)</span>' : owner === -1 ? '<span>several top-level packages (shared base)</span>' : `<button class="chip" type="button" data-go="${owner}">${esc(D.n[owner])}</button>`;
+    const badge = (isRoot[i] ? '<span class="badge">Top-level</span>' : inShared[i] ? '<span class="badge shared">Shared base</span>' : '') +
+      (isMiss[i] ? '<span class="pill bad">Not in the feed</span>' : isInf[i] ? '<span class="pill warn">Links inferred</span>' : D.fv[i] ? '<span class="pill warn">Newer in feed</span>' : '');
+    const route = routeTo(i).map((j, k) => (k ? '<span class="sep" aria-hidden="true">→</span>' : '') + (j === i ? `<span class="chip here">${esc(nm(j))}</span>` : `<button class="chip" type="button" data-go="${j}">${esc(nm(j))}</button>`)).join('');
+    el.innerHTML = `<div class="pkg-title"><h3>${esc(D.n[i])}</h3>${badge}</div>` +
+      `<p class="desc">${esc(D.d[i] || 'No description in the package index.')}</p>` +
+      `<dl class="facts">${fact('Version in image', D.v[i])}${D.fv[i] ? fact('Version in feed', D.fv[i]) : ''}${fact('Recipe', D.r[D.oe[i]])}${fact('Section', D.s[D.sec[i]])}${fact('Package arch', D.a[D.ar[i]])}${fact('Installed size', fmtSize(i) + (zApprox[i] ? ' (estimate)' : ''))}</dl>` +
+      `<div class="metrics">${metric(fmtInt(D.fw[i]), 'packages it pulls in, directly or indirectly')}${metric(fmtInt(D.rv[i]), 'packages that need it, all affected if a customer replaces it')}${metric(fmtBytes(D.ret[i]), `only in the image because of it (${plural(D.rc[i], 'package')}, itself included)`)}</div>` +
+      `<div class="kept"><span class="k">Kept in the image by</span>${kept}</div>` +
+      `<div class="route"><span class="k">Shortest route from the image</span>${route}</div>` +
+      `<div class="lists" id="lists">${chipList('Depends on', dep[i])}${chipList('Recommends', rec[i], true)}${chipList('Required by', rdep[i].slice().sort(cmpName))}</div>` +
+      (D.rv[i] ? `<div class="impact"><button class="btn" id="impact-btn" type="button">List all ${plural(D.rv[i], 'package')} affected if replaced</button><div class="chips" id="impact" hidden></div></div>` : '');
+    const ib = $('#impact-btn');
+    if (ib) ib.addEventListener('click', () => {
+      const box = $('#impact');
+      if (!box.hidden) { box.hidden = true; ib.textContent = `List all ${plural(D.rv[i], 'package')} affected if replaced`; return; }
+      box.innerHTML = revClosure(i).sort(cmpName).map(j => `<button class="chip" type="button" data-go="${j}">${esc(D.n[j])}</button>`).join('');
+      box.hidden = false; ib.textContent = 'Hide the list';
+    });
+  }
+  function renderExplorer() { renderGraph(); renderDetails(); $('#back').disabled = hist.length === 0; }
+  function go(j, scroll) {
+    if (!D) return;
+    $('#qmsg').textContent = '';
+    if (j !== cur) { hist.push(cur); cur = j; renderExplorer(); }
+    if (scroll) scrollToEl('#explore');
+  }
+  $('#back').addEventListener('click', () => { if (hist.length) { cur = hist.pop(); renderExplorer(); } });
+  $('#home').addEventListener('click', () => go(IMG, false));
+
+  // ---------- Search ----------
+  const q = $('#q');
+  const nameIndex = () => { const m = new Map(); D.n.forEach((n, i) => m.set(n, i)); return m; };
+  let byName = new Map();
+  q.addEventListener('input', () => { if (!D) return; const j = byName.get(q.value.trim()); if (j !== undefined) go(j, false); });
+  q.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || !D) return;
+    const v = q.value.trim().toLowerCase(); if (!v) return;
+    let j = byName.get(v); if (j === undefined) j = D.n.findIndex(n => n.includes(v));
+    if (j >= 0) go(j, false); else $('#qmsg').innerHTML = `No package name in ${esc(M.image)} contains "${esc(q.value.trim())}". <button class="inline-btn" type="button" data-lookfor="${esc(q.value.trim())}">Look it up in the feed</button>`;
+  });
+
+  // ---------- Ownership map ----------
+  const kidsOf = id => id === IMG ? D.roots.concat(sharedIds.length ? [SHARED] : []) : id === SHARED ? sharedIds : kids[id];
+  const valOf = id => id === IMG ? total : id === SHARED ? sharedBytes : D.ret[id];
+  const cntOf = id => id === IMG ? N : id === SHARED ? sharedCount : D.rc[id];
+  const parentOf = id => id === IMG ? null : id === SHARED ? IMG : D.idom[id] >= 0 ? D.idom[id] : (isRoot[id] ? IMG : SHARED);
+  const famOf = id => id === IMG ? 'shr' : (id === SHARED || inShared[id]) ? 'shr' : 'own';
+  function renderIcicle() {
+    const wrap = $('#ice');
+    const W = Math.max(300, Math.round(wrap.clientWidth || 900)), RH = 40, DEPTH = 4, H = RH * DEPTH;
+    const cells = [];
+    (function lay(id, x0, x1, d) {
+      cells.push({ id, x0, x1, d });
+      if (d >= DEPTH - 1) return;
+      const ks = kidsOf(id).slice().sort((a, b) => valOf(b) - valOf(a));
+      const v = valOf(id) || 1, span = x1 - x0; let x = x0;
+      for (const k of ks) { const w = span * valOf(k) / v; if (w >= 0.75) lay(k, x, x + w, d + 1); x += w; }
+    })(focus, 0, W, 0);
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Ownership map of ${esc(nm(focus))}">`;
+    for (const c of cells) {
+      const w = c.x1 - c.x0, fam = famOf(c.id), step = c.id === IMG ? 1 : Math.min(c.d, 3) + 1, y = c.d * RH;
+      s += `<g class="cell" data-ice="${c.id}"><rect x="${c.x0.toFixed(1)}" y="${y}" width="${Math.max(0.5, w - 1.5).toFixed(1)}" height="${RH - 2}" rx="3" style="fill: var(--${fam}-${step})"/>`;
+      if (w > 58) {
+        const chars = Math.floor((w - 12) / 6.9), t = nm(c.id);
+        s += `<text x="${(c.x0 + 6).toFixed(1)}" y="${y + 16}" style="fill: var(--${fam}-ink)">${esc(t.length > chars ? t.slice(0, Math.max(1, chars - 1)) + '…' : t)}</text>`;
+        s += `<text class="sz" x="${(c.x0 + 6).toFixed(1)}" y="${y + 31}" style="fill: var(--${fam}-ink)">${fmtBytes(valOf(c.id))}</text>`;
+      }
+      s += '</g>';
+    }
+    wrap.innerHTML = s + '</svg>';
+    const chain = []; for (let u = focus; u !== null; u = parentOf(u)) chain.unshift(u);
+    $('#crumbs').innerHTML = chain.map((u, k) => k === chain.length - 1 ? `<span class="cur">${esc(nm(u))}</span>` : `<button type="button" data-ice="${u}">${esc(nm(u))}</button><span class="sep" aria-hidden="true">›</span>`).join('');
+  }
+  function iceClick(id) {
+    if (id === focus) { const p = parentOf(id); if (p !== null) { focus = p; renderIcicle(); } return; }
+    if (kidsOf(id).length) { focus = id; renderIcicle(); if (id < N) go(id, false); }
+    else if (id < N) go(id, true);
+  }
+  const ice = $('#ice');
+  ice.addEventListener('pointermove', e => {
+    if (!D) return;
+    const g = e.target.closest('.cell'); if (!g) { hideTip(); return; }
+    const id = +g.dataset.ice;
+    const who = id === IMG ? 'The whole image' : id === SHARED ? 'Needed by several top-level packages' : isRoot[id] ? 'Top-level package' : famOf(id) === 'shr' ? 'Shared base' : 'Owned by one top-level package';
+    showTip(`<b>${esc(nm(id))}</b>${fmtBytes(valOf(id))} · ${plural(cntOf(id), 'package')}<br>${who}`, e);
+  });
+  ice.addEventListener('pointerleave', hideTip);
+
+  // ---------- Package table ----------
+  let sortKey = 'ret', sortDir = -1;
+  const cols = [
+    { k: 'n', label: 'Package' }, { k: 'r', label: 'Recipe' }, { k: 's', label: 'Section' },
+    { k: 'sz', label: 'Installed size', num: true }, { k: 'fw', label: 'Pulls in', num: true },
+    { k: 'rv', label: 'Needed by', num: true }, { k: 'ret', label: 'Only here because of it', num: true },
+  ];
+  const cellVal = (i, k) => k === 'n' ? D.n[i] : k === 'r' ? D.r[D.oe[i]] : k === 's' ? D.s[D.sec[i]] : D[k][i];
+  function renderTable() {
+    const f = $('#tf').value.trim().toLowerCase();
+    const ids = []; for (let i = 0; i < N; i++) if (!f || D.n[i].includes(f) || D.r[D.oe[i]].includes(f)) ids.push(i);
+    ids.sort((a, b) => { const x = cellVal(a, sortKey), y = cellVal(b, sortKey); return ((x < y ? -1 : x > y ? 1 : 0) * sortDir) || cmpName(a, b); });
+    $('#thead').innerHTML = '<tr>' + cols.map(c => `<th scope="col" class="${c.num ? 'num' : ''}" aria-sort="${c.k === sortKey ? (sortDir > 0 ? 'ascending' : 'descending') : 'none'}"><button type="button" data-sort="${c.k}">${c.label}${c.k === sortKey ? (sortDir > 0 ? ' ↑' : ' ↓') : ''}</button></th>`).join('') + '</tr>';
+    $('#tbody').innerHTML = ids.map(i => `<tr><td><button class="link" type="button" data-go="${i}">${esc(D.n[i])}</button>${isMiss[i] ? '<span class="flag">not in feed</span>' : isInf[i] ? '<span class="flag">inferred</span>' : ''}</td><td>${esc(D.r[D.oe[i]])}</td><td>${esc(D.s[D.sec[i]])}</td><td class="num">${zUnk[i] ? '?' : fmtSize(i)}</td><td class="num">${fmtInt(D.fw[i])}</td><td class="num">${fmtInt(D.rv[i])}</td><td class="num">${fmtBytes(D.ret[i])}</td></tr>`).join('');
+    $('#tcount').textContent = f ? `${plural(ids.length, 'package')} match` : plural(ids.length, 'package');
+  }
+  $('#all').addEventListener('toggle', () => { if ($('#all').open && D) { tableReady = true; renderTable(); } });
+  $('#tf').addEventListener('input', () => { if (tableReady && D) renderTable(); });
+
+  // ---------- Feed lookup ----------
+  const feedCache = new Map();
+  let installedMap = null, F = null, FKey = '', lookupUsed = false, lname = '', instProv = null, instKey = '', lt = 0, lcollapsed = false, lastQuery = '';
+  const groups = s => s ? s.split(',').map(g => g.split('|')) : [];
+  async function ensureFeed() {
+    const key = M.feedFiles.join('+');
+    if (F && FKey === key && installedMap) return F;
+    $('#lscope').textContent = `Loading the ${M.feed} feed for ${M.machine}…`;
+    try {
+      const parts = await Promise.all(M.feedFiles.map(async k => {
+        if (!feedCache.has(k)) { const r = await fetch(`feeds/${k}.json`); if (!r.ok) throw new Error(`HTTP ${r.status}`); feedCache.set(k, await r.json()); }
+        return feedCache.get(k);
+      }));
+      if (!installedMap) { const r = await fetch('installed.json'); if (!r.ok) throw new Error(`HTTP ${r.status}`); installedMap = await r.json(); }
+      if (key !== M.feedFiles.join('+')) return null;
+      F = mergeFeed(parts); FKey = key;
+    } catch (err) { $('#lscope').textContent = `The feed could not be loaded (${err.message}). Reload the page to try again.`; return null; }
+    $('#lscope').textContent = scopeText();
+    return F;
+  }
+  function mergeFeed(parts) {
+    const f = { n: [], v: [], r: [], s: [], sz: [], q: [], d: [], dep: [], rec: [], prov: [], arch: [] };
+    for (const p of parts) { const za = new Set(p.za || []), zu = new Set(p.zu || []); for (let i = 0; i < p.n.length; i++) {
+      f.q.push(zu.has(i) ? 2 : za.has(i) ? 1 : 0); f.n.push(p.n[i]); f.v.push(p.v[i]); f.r.push(p.rl[p.r[i]]); f.s.push(p.sl[p.s[i]]); f.sz.push(p.sz[i]);
+      f.d.push(p.d[i]); f.dep.push(p.dep[i]); f.rec.push(p.rec[i]); f.prov.push(p.prov[i]); f.arch.push(p.arch);
+    } }
+    f.byName = new Map(); f.n.forEach((n, i) => f.byName.set(n, i)); // later, more specific folders win
+    f.live = f.n.map((n, i) => f.byName.get(n) === i);
+    f.provides = new Map();
+    const add = (name, i) => { let a = f.provides.get(name); if (!a) f.provides.set(name, a = []); a.push(i); };
+    f.n.forEach((n, i) => { if (!f.live[i]) return; add(n, i); if (f.prov[i]) for (const p of f.prov[i].split(',')) add(p, i); });
+    f.lower = f.n.map(n => n.toLowerCase());
+    f.rdep = null;
+    return f;
+  }
+  function scopeText() {
+    const prefix = M.feed.replace('/', '-') + '-';
+    let t = `Searching ${fmtInt(M.feedCount)} packages in ${M.feed} for ${M.machine} (folders ${M.feedFiles.map(k => k.replace(prefix, '')).join(', ')}). Debug, source, documentation, test, static-library and translation packages are left out.`;
+    if (M.kernel && M.feedKernel && M.kernel !== M.feedKernel) t += ` This image's kernel (${M.kernel}) differs from the feed's (${M.feedKernel}), so kernel modules from the feed would also pull in the feed's kernel.`;
+    return t;
+  }
+  function installedProvides() {
+    const key = M.slug + '|' + FKey;
+    if (instProv && instKey === key) return instProv;
+    const s = new Set(D.n);
+    for (const n of D.n) { const i = F.byName.get(n); if (i !== undefined && F.prov[i]) for (const p of F.prov[i].split(',')) s.add(p); }
+    instProv = s; instKey = key; return s;
+  }
+  const fmtFeedSize = i => F.q[i] === 2 ? 'unknown' : (F.q[i] === 1 ? '≈ ' : '') + fmtBytes(F.sz[i]);
+  const installedName = name => {
+    if (byName.has(name)) return name;
+    for (const j of F.provides.get(name) || []) if (byName.has(F.n[j])) return F.n[j];
+    return name;
+  };
+  const resolve = alts => { for (const a of alts) { const c = F.provides.get(a); if (c) return c[0]; } return -1; };
+  function addCost(i) {
+    const inst = installedProvides();
+    if (inst.has(F.n[i])) return null;
+    const need = new Set([i]), st = [i], unres = new Set(), viaRec = new Set(), have = new Set();
+    while (st.length) {
+      const u = st.pop();
+      for (const [field, isRec] of [[F.dep[u], false], [F.rec[u], true]]) for (const alts of groups(field)) {
+        const hit = alts.find(a => inst.has(a));
+        if (hit) { have.add(installedName(hit)); continue; }
+        const j = resolve(alts);
+        if (j < 0) { if (!isRec) unres.add(alts.join(' | ')); continue; }
+        if (!need.has(j)) { need.add(j); st.push(j); if (isRec) viaRec.add(j); }
+      }
+    }
+    const ids = [...need];
+    return { ids, have: [...have].sort(), bytes: ids.reduce((a, j) => a + F.sz[j], 0), est: ids.filter(j => F.q[j] === 1).length, unk: ids.filter(j => F.q[j] === 2).length, unres: [...unres], viaRec };
+  }
+  function feedRdep() {
+    if (F.rdep) return F.rdep;
+    const r = F.n.map(() => []);
+    for (let i = 0; i < F.n.length; i++) {
+      if (!F.live[i]) continue;
+      for (const field of [F.dep[i], F.rec[i]]) for (const alts of groups(field)) for (const a of alts) {
+        const c = F.provides.get(a); if (c) for (const j of c) if (j !== i && r[j].at(-1) !== i) r[j].push(i);
+      }
+    }
+    F.rdep = r; return r;
+  }
+  function searchFeed(text) {
+    const qv = text.trim().toLowerCase(); if (qv.length < 2) return [];
+    const exact = [], pre = [], sub = [];
+    for (let i = 0; i < F.n.length; i++) { if (!F.live[i]) continue; const n = F.lower[i]; if (n === qv) exact.push(i); else if (n.startsWith(qv)) pre.push(i); else if (n.includes(qv)) sub.push(i); }
+    const byLen = (a, b) => F.n[a].length - F.n[b].length || (F.n[a] < F.n[b] ? -1 : 1);
+    return exact.concat(pre.sort(byLen), sub.sort(byLen));
+  }
+  function renderCollapsed() {
+    const n = lastQuery ? searchFeed(lastQuery).length : 0;
+    $('#lres').innerHTML = n > 1 ? `<p class="qmsg"><button class="inline-btn" type="button" data-relist>Show all ${fmtInt(n)} matches for "${esc(lastQuery)}" again</button></p>` : '';
+  }
+  function chooseLookup(i) { lcollapsed = true; $('#lq').value = F.n[i]; renderLookup(i); renderCollapsed(); }
+  function renderResults() {
+    if (lcollapsed) { renderCollapsed(); return; }
+    const text = $('#lq').value.trim();
+    if (text.length < 2) { $('#lres').innerHTML = ''; return; }
+    lastQuery = text;
+    const res = searchFeed(text), inst = installedProvides(), show = res.slice(0, 40);
+    $('#lres').innerHTML = res.length
+      ? show.map(i => `<button class="lrow${F.n[i] === lname ? ' on' : ''}" type="button" data-look="${i}"><span class="ln">${esc(F.n[i])}</span><span class="lver">${esc(F.v[i])}</span>${inst.has(F.n[i]) ? '<span class="pill ok">In this image</span>' : ''}<span class="ldesc">${esc(F.d[i])}</span></button>`).join('') +
+        (res.length > 40 ? `<p class="qmsg">${fmtInt(res.length - 40)} more match. Type more of the name to narrow the list.</p>` : '')
+      : `<p class="qmsg">No package in this board's feed has "${esc(text)}" in its name.</p>`;
+  }
+  function renderLookupGraph(i) {
+    const inst = installedProvides();
+    const fitem = (j, rec) => ({ attr: `data-look="${j}"`, label: F.n[j], rec, cls: inst.has(F.n[j]) ? 'inst' : '',
+      title: `${F.n[j]} ${F.v[j]}: ${fmtFeedSize(j)} installed${inst.has(F.n[j]) ? `, already in ${M.image}` : ''}` });
+    const side = (field, rec) => groups(field).map(alts => { const j = resolve(alts); return j >= 0 ? fitem(j, rec) : { attr: '', label: alts.join(' | '), rec, title: `${alts.join(' | ')}: not in this board's feed` }; });
+    const right = side(F.dep[i], false).concat(side(F.rec[i], true));
+    const viaDep = j => groups(F.dep[j]).some(alts => alts.some(a => (F.provides.get(a) || []).includes(i)));
+    const left = feedRdep()[i].filter(j => F.live[j]).sort((a, b) => (F.n[a] < F.n[b] ? -1 : 1)).map(j => fitem(j, !viaDep(j)));
+    const depN = groups(F.dep[i]).length, recN = groups(F.rec[i]).length;
+    graphSVG($('#lgraph'), {
+      left, right, leftHead: 'Needed by in the feed', rightHead: `Depends on · ${fmtInt(depN)}`,
+      rightSub: recN ? `+ ${fmtInt(recN)} recommended (dashed)` : '',
+      emptyLeft: 'Nothing in the feed needs it', emptyRight: 'No dependencies',
+      center: F.n[i], sub: F.v[i], aria: `Dependencies of ${F.n[i]} in the feed`, moreAttr: 'data-lmore="1"',
+    });
+  }
+  function renderLookup(i) {
+    lname = F.n[i];
+    const el = $('#ldetails'); el.hidden = false;
+    const inst = installedProvides(), imgIdx = byName.get(F.n[i]), cost = addCost(i);
+    const rd = feedRdep()[i].filter(j => F.live[j]).sort((a, b) => (F.n[a] < F.n[b] ? -1 : 1));
+    const ships = (installedMap.pk[F.n[i]] || []).map(k => installedMap.slugs[k]).filter(s => bySlug.has(s)).map(s => bySlug.get(s));
+    const relChips = (field, dashed) => { const gs = groups(field); if (!gs.length) return '<p class="none">None</p>';
+      return `<div class="chips">${gs.map(alts => { const j = resolve(alts), label = alts.join(' | '), has = alts.some(a => inst.has(a));
+        return j >= 0 ? `<button class="chip${dashed ? ' dashed' : ''}${has ? ' inst' : ''}" type="button" data-look="${j}">${esc(label)}</button>` : `<span class="chip missing" title="Not in this board's feed">${esc(label)}</span>`; }).join('')}</div>`; };
+    const listBlock = (title, body) => `<div class="list"><h4>${title}</h4>${body}</div>`;
+    const prov = F.prov[i] ? F.prov[i].split(',') : [];
+    let impact;
+    if (!cost) {
+      impact = `<div class="metrics">${metric('In image', `already in ${esc(M.image)}${imgIdx === undefined ? ' (provided by another package)' : ''}`)}${metric(fmtInt(ships.length), `of ${INDEX.length} published images ship it`)}</div>` +
+        (imgIdx !== undefined ? `<div><button class="btn" type="button" data-go="${imgIdx}">Open it in the dependency map</button></div>` : '');
+    } else {
+      const added = cost.ids.slice().sort((a, b) => (F.n[a] < F.n[b] ? -1 : 1));
+      impact = `<div class="metrics">${metric(fmtInt(cost.ids.length), `packages added to ${esc(M.image)}: this one plus what it needs that the image doesn't have`)}${metric((cost.est || cost.unk ? '≈ ' : '') + fmtBytes(cost.bytes), `installed size added${cost.est ? ` (${plural(cost.est, 'size')} estimated)` : ''}${cost.unk ? `, ${fmtInt(cost.unk)} unknown` : ''}`)}${metric(fmtInt(ships.length), `of ${INDEX.length} published images ship it`)}</div>` +
+        (cost.unres.length ? `<p class="note"><span class="pill bad">Unresolved</span>${plural(cost.unres.length, 'dependency')} not in this board's feed: ${cost.unres.map(u => `<span class="mono">${esc(u)}</span>`).join(', ')}.</p>` : '') +
+        `<div class="lists">` +
+        listBlock(`Would be added · ${fmtInt(added.length)}`, `<div class="chips">${added.map(j => `<button class="chip${cost.viaRec.has(j) ? ' dashed' : ''}${j === i ? ' here' : ''}" type="button" data-look="${j}">${esc(F.n[j])}</button>`).join('')}</div>`) +
+        listBlock(`Already in ${esc(M.image)} · ${fmtInt(cost.have.length)}`, cost.have.length ? `<div class="chips">${cost.have.map(n => { const j = F.byName.get(n); return j !== undefined ? `<button class="chip inst" type="button" data-look="${j}">${esc(n)}</button>` : `<span class="chip inst here">${esc(n)}</span>`; }).join('')}</div>` : '<p class="none">None of its dependencies are in the image yet.</p>') +
+        `</div>`;
+    }
+    el.innerHTML = `<div class="pkg-title"><h3>${esc(F.n[i])}</h3>${cost ? '<span class="pill">Not in this image</span>' : '<span class="pill ok">In this image</span>'}</div>` +
+      `<p class="desc">${esc(F.d[i] || 'No description in the package index.')}</p>` +
+      `<div class="graph-wrap" id="lgraph"></div>` +
+      `<p class="qmsg">Green boxes are already in ${esc(M.image)}. Dashed lines are Recommends; dotted boxes are not in this board's feed. Click a box to look it up.</p>` +
+      `<dl class="facts">${fact('Version in feed', F.v[i])}${fact('Recipe', F.r[i])}${fact('Section', F.s[i])}${fact('Feed folder', F.arch[i])}${fact('Installed size', fmtFeedSize(i) + (F.q[i] === 1 ? ' (estimate)' : ''))}</dl>` +
+      impact +
+      `<div class="lists" id="llists">${listBlock(`Depends on · ${groups(F.dep[i]).length}`, relChips(F.dep[i]))}${listBlock(`Recommends · ${groups(F.rec[i]).length}`, relChips(F.rec[i], true))}` +
+      `${listBlock(`Needed by in the feed · ${fmtInt(rd.length)}`, rd.length ? `<div class="chips">${rd.map(j => `<button class="chip${inst.has(F.n[j]) ? ' inst' : ''}" type="button" data-look="${j}">${esc(F.n[j])}</button>`).join('')}</div>` : '<p class="none">None</p>')}` +
+      `${listBlock(`Provides · ${prov.length}`, prov.length ? `<div class="chips">${prov.map(p => `<span class="chip here">${esc(p)}</span>`).join('')}</div>` : '<p class="none">None</p>')}</div>` +
+      listBlock(`Shipped in · ${fmtInt(ships.length)} images`, ships.length ? `<div class="ships">${ships.map(x => `<button class="chip" type="button" data-pick="${esc(x.slug)}">${esc(x.release)} · ${esc(x.machine)} · ${esc(shortImage(x.image))}</button>`).join('')}</div>` : '<p class="none">No published image ships it.</p>') +
+      `<p class="qmsg">Highlighted chips are already in ${esc(M.image)}. Dashed chips are Recommends.</p>`;
+    renderLookupGraph(i);
+    document.querySelectorAll('#lres .lrow').forEach(b => b.classList.toggle('on', +b.dataset.look === i));
+  }
+  async function startLookup() { lookupUsed = true; const f = await ensureFeed(); if (f) renderResults(); }
+  $('#lq').addEventListener('focus', () => { if (!lookupUsed) startLookup(); });
+  $('#lq').addEventListener('input', () => { lcollapsed = false; clearTimeout(lt); lt = setTimeout(startLookup, 120); });
+  $('#lq').addEventListener('keydown', e => { if (e.key === 'Enter') { const first = $('#lres .lrow'); if (first) first.click(); } });
+  async function refreshLookup() {
+    instProv = null;
+    if (!lookupUsed) { $('#lscope').textContent = `Searches ${fmtInt(M.feedCount)} packages in ${M.feed} for ${M.machine}. The feed loads when you start typing.`; return; }
+    const f = await ensureFeed(); if (!f) return;
+    renderResults();
+    if (lname) {
+      const i = F.byName.get(lname);
+      if (i !== undefined) renderLookup(i);
+      else { $('#ldetails').hidden = false; $('#ldetails').innerHTML = `<p class="none"><span class="mono">${esc(lname)}</span> is not in the ${esc(M.feed)} feed for ${esc(M.machine)}.</p>`; }
+    }
+  }
+
+  // ---------- Loading an image ----------
+  const cache = new Map();
+  let loadSeq = 0;
+  async function load(slug) {
+    const meta = bySlug.get(slug) || bySlug.get(DEFAULT) || INDEX[0];
+    const seq = ++loadSeq;
+    $('#pick-m').value = meta.machine; fillImages(meta.machine); $('#pick').value = meta.slug;
+    if (!cache.has(meta.slug)) {
+      $('#cur-name').textContent = meta.image;
+      $('#cur-meta').textContent = `${meta.machine} · ${meta.release} · loading…`;
+      try {
+        const r = await fetch(`data/${meta.slug}.json`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        cache.set(meta.slug, await r.json());
+      } catch (err) {
+        if (seq === loadSeq) $('#notes').innerHTML = `<p class="note"><span class="pill bad">Not loaded</span>The data for ${esc(meta.image)} on ${esc(meta.machine)} could not be loaded (${esc(err.message)}). Reload the page to try again.</p>`;
+        return;
+      }
+    }
+    if (seq !== loadSeq) return;
+    init(meta, cache.get(meta.slug));
+    byName = nameIndex();
+    renderHeader(); renderGet(); renderBars(); renderExplorer(); renderIcicle();
+    if ($('#all').open) { tableReady = true; renderTable(); } else tableReady = false;
+    refreshLookup();
+  }
+  let pickMachine = '';
+  function fillImages(machine) {
+    if (pickMachine === machine) return;
+    pickMachine = machine;
+    $('#pick').innerHTML = RELS.map(r => { const xs = INDEX.filter(x => x.machine === machine && x.release === r); return xs.length ? `<optgroup label="${r}">${xs.map(x => `<option value="${esc(x.slug)}">${esc(r)} · ${esc(shortImage(x.image))}</option>`).join('')}</optgroup>` : ''; }).join('');
+  }
+  $('#pick-m').addEventListener('change', e => {
+    const m = e.target.value, xs = INDEX.filter(x => x.machine === m);
+    const same = M && xs.find(x => x.release === M.release && x.image === M.image);
+    const relRank = x => x.release === (M && M.release) ? 0 : x.release === 'wrynose' ? 1 : x.release === 'scarthgap' ? 2 : 3;
+    const imgRank = x => x.image.startsWith('cargt-image-dev') ? 0 : x.image.startsWith('cargt-image') ? 1 : 2;
+    const best = xs.slice().sort((a, b) => imgRank(a) - imgRank(b) || relRank(a) - relRank(b))[0];
+    pick((same || best).slug);
+  });
+  const slugFromHash = () => decodeURIComponent(location.hash.slice(1));
+  const pick = slug => { if (location.hash.slice(1) !== slug) location.hash = slug; else load(slug); };
+  window.addEventListener('hashchange', () => load(slugFromHash()));
+  $('#pick').addEventListener('change', e => pick(e.target.value));
+
+  // ---------- Clicks and keys ----------
+  document.addEventListener('click', e => {
+    const pk = e.target.closest('[data-pick]');
+    if (pk) { pick(pk.dataset.pick); if (!pk.closest('#ldetails')) scrollToEl('#selected'); return; }
+    const lk = e.target.closest('[data-look]');
+    if (lk && F) { const fromList = !!lk.closest('#lres'); chooseLookup(+lk.dataset.look); if (!fromList) $('#ldetails').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); return; }
+    if (e.target.closest('[data-relist]') && F) { lcollapsed = false; $('#lq').value = lastQuery; renderResults(); $('#lq').focus(); return; }
+    const lf = e.target.closest('[data-lookfor]');
+    if (lf) { $('#lq').value = lf.dataset.lookfor; startLookup(); scrollToEl('#lookup'); return; }
+    const g = e.target.closest('[data-go]');
+    if (g && !g.disabled) {
+      const j = +g.dataset.go;
+      if (j === SHARED) { focus = SHARED; renderIcicle(); scrollToEl('#map'); return; }
+      go(j, !g.closest('#graph')); return;
+    }
+    if (e.target.closest('[data-more]')) { scrollToEl('#lists'); return; }
+    if (e.target.closest('[data-lmore]')) { scrollToEl('#llists'); return; }
+    const ic = e.target.closest('[data-ice]'); if (ic) { iceClick(+ic.dataset.ice); return; }
+    const so = e.target.closest('[data-sort]');
+    if (so) { const k = so.dataset.sort; if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = ['n', 'r', 's'].includes(k) ? 1 : -1; } renderTable(); }
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target instanceof Element && e.target.matches('g[data-go], g[data-more], g[data-look], g[data-lmore]')) {
+      e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }
+  });
+  let rt = 0, lastW = document.documentElement.clientWidth;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { const w = document.documentElement.clientWidth; if (w !== lastW && D) { lastW = w; renderGraph(); renderIcicle(); if (F && lname && !$('#ldetails').hidden && F.byName.has(lname)) renderLookupGraph(F.byName.get(lname)); } }, 150); });
+
+  load(bySlug.has(slugFromHash()) ? slugFromHash() : DEFAULT);
+})();
+</script>

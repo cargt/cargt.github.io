@@ -38,13 +38,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Snapshot of the yocto.cargt.com listings for core/image-finder. On a
-      # scheduled run a failure stops the deploy, so the last good list stays
-      # up; on other runs the site builds anyway and the page links to
-      # yocto.cargt.com instead.
+      # The Image Finder at /image-finder/ (docs/tools/image-maps/README.md):
+      # size and dependency data from the image-maps-data branch, refreshed
+      # weekly by refresh-image-maps.yml, plus a daily snapshot of the
+      # yocto.cargt.com listings. On a scheduled run a failed snapshot stops
+      # the deploy, so the last good list stays up; on other runs the site
+      # builds anyway.
+      - name: Check out Image Finder map data
+        continue-on-error: true
+        uses: actions/checkout@v7
+        with:
+          ref: image-maps-data
+          path: docs/image-maps-data
+
       - name: Read nightly image listings for the Image Finder
         continue-on-error: ${{ github.event_name != 'schedule' }}
         run: python3 docs/tools/scan_yocto.py
+
+      - name: Assemble the Image Finder
+        run: python3 docs/tools/build_image_finder.py
 
       # build-docs fails on any Sphinx warning not listed in
       # docs/sphinx-known-warnings.txt, so this step also gates pull requests.

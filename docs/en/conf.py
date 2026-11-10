@@ -6,6 +6,10 @@ html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
 ]
+# The Image Finder (docs/tools/build_image_finder.py), published at
+# /image-finder/. It is only there when its data was built.
+if os.path.isdir(os.path.join(os.path.dirname(__file__), "_extra")):
+    html_extra_path = ["_extra"]
 
 project = "Cargt Developer Documentation"
 author = "Cargt"
