@@ -129,7 +129,7 @@ Summary
      - 1,184
    * - Speedometer 3.1, WPE WebKit / Chromium
      - 1.29 / 1.54 (one run)
-     - 1.15 / 1.41
+     - 1.18 / 1.41
      - 0.696 / 0.921
      - Not measured
      - Not measured
@@ -653,21 +653,21 @@ highest run in brackets.
 The i.MX 95 and STM32MP257F boards are the ones in the table above. The
 8M Plus and i.MX 93 runs used other boards with the same SOMs: the 8M Plus on
 the 00365 carrier with a 1280×800 LVDS panel, and the i.MX 93 on the 00428
-carrier.
+carrier. On the 8M Plus, WPE WebKit ran with CPU painting; see below.
 
 .. figure:: /_static/images/charts/img-bench-speedometer.svg
    :width: 100%
-   :alt: Bar chart of Speedometer 3.1 scores, the median with the lowest and highest run. i.MX 95: WPE WebKit 1.29, Chromium 1.54 (one run each). i.MX 8M Plus: WPE WebKit 1.15 (1.14 to 1.16), Chromium 1.41 (1.40 to 1.42). i.MX 93: WPE WebKit 0.696 (0.691 to 0.700), Chromium 0.921 (0.905 to 0.929). STM32MP257F: WPE WebKit 0.838 (0.831 to 0.843); no Chromium in the image.
+   :alt: Bar chart of Speedometer 3.1 scores, the median with the lowest and highest run. i.MX 95: WPE WebKit 1.29, Chromium 1.54 (one run each). i.MX 8M Plus: WPE WebKit 1.18 (1.17 to 1.20), Chromium 1.41 (1.40 to 1.42). i.MX 93: WPE WebKit 0.696 (0.691 to 0.700), Chromium 0.921 (0.905 to 0.929). STM32MP257F: WPE WebKit 0.838 (0.831 to 0.843); no Chromium in the image.
 
-   Speedometer 3.1, the median of five to eight runs, with whiskers from the
+   Speedometer 3.1, the median of 5 to 87 runs, with whiskers from the
    lowest to the highest run. The i.MX 95 results are single runs.
 
 .. figure:: /_static/images/charts/img-bench-motionmark.svg
    :width: 100%
-   :alt: Bar chart of MotionMark 1.3.1 scores, the median with the lowest and highest run. i.MX 95: not measured. i.MX 8M Plus: not measured, because the GPU driver hung. i.MX 93: WPE WebKit 1.99 (1.61 to 2.03), Chromium 29.0 (22.1 to 33.3). STM32MP257F: WPE WebKit 65.3 (64.6 to 65.4); no Chromium in the image.
+   :alt: Bar chart of MotionMark 1.3.1 scores, the median with the lowest and highest run. i.MX 95: not measured. i.MX 8M Plus: WPE WebKit 61.6 (56.3 to 63.0); Chromium not measured, because the GPU driver hung. i.MX 93: WPE WebKit 1.99 (1.61 to 2.03), Chromium 29.0 (22.1 to 33.3). STM32MP257F: WPE WebKit 65.3 (64.6 to 65.4); no Chromium in the image.
 
-   MotionMark 1.3.1, the median of three runs, with whiskers from the lowest
-   to the highest run.
+   MotionMark 1.3.1, the median of three runs (29 for WPE WebKit on the
+   8M Plus), with whiskers from the lowest to the highest run.
 
 .. list-table::
    :class: wrap-cells
@@ -690,10 +690,10 @@ carrier.
      - Not measured
      - 1 Speedometer
    * - 00377 i.MX 8M Plus, 1280×800, GC7000UL
-     - WPE WebKit 2.52.6
-     - 1.15 (1.14 to 1.16)
-     - Not measured
-     - 5 Speedometer
+     - WPE WebKit 2.52.6, CPU painting
+     - 1.18 (1.17 to 1.20)
+     - 61.6 (56.3 to 63.0)
+     - 87 Speedometer, 29 MotionMark
    * -
      - Chromium 142
      - 1.41 (1.40 to 1.42)
@@ -715,8 +715,8 @@ carrier.
      - 65.3 (64.6 to 65.4)
      - 8 Speedometer, 3 MotionMark
 
-On Speedometer, runs on the same board differed by less than 2%. Chromium 142
-scored higher than WPE WebKit 2.52 on every i.MX SOM: 19% on the i.MX 95, 23%
+On Speedometer, runs on the same board differed by less than 3%. Chromium 142
+scored higher than WPE WebKit 2.52 on every i.MX SOM: 19% on the i.MX 95, 19%
 on the 8M Plus and 32% on the i.MX 93. The STM32MP257F, with WPE WebKit 2.54,
 lands between the i.MX 93 and the 8M Plus.
 
@@ -724,10 +724,20 @@ On the i.MX 93, both browsers draw on the CPU. WPE WebKit scored about 2 on
 MotionMark, the bottom of its scale, and Chromium 29. On the STM32MP257F, WPE
 WebKit draws with the GPU and scored 65 at 45 frames per second.
 
-MotionMark was not measured on the 8M Plus. During the series, the Vivante GPU
-driver (``galcore``) locked up: Weston and both browsers hung and could not be
-stopped, and only a reboot cleared it. Only the Speedometer runs before the
-hang are counted. MotionMark was not run on the i.MX 95.
+On the 8M Plus, WPE WebKit ran with CPU painting: the browser's environment
+sets ``WEBKIT_SKIA_ENABLE_CPU_RENDERING=1``, so WebKit paints page content on
+the CPU and the GPU still composites it. With GPU painting, the Vivante GPU
+driver (``galcore``) locked up within one to nine browser starts: Weston and
+the browser hung and could not be stopped, and only a reboot cleared it. With
+CPU painting, 116 runs over 15 hours finished without a hang. CPU painting
+cost nothing on Speedometer (GPU painting scored 1.15 to 1.18 in earlier
+series), and MotionMark, which never finished with GPU painting, scored 61.6
+at 60 frames per second. Use
+the same setting for WPE WebKit 2.52 on the 8M Plus.
+
+Chromium's MotionMark was not measured on the 8M Plus, because the driver
+hang in the first series stopped those runs; its Speedometer score counts
+only the runs before the hang. MotionMark was not run on the i.MX 95.
 
 For frame rates on real pages, memory use and how to pick a browser for each
 SoC, see :doc:`web-browsers`.
