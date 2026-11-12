@@ -38,7 +38,8 @@ without the processor reaching its design limit.
        and NPU loads
 
 Results for each SOM are added here as testing completes. Every test, with
-its full measurements, is listed in :doc:`thermal-test-data`.
+its full measurements, is listed in :doc:`thermal-test-data`, apart from the
+few noted below.
 
 How to read the results
 -----------------------
@@ -1324,6 +1325,8 @@ the table gives the range.
 - **Capping the CPU at 1200 MHz saves only about 2 °C** and costs 16–20 % of CPU
   and memory throughput. The Cortex-A35 cores make little heat.
 - **Video costs about 2 °C** over idle with the display output enabled.
+- These first tests are not in :doc:`thermal-test-data`: only their summaries
+  were kept, as listed here.
 
 NPU loads (STM32MP257F)
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -1387,8 +1390,7 @@ the earlier tests within 0.3 °C.
   A product that needs the NPU's full rate should keep 3D rendering light.
 - **With CPU and memory loaded, the NPU runs 15 % slower** (100 → 85
   inferences/s) without any throttling: the CPU stayed at 1500 MHz.
-- These tests are listed in full here; they are not in
-  :doc:`thermal-test-data`.
+- These tests and their repeats are listed in :doc:`thermal-test-data`.
 
 Enclosure, no heatsink (STM32MP257F)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1459,8 +1461,7 @@ enclosure. The room was 23–24 °C. CPU + memory + NPU also ran for 4 hours.
   rate.
 - **Performance matches open air:** the CPU stayed at 1500 MHz and every rate
   is within a few percent of the open-air tests.
-- These tests are listed in full here; they are not in
-  :doc:`thermal-test-data`.
+- These tests are listed in :doc:`thermal-test-data`.
 
 Choosing cooling for your product
 ---------------------------------

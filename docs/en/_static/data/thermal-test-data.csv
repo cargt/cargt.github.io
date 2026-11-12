@@ -197,3 +197,21 @@ som,soc,environment,heatsink,load,governor,cpu_cap_mhz,gpu_cap_mhz,throttle_poin
 00363,i.MX 91,open air,none,CPU + memory,,,,,2026-11-09,to steady state,7.9,20.1,steady,23.74,,36.67,37.23,12.93,85.0,72.07,,0.0,,100.0,,,3.903682,6493.071357,,,,
 00363,i.MX 91,open air,none,Idle (no load),,,,,2026-11-09,to steady state,9.4,20.0,steady,23.83,,34.23,35.16,10.40,85.0,74.60,,0.0,,18.7,,,,,,,,
 00363,i.MX 91,open air,none,"CPU + memory, verified",,,,,2026-11-09,4 h soak,5.0,240.1,max_time,23.74,,36.33,37.86,12.59,85.0,72.41,,0.0,,100.0,,,4.296950,6400.290454,,,,
+00395,STM32MP257F,open air,none,Idle (no load),ondemand,1500,,,2026-11-09,to steady state,5.9,20.3,steady,21.6,,35.85,37.58,14.25,100.0,85.7,,0.0,1214,2.7,,,,,,,,
+00395,STM32MP257F,open air,none,CPU + memory,performance,1500,,,2026-11-09,to steady state,7.1,20.0,steady,22.04,,42.1,43.2,20.06,100.0,79.9,,0.0,1500,100.0,,,6.1,15606.94,,,,
+00395,STM32MP257F,open air,none,"NPU inference, MobileNet v2 (NPU)",ondemand,1500,,,2026-11-09,to steady state,8.4,20.3,steady,22.62,,44.18,46.62,21.56,100.0,78.4,,0.0,1210,3.8,,,,,,,,99.8
+00395,STM32MP257F,open air,none,CPU + memory + NPU,performance,1500,,,2026-11-09,to steady state,7.4,20.0,steady,23.1,,49.36,49.99,26.26,100.0,73.7,,0.0,1500,100.0,,,5.47,15072.16,,,,84.8
+00395,STM32MP257F,open air,none,"NPU inference, MobileNet v2 (NPU)",ondemand,1500,,,2026-11-09,to steady state,7.5,20.2,steady,23.66,,45.27,47.4,21.62,100.0,78.4,,0.0,1210,3.9,,,,,,,,99.7
+00395,STM32MP257F,open air,none,CPU + memory + NPU,performance,1500,,,2026-11-09,to steady state,12.9,21.9,steady,23.46,,49.79,50.62,26.33,100.0,73.7,,0.0,1500,100.0,,,5.71,14534.67,,,,85.4
+00395,STM32MP257F,open air,none,Idle (no load),ondemand,1500,,,2026-11-09,to steady state,6.3,20.1,steady,23.65,,39.14,41.34,15.49,100.0,84.5,,0.0,1214,3.0,,,,,,,,
+00395,STM32MP257F,open air,none,CPU + GPU + memory,performance,1500,,,2026-11-09,to steady state,5.2,21.6,steady,24.24,,49.97,50.62,25.73,100.0,74.3,,0.0,1500,100.0,,,8.95,12022.31,4.6,,,
+00395,STM32MP257F,open air,none,CPU + GPU + memory + NPU,performance,1500,,,2026-11-09,to steady state,9.2,22.6,steady,24.03,,50.36,51.85,26.33,100.0,73.7,,0.0,1500,100.0,,,9.03,11882.59,4.8,,,8.8
+00395,STM32MP257F,open air,none,CPU + GPU + memory + NPU,performance,1500,,,2026-11-09,to steady state,11.1,20.1,steady,23.64,,50.01,51.7,26.37,100.0,73.6,,0.0,1500,100.0,,,8.86,11746.75,5.0,,,8.5
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,Idle (no load),ondemand,1500,,,2026-11-11,to steady state,11.4,40.1,steady,23.34,24.85,40.5,41.64,17.16,100.0,82.8,,0.0,1224,3.1,,,,,,,,
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,CPU + memory,performance,1500,,,2026-11-11,to steady state,10.0,40.0,steady,23.72,25.4,47.07,47.65,23.35,100.0,76.7,,0.0,1500,100.0,,,6.28,15387.99,,,,
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,"NPU inference, MobileNet v2 (NPU)",ondemand,1500,,,2026-11-11,to steady state,10.0,40.0,steady,23.63,25.84,48.79,50.67,25.16,100.0,74.8,,0.0,1220,4.5,,,,,,,,99.0
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,GPU (glmark2 terrain),ondemand,1500,,,2026-11-11,to steady state,10.0,42.2,steady,23.88,25.91,47.8,49.75,23.92,100.0,76.1,,0.0,1238,5.4,,,,,6.0,,,
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,"Video decode, 1080p30 H.264 (VDEC), real time",ondemand,1500,,,2026-11-11,to steady state,11.5,40.0,steady,23.56,25.75,43.52,46.08,19.96,100.0,80.0,,0.0,1426,38.4,,,,,,,,
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,CPU + GPU + memory,performance,1500,,,2026-11-11,to steady state,10.0,40.0,steady,23.54,26.16,52.68,53.31,29.14,100.0,70.9,,0.0,1500,100.0,,,9.06,11761.48,5.0,,,
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,CPU + memory + NPU,performance,1500,,,2026-11-11,to steady state,12.6,40.0,steady,23.82,26.27,54.34,55.02,30.52,100.0,69.5,,0.0,1500,100.0,,,5.49,14859.43,,,,84.5
+00395,STM32MP257F,enclosure (Polycase WA Series WA-42*16),none,CPU + memory + NPU,performance,1500,,,2026-11-11,4 h soak,14.5,240.0,fixed,22.97,25.27,53.71,55.22,30.75,100.0,69.3,,0.0,1500,100.0,,,5.52,14723.43,,,,83.8

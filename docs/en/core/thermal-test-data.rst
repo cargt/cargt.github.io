@@ -2092,3 +2092,206 @@ Open air, no heatsink
      - 72
      - –, 100 / –
      - cpu 4 ops/s, vm 6400 ops/s
+
+STM32MP257F (00395)
+-------------------
+
+
+Open air, no heatsink
+~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - 20
+     - 21.6
+     - 35.9 / 37.6
+     - 14.2
+     - 86
+     - 1214, 3 / –
+     - –
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - 20
+     - 23.6
+     - 39.1 / 41.3
+     - 15.5
+     - 84
+     - 1214, 3 / –
+     - –
+   * - CPU + memory (performance)
+     - 1500 / –
+     - 20
+     - 22.0
+     - 42.1 / 43.2
+     - 20.1
+     - 80
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 15607 ops/s
+   * - CPU + GPU + memory (performance)
+     - 1500 / –
+     - 22
+     - 24.2
+     - 50.0 / 50.6
+     - 25.7
+     - 74
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 12022 ops/s, glmark2 5 fps
+   * - NPU inference, MobileNet v2 (NPU) (ondemand)
+     - 1500 / –
+     - 20
+     - 22.6
+     - 44.2 / 46.6
+     - 21.6
+     - 78
+     - 1210, 4 / –
+     - NPU 100 inferences/s
+   * - NPU inference, MobileNet v2 (NPU) (ondemand)
+     - 1500 / –
+     - 20
+     - 23.7
+     - 45.3 / 47.4
+     - 21.6
+     - 78
+     - 1210, 4 / –
+     - NPU 100 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1500 / –
+     - 23
+     - 24.0
+     - 50.4 / 51.9
+     - 26.3
+     - 74
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 11883 ops/s, glmark2 5 fps, NPU 9 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1500 / –
+     - 20
+     - 23.6
+     - 50.0 / 51.7
+     - 26.4
+     - 74
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 11747 ops/s, glmark2 5 fps, NPU 8 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 20
+     - 23.1
+     - 49.4 / 50.0
+     - 26.3
+     - 74
+     - 1500, 100 / –
+     - cpu 5 ops/s, vm 15072 ops/s, NPU 85 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 22
+     - 23.5
+     - 49.8 / 50.6
+     - 26.3
+     - 74
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 14535 ops/s, NPU 85 inferences/s
+
+
+Enclosure (Polycase WA Series WA-42\*16), no heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C) / enclosure air
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - 40
+     - 23.3 / 24.9
+     - 40.5 / 41.6
+     - 17.2
+     - 83
+     - 1224, 3 / –
+     - –
+   * - CPU + memory (performance)
+     - 1500 / –
+     - 40
+     - 23.7 / 25.4
+     - 47.1 / 47.6
+     - 23.4
+     - 77
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 15388 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1500 / –
+     - 42
+     - 23.9 / 25.9
+     - 47.8 / 49.8
+     - 23.9
+     - 76
+     - 1238, 5 / –
+     - glmark2 6 fps
+   * - CPU + GPU + memory (performance)
+     - 1500 / –
+     - 40
+     - 23.5 / 26.2
+     - 52.7 / 53.3
+     - 29.1
+     - 71
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 11761 ops/s, glmark2 5 fps
+   * - Video decode, 1080p30 H.264 (VDEC), real time (ondemand)
+     - 1500 / –
+     - 40
+     - 23.6 / 25.8
+     - 43.5 / 46.1
+     - 20.0
+     - 80
+     - 1426, 38 / –
+     - –
+   * - NPU inference, MobileNet v2 (NPU) (ondemand)
+     - 1500 / –
+     - 40
+     - 23.6 / 25.8
+     - 48.8 / 50.7
+     - 25.2
+     - 75
+     - 1220, 4 / –
+     - NPU 99 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 40
+     - 23.8 / 26.3
+     - 54.3 / 55.0
+     - 30.5
+     - 70
+     - 1500, 100 / –
+     - cpu 5 ops/s, vm 14859 ops/s, NPU 84 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 240 (4 h soak)
+     - 23.0 / 25.3
+     - 53.7 / 55.2
+     - 30.8
+     - 69
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 14723 ops/s, NPU 84 inferences/s
