@@ -34,8 +34,8 @@ without the processor reaching its design limit.
      - Tested: open air, no heatsink, CPU and memory loads and a 4-hour soak
    * - :ref:`00395 <00395>`
      - STM32MP257F
-     - Tested: open air, no heatsink, CPU, memory, GPU, video and NPU loads.
-       Enclosure testing planned
+     - Tested: open air and enclosure, no heatsink, CPU, memory, GPU, video
+       and NPU loads
 
 Results for each SOM are added here as testing completes. Every test, with
 its full measurements, is listed in :doc:`thermal-test-data`.
@@ -94,6 +94,9 @@ For the i.MX 95 (00414):
 - **When the SOM does throttle, it degrades gracefully.** The kernel holds
   the die 1–3 °C under the throttle point by lowering the CPU and then the GPU
   frequency; video playback keeps its frame rate.
+- **For reference, NXP's FRDM-IMX95 development board** with its stock
+  heatsink runs 5–7 °C hotter than the 00414 with the passive heatsink above,
+  in open air under the same loads. See `Reference: NXP FRDM-IMX95 board`_.
 
 For the i.MX 8M Plus (00377):
 
@@ -162,6 +165,9 @@ For the STM32MP257F (00395):
   GPU, memory and NPU together also rise 26 °C and allow 74 °C, but the NPU
   then runs at a tenth of its full rate. Capping the CPU at 1.2 GHz saves
   only about 2 °C.
+- **In a sealed plastic enclosure it still needs no heatsink.** The enclosure
+  adds 2–5 °C of ΔT. The worst case, CPU, memory and NPU at 1.5 GHz, rises
+  31 °C above the room and allows 69 °C room air, steady over 4 hours.
 
 i.MX 95 (00414) results
 -----------------------
@@ -444,6 +450,103 @@ Long-term stability
 - **Consistent results:** 4-hour tests matched the 20-minute tests within
   0.2 °C in open air. Over the 36 hours the room varied by 3 °C while ΔT
   stayed within 1 °C.
+
+Reference: NXP FRDM-IMX95 board
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For comparison, we ran the same loads on NXP's FRDM-IMX95 development board.
+It is NXP's board, not a Cargt SOM: an i.MX 95 with 8 GB of LPDDR4X and NXP's
+stock passive heatsink, running NXP's Linux image (kernel 6.18.37) rather
+than the Cargt BSP. It ran in open air on the same desk, with its HDMI output
+enabled and no monitor connected. NXP's image has no Chromium, so the
+application test is 1080p30 video with object detection on the NPU, without
+the touchscreen UI.
+
+.. list-table:: Open air, FRDM-IMX95 with its stock heatsink
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 10 14 14 12 20
+
+   * - Load
+     - CPU cap (MHz)
+     - ΔT, FRDM-IMX95 (°C)
+     - ΔT, 00414 with passive heatsink (°C)
+     - Maximum ambient, FRDM-IMX95
+     - Performance, FRDM-IMX95
+   * - CPU + GPU + memory + NPU
+     - 1800
+     - 47.8 (4 hours: 47.3)
+     - –
+     - **47 °C**
+     - CPU 48 ops/s, GPU 64–65 fps, 644–673 inferences/s
+   * - CPU + GPU + memory
+     - 1800
+     - 42.6 (4 hours: 41.8)
+     - 37.5
+     - **52 °C**
+     - CPU 55–56 ops/s, GPU 76 fps
+   * - CPU + GPU + memory
+     - 1404
+     - 38.6
+     - 32.7
+     - 56 °C
+     - CPU 46 ops/s, GPU 74 fps
+   * - CPU + GPU + memory
+     - 900
+     - 33.9
+     - 28.4
+     - 61 °C
+     - CPU 31 ops/s, GPU 72 fps
+   * - CPU, all cores
+     - 1800
+     - 36.8
+     - 30.9
+     - 58 °C
+     - 88 ops/s
+   * - Image classification on the NPU
+     - 1800
+     - 30.3
+     - –
+     - 65 °C
+     - 827 inferences/s
+   * - 1080p30 video + object detection
+     - 1800
+     - 29.0
+     - –
+     - 66 °C
+     - Video 30 fps, 188 inferences/s
+   * - GPU only
+     - 1800
+     - 29.8
+     - 24.3
+     - 65 °C
+     - 80 fps
+   * - CPU, all cores at 50 %
+     - 1800
+     - 30.7–31.2
+     - 23.8
+     - 64 °C
+     - –
+   * - Idle
+     - 1800
+     - 22.8
+     - 16.9
+     - 72 °C
+     - –
+
+- **The FRDM-IMX95 runs 5–7 °C hotter than the 00414** with the ATS passive
+  heatsink under every load the two share, about the same at every CPU cap.
+  The boards, heatsinks, memory and software all differ, so this compares
+  the two setups as they come, not the heatsinks alone.
+- **Its worst case, CPU, GPU, memory and NPU at 1.8 GHz, rises 48 °C above
+  the room** and allows 47 °C room air in open air. The 4-hour runs agreed
+  with the 20-minute runs within 0.7 °C.
+- **The NPU runs as on the 00414:** MobileNet v1 at 827 inferences/s against
+  821, and SSD MobileNet at 188 against 194.
+- No test throttled. The hottest die reading was 71.2 °C, in the 4-hour
+  worst case.
+- These tests are listed in full here; they are not in
+  :doc:`thermal-test-data`.
 
 .. _thermal-00377:
 
@@ -1285,7 +1388,79 @@ the earlier tests within 0.3 °C.
 - **With CPU and memory loaded, the NPU runs 15 % slower** (100 → 85
   inferences/s) without any throttling: the CPU stayed at 1500 MHz.
 - These tests are listed in full here; they are not in
-  :doc:`thermal-test-data`. Enclosure tests are planned.
+  :doc:`thermal-test-data`.
+
+Enclosure, no heatsink (STM32MP257F)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The same board, with the NPU image and the display output enabled with no
+panel connected, ran in the sealed Polycase WA-42*16 enclosure used for the
+other SOMs, with no heatsink. A second sensor measured the air inside the
+enclosure. The room was 23–24 °C. CPU + memory + NPU also ran for 4 hours.
+
+.. list-table:: Open air and enclosure, no heatsink
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 16 14 16 24
+
+   * - Load
+     - ΔT, open air → enclosure (°C)
+     - Enclosure air above room (°C)
+     - Maximum ambient, open air → enclosure
+     - Performance in the enclosure
+   * - CPU + memory + NPU (4 hours)
+     - 26.3 → 30.8
+     - 2.3
+     - 74 → **69 °C**
+     - CPU 5.5 ops/s, memory 14,700 ops/s, 84 inferences/s
+   * - CPU + memory + NPU
+     - 26.3 → 30.5
+     - 2.5
+     - 74 → **69 °C**
+     - CPU 5.5 ops/s, memory 14,900 ops/s, 85 inferences/s
+   * - CPU + GPU + memory
+     - 25.6–25.8 → 29.1
+     - 2.6
+     - 74 → 71 °C
+     - CPU 9.1 ops/s, memory 11,800 ops/s, GPU 5 fps
+   * - Image classification on the NPU
+     - 21.6 → 25.2
+     - 2.2
+     - 78 → 75 °C
+     - 99 inferences/s (10 ms each)
+   * - GPU only
+     - 21.5 → 23.9
+     - 2.0
+     - 79 → 76 °C
+     - 6 fps
+   * - CPU + memory
+     - 20.1 → 23.4
+     - 1.7
+     - 80 → 77 °C
+     - CPU 6.3 ops/s, memory 15,400 ops/s
+   * - 1080p30 video playback
+     - 17.4 → 20.0
+     - 2.2
+     - 83 → 80 °C
+     - 30 fps
+   * - Idle
+     - 14.3 → 17.2
+     - 1.5
+     - 86 → 83 °C
+     - –
+
+- **No heatsink is needed in the enclosure either.** The enclosure adds
+  2.4–4.5 °C of ΔT and costs 3–5 °C of maximum ambient; the air inside it
+  ran 1.5–2.6 °C above the room. The hottest die reading in any test was
+  55 °C, 45 °C under the design limit.
+- **CPU + memory + NPU is the worst case in the enclosure**, slightly ahead
+  of CPU + GPU + memory, and allows 69 °C room air. Over 4 hours it settled
+  within 0.3 °C of the 40-minute test, with no throttling and a steady NPU
+  rate.
+- **Performance matches open air:** the CPU stayed at 1500 MHz and every rate
+  is within a few percent of the open-air tests.
+- These tests are listed in full here; they are not in
+  :doc:`thermal-test-data`.
 
 Choosing cooling for your product
 ---------------------------------
