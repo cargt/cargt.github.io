@@ -38,8 +38,7 @@ without the processor reaching its design limit.
        and NPU loads
 
 Results for each SOM are added here as testing completes. Every test, with
-its full measurements, is listed in :doc:`thermal-test-data`, apart from the
-few noted below.
+its full measurements, is listed in :doc:`thermal-test-data`.
 
 How to read the results
 -----------------------
@@ -546,8 +545,8 @@ the touchscreen UI.
   821, and SSD MobileNet at 188 against 194.
 - No test throttled. The hottest die reading was 71.2 °C, in the 4-hour
   worst case.
-- These tests are listed in full here; they are not in
-  :doc:`thermal-test-data`.
+- These tests are listed in :doc:`thermal-test-data`, in a reference section
+  of their own.
 
 .. _thermal-00377:
 
@@ -1325,8 +1324,8 @@ the table gives the range.
 - **Capping the CPU at 1200 MHz saves only about 2 °C** and costs 16–20 % of CPU
   and memory throughput. The Cortex-A35 cores make little heat.
 - **Video costs about 2 °C** over idle with the display output enabled.
-- These first tests are not in :doc:`thermal-test-data`: only their summaries
-  were kept, as listed here.
+- These first tests are listed in :doc:`thermal-test-data` from per-run
+  summaries; their raw data was not kept.
 
 NPU loads (STM32MP257F)
 ~~~~~~~~~~~~~~~~~~~~~~~
