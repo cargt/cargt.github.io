@@ -1660,8 +1660,8 @@ i.MX 93 (00363)
 ---------------
 
 
-Open air, no heatsink
-~~~~~~~~~~~~~~~~~~~~~
+Open air, no heatsink, on the 00365 carrier
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table::
    :class: wrap-cells
@@ -1823,8 +1823,8 @@ Open air, no heatsink
      - cpu 10 ops/s, vm 16850 ops/s, NPU 225 inferences/s
 
 
-Enclosure (Polycase WA Series WA-42\*16), no heatsink
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Enclosure (Polycase WA Series WA-42\*16), no heatsink, on the 00365 carrier
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table::
    :class: wrap-cells
@@ -1959,8 +1959,8 @@ Enclosure (Polycase WA Series WA-42\*16), no heatsink
      - cpu 10 ops/s, vm 16286 ops/s, NPU 225 inferences/s
 
 
-Throttle tests (throttle point lowered): open air, no heatsink
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Throttle tests (throttle point lowered): open air, no heatsink, on the 00365 carrier
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table::
    :class: wrap-cells
@@ -1997,6 +1997,146 @@ Throttle tests (throttle point lowered): open air, no heatsink
      - throttled after 4 s (100 %)
      - –, 100 / –
      - cpu 10 ops/s, vm 13425 ops/s
+
+
+Open air, no heatsink, on the 00428 carrier
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load)
+     - – / –
+     - 20
+     - 22.8
+     - 41.6 / 42.4
+     - 18.9
+     - 66
+     - –, 3 / –
+     - –
+   * - Idle (no load)
+     - – / –
+     - 20
+     - 22.6
+     - 41.9 / 42.9
+     - 19.2
+     - 66
+     - –, 3 / –
+     - –
+   * - CPU, all cores at 50%
+     - – / –
+     - 20
+     - 22.9
+     - 45.9 / 48.4
+     - 23.0
+     - 62
+     - –, 54 / –
+     - cpu 15 ops/s
+   * - CPU, all cores (matrixprod)
+     - – / –
+     - 20
+     - 23.0
+     - 49.4 / 49.9
+     - 26.4
+     - 59
+     - –, 100 / –
+     - cpu 29 ops/s
+   * - CPU, all cores (matrixprod)
+     - – / –
+     - 20
+     - 22.8
+     - 49.3 / 49.9
+     - 26.6
+     - 58
+     - –, 100 / –
+     - cpu 29 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 23.0
+     - 51.0 / 52.4
+     - 28.0
+     - 57
+     - –, 100 / –
+     - cpu 14 ops/s, vm 19092 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 23.0
+     - 51.0 / 52.4
+     - 28.0
+     - 57
+     - –, 100 / –
+     - cpu 14 ops/s, vm 19106 ops/s
+   * - CPU + memory
+     - – / –
+     - 20
+     - 23.0
+     - 51.2 / 52.4
+     - 28.2
+     - 57
+     - –, 100 / –
+     - cpu 14 ops/s, vm 19404 ops/s
+   * - Chromium kiosk HMI (charts at 60 fps)
+     - – / –
+     - 20
+     - 22.7
+     - 50.1 / 50.4
+     - 27.4
+     - 58
+     - –, 84 / –
+     - UI 13 fps
+
+
+Throttle tests (throttle point lowered): open air, no heatsink, on the 00428 carrier
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Throttle point (°C)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - CPU + memory
+     - – / –
+     - 48
+     - 20
+     - 22.8
+     - 46.9 / 49.4
+     - 24.1
+     - throttled after 14 s (72 %)
+     - –, 100 / –
+     - cpu 12 ops/s, vm 15507 ops/s
+   * - CPU + memory
+     - – / –
+     - 46
+     - 20
+     - 22.9
+     - 46.2 / 47.4
+     - 23.3
+     - throttled after 4 s (100 %)
+     - –, 100 / –
+     - cpu 10 ops/s, vm 14031 ops/s
 
 
 i.MX 91 (00363)
@@ -2092,3 +2232,601 @@ Open air, no heatsink
      - 72
      - –, 100 / –
      - cpu 4 ops/s, vm 6400 ops/s
+
+STM32MP257F (00395)
+-------------------
+
+
+The open-air rows with no test length (–) are the first STM32MP257F tests, from October 29 and 30. They come from per-run summaries: their raw data was lost when the board was reflashed, so their test length and CPU load are not available.
+
+
+Open air, no heatsink
+~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - –
+     - 23.3
+     - 37.3 / 38.8
+     - 14.0
+     - 86
+     - –, – / –
+     - –
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - –
+     - 22.7
+     - 37.0 / 38.3
+     - 14.3
+     - 86
+     - –, – / –
+     - –
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - –
+     - 22.8
+     - 38.0 / 39.6
+     - 15.2
+     - 85
+     - –, – / –
+     - –
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - 20
+     - 21.6
+     - 35.9 / 37.6
+     - 14.2
+     - 86
+     - 1214, 3 / –
+     - –
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - 20
+     - 23.6
+     - 39.1 / 41.3
+     - 15.5
+     - 84
+     - 1214, 3 / –
+     - –
+   * - Idle (no load) (performance)
+     - 1500 / –
+     - –
+     - 23.5
+     - 37.6 / 39.0
+     - 14.1
+     - 86
+     - –, – / –
+     - –
+   * - CPU, all cores at 50% (ondemand)
+     - 1200 / –
+     - –
+     - 23.2
+     - 38.7 / 40.1
+     - 15.5
+     - 84
+     - –, – / –
+     - cpu 8 ops/s
+   * - CPU, all cores at 50% (ondemand)
+     - 1500 / –
+     - –
+     - 23.3
+     - 39.8 / 42.1
+     - 16.5
+     - 83
+     - –, – / –
+     - cpu 10 ops/s
+   * - CPU, all cores at 50% (performance)
+     - 1200 / –
+     - –
+     - 23.1
+     - 38.7 / 40.1
+     - 15.6
+     - 84
+     - –, – / –
+     - cpu 8 ops/s
+   * - CPU, all cores at 50% (performance)
+     - 1500 / –
+     - –
+     - 23.2
+     - 40.1 / 41.8
+     - 16.9
+     - 83
+     - –, – / –
+     - cpu 10 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1200 / –
+     - –
+     - 22.9
+     - 39.9 / 40.3
+     - 17.1
+     - 83
+     - –, – / –
+     - cpu 15 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1500 / –
+     - –
+     - 23.1
+     - 41.9 / 42.5
+     - 18.8
+     - 81
+     - –, – / –
+     - cpu 19 ops/s
+   * - CPU + memory (performance)
+     - 1200 / –
+     - –
+     - 23.0
+     - 40.6 / 41.5
+     - 17.7
+     - 82
+     - –, – / –
+     - cpu 5 ops/s, vm 12505 ops/s
+   * - CPU + memory (performance)
+     - 1500 / –
+     - –
+     - 23.1
+     - 42.8 / 43.8
+     - 19.8
+     - 80
+     - –, – / –
+     - cpu 6 ops/s, vm 14951 ops/s
+   * - CPU + memory (performance)
+     - 1500 / –
+     - –
+     - 23.1
+     - 42.9 / 44.0
+     - 19.8
+     - 80
+     - –, – / –
+     - cpu 6 ops/s, vm 14770 ops/s
+   * - CPU + memory (performance)
+     - 1500 / –
+     - 20
+     - 22.0
+     - 42.1 / 43.2
+     - 20.1
+     - 80
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 15607 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1500 / –
+     - –
+     - 22.4
+     - 43.9 / 46.0
+     - 21.5
+     - 79
+     - –, – / –
+     - glmark2 6 fps
+   * - CPU + GPU + memory (performance)
+     - 1200 / –
+     - –
+     - 22.8
+     - 46.7 / 47.5
+     - 23.9
+     - 76
+     - –, – / –
+     - cpu 7 ops/s, vm 9358 ops/s, glmark2 5 fps
+   * - CPU + GPU + memory (performance)
+     - 1500 / –
+     - –
+     - 22.8
+     - 48.4 / 49.3
+     - 25.6
+     - 74
+     - –, – / –
+     - cpu 9 ops/s, vm 11500 ops/s, glmark2 5 fps
+   * - CPU + GPU + memory (performance)
+     - 1500 / –
+     - –
+     - 23.0
+     - 48.8 / 49.4
+     - 25.8
+     - 74
+     - –, – / –
+     - cpu 8 ops/s, vm 11198 ops/s, glmark2 5 fps
+   * - CPU + GPU + memory (performance)
+     - 1500 / –
+     - 22
+     - 24.2
+     - 50.0 / 50.6
+     - 25.7
+     - 74
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 12022 ops/s, glmark2 5 fps
+   * - Video decode, 1080p30 H.264 (VDEC), real time (ondemand)
+     - 1500 / –
+     - –
+     - 22.8
+     - 40.2 / 42.2
+     - 17.4
+     - 83
+     - –, – / –
+     - video 30 fps
+   * - NPU inference, MobileNet v2 (NPU) (ondemand)
+     - 1500 / –
+     - 20
+     - 22.6
+     - 44.2 / 46.6
+     - 21.6
+     - 78
+     - 1210, 4 / –
+     - NPU 100 inferences/s
+   * - NPU inference, MobileNet v2 (NPU) (ondemand)
+     - 1500 / –
+     - 20
+     - 23.7
+     - 45.3 / 47.4
+     - 21.6
+     - 78
+     - 1210, 4 / –
+     - NPU 100 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1500 / –
+     - 23
+     - 24.0
+     - 50.4 / 51.9
+     - 26.3
+     - 74
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 11883 ops/s, glmark2 5 fps, NPU 9 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1500 / –
+     - 20
+     - 23.6
+     - 50.0 / 51.7
+     - 26.4
+     - 74
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 11747 ops/s, glmark2 5 fps, NPU 8 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 20
+     - 23.1
+     - 49.4 / 50.0
+     - 26.3
+     - 74
+     - 1500, 100 / –
+     - cpu 5 ops/s, vm 15072 ops/s, NPU 85 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 22
+     - 23.5
+     - 49.8 / 50.6
+     - 26.3
+     - 74
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 14535 ops/s, NPU 85 inferences/s
+
+
+Enclosure (Polycase WA Series WA-42\*16), no heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C) / enclosure air
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1500 / –
+     - 40
+     - 23.3 / 24.9
+     - 40.5 / 41.6
+     - 17.2
+     - 83
+     - 1224, 3 / –
+     - –
+   * - CPU + memory (performance)
+     - 1500 / –
+     - 40
+     - 23.7 / 25.4
+     - 47.1 / 47.6
+     - 23.4
+     - 77
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 15388 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1500 / –
+     - 42
+     - 23.9 / 25.9
+     - 47.8 / 49.8
+     - 23.9
+     - 76
+     - 1238, 5 / –
+     - glmark2 6 fps
+   * - CPU + GPU + memory (performance)
+     - 1500 / –
+     - 40
+     - 23.5 / 26.2
+     - 52.7 / 53.3
+     - 29.1
+     - 71
+     - 1500, 100 / –
+     - cpu 9 ops/s, vm 11761 ops/s, glmark2 5 fps
+   * - Video decode, 1080p30 H.264 (VDEC), real time (ondemand)
+     - 1500 / –
+     - 40
+     - 23.6 / 25.8
+     - 43.5 / 46.1
+     - 20.0
+     - 80
+     - 1426, 38 / –
+     - –
+   * - NPU inference, MobileNet v2 (NPU) (ondemand)
+     - 1500 / –
+     - 40
+     - 23.6 / 25.8
+     - 48.8 / 50.7
+     - 25.2
+     - 75
+     - 1220, 4 / –
+     - NPU 99 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 40
+     - 23.8 / 26.3
+     - 54.3 / 55.0
+     - 30.5
+     - 70
+     - 1500, 100 / –
+     - cpu 5 ops/s, vm 14859 ops/s, NPU 84 inferences/s
+   * - CPU + memory + NPU (performance)
+     - 1500 / –
+     - 240 (4 h soak)
+     - 23.0 / 25.3
+     - 53.7 / 55.2
+     - 30.8
+     - 69
+     - 1500, 100 / –
+     - cpu 6 ops/s, vm 14723 ops/s, NPU 84 inferences/s
+
+
+Reference: NXP FRDM-IMX95 (not a Cargt SOM)
+-------------------------------------------
+
+
+Open air, passive (FRDM-IMX95 stock heatsink) heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C)
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1800 / 1000
+     - 20
+     - 23.4
+     - 46.2 / 47.2
+     - 22.8
+     - 72
+     - 869, 2 / 0
+     - –
+   * - Idle (no load) (performance)
+     - 1800 / 1000
+     - 20
+     - 23.9
+     - 48.4 / 48.7
+     - 24.4
+     - 71
+     - 1800, 1 / 0
+     - –
+   * - CPU, all cores at 50% (ondemand)
+     - 900 / 1000
+     - 20
+     - 23.3
+     - 48.3 / 50.4
+     - 25.0
+     - 70
+     - 832, 53 / 0
+     - cpu 25 ops/s
+   * - CPU, all cores at 50% (ondemand)
+     - 1404 / 1000
+     - 21
+     - 24.0
+     - 51.9 / 53.9
+     - 27.9
+     - 67
+     - 1245, 54 / 0
+     - cpu 38 ops/s
+   * - CPU, all cores at 50% (ondemand)
+     - 1800 / 1000
+     - 23
+     - 23.8
+     - 54.9 / 57.3
+     - 31.2
+     - 64
+     - 1770, 53 / 0
+     - cpu 47 ops/s
+   * - CPU, all cores at 50% (performance)
+     - 900 / 1000
+     - 20
+     - 23.5
+     - 48.7 / 50.9
+     - 25.2
+     - 70
+     - 900, 53 / 0
+     - cpu 25 ops/s
+   * - CPU, all cores at 50% (performance)
+     - 1404 / 1000
+     - 20
+     - 24.1
+     - 52.2 / 54.0
+     - 28.1
+     - 67
+     - 1404, 53 / 0
+     - cpu 38 ops/s
+   * - CPU, all cores at 50% (performance)
+     - 1800 / 1000
+     - 20
+     - 23.6
+     - 54.3 / 57.2
+     - 30.7
+     - 64
+     - 1800, 53 / 0
+     - cpu 47 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 900 / 1000
+     - 27
+     - 24.0
+     - 51.8 / 52.3
+     - 27.8
+     - 67
+     - 900, 100 / 0
+     - cpu 48 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1404 / 1000
+     - 29
+     - 23.9
+     - 56.3 / 56.6
+     - 32.5
+     - 63
+     - 1404, 100 / 0
+     - cpu 71 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1800 / 1000
+     - 22
+     - 23.2
+     - 59.9 / 61.1
+     - 36.8
+     - 58
+     - 1800, 100 / 0
+     - cpu 88 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1800 / 500
+     - 20
+     - 22.9
+     - 49.4 / 50.6
+     - 26.4
+     - 69
+     - 1135, 7 / 54
+     - glmark2 43 fps
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1800 / 800
+     - 20
+     - 22.8
+     - 51.2 / 52.0
+     - 28.4
+     - 67
+     - 1197, 9 / 58
+     - glmark2 65 fps
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1800 / 1000
+     - 20
+     - 22.7
+     - 52.5 / 53.4
+     - 29.8
+     - 65
+     - 1199, 9 / 56
+     - glmark2 80 fps
+   * - CPU + GPU + memory (performance)
+     - 900 / 1000
+     - 20
+     - 23.6
+     - 57.4 / 58.3
+     - 33.9
+     - 61
+     - 900, 92 / 4
+     - cpu 31 ops/s, vm 10614 ops/s, glmark2 72 fps
+   * - CPU + GPU + memory (performance)
+     - 1404 / 1000
+     - 20
+     - 23.1
+     - 61.7 / 62.6
+     - 38.6
+     - 56
+     - 1404, 90 / 50
+     - cpu 46 ops/s, vm 16441 ops/s, glmark2 74 fps
+   * - CPU + GPU + memory (performance)
+     - 1800 / 1000
+     - 20
+     - 23.1
+     - 65.6 / 66.8
+     - 42.6
+     - 52
+     - 1800, 90 / 52
+     - cpu 56 ops/s, vm 19264 ops/s, glmark2 76 fps
+   * - CPU + GPU + memory (performance)
+     - 1800 / 1000
+     - 240 (4 h soak)
+     - 21.0
+     - 62.8 / 65.4
+     - 41.8
+     - 53
+     - 1800, 89 / 83
+     - cpu 55 ops/s, vm 19077 ops/s, glmark2 76 fps
+   * - NPU inference, MobileNet v1 (Neutron) (ondemand)
+     - 1800 / 1000
+     - 20
+     - 22.6
+     - 52.9 / 53.8
+     - 30.3
+     - 65
+     - 1080, 5 / 0
+     - NPU 827 inferences/s
+   * - NPU object detection, SSD MobileNet (Neutron + CPU) (ondemand)
+     - 1800 / 1000
+     - 20
+     - 22.5
+     - 50.5 / 51.0
+     - 28.0
+     - 67
+     - 1226, 11 / 0
+     - NPU 188 inferences/s
+   * - Chromium HMI + 1080p30 video + NPU detection (ondemand)
+     - 1800 / 1000
+     - 20
+     - 22.4
+     - 51.4 / 52.5
+     - 29.0
+     - 66
+     - 1167, 13 / 0
+     - video 30 fps, NPU 188 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1800 / 1000
+     - 20
+     - 22.3
+     - 70.2 / 71.1
+     - 47.8
+     - 47
+     - 1800, 92 / 13
+     - cpu 48 ops/s, vm 17407 ops/s, glmark2 65 fps, NPU 644 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1800 / 1000
+     - 240 (4 h soak)
+     - 21.6
+     - 68.9 / 71.2
+     - 47.3
+     - 48
+     - 1800, 92 / 82
+     - cpu 48 ops/s, vm 17172 ops/s, glmark2 64 fps, NPU 672 inferences/s
