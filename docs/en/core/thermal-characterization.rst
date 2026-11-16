@@ -95,8 +95,9 @@ For the i.MX 95 (00414):
   the die 1–3 °C under the throttle point by lowering the CPU and then the GPU
   frequency; video playback keeps its frame rate.
 - **For reference, NXP's FRDM-IMX95 development board** with its stock
-  heatsink runs 5–7 °C hotter than the 00414 with the passive heatsink above,
-  in open air under the same loads. See `Reference: NXP FRDM-IMX95 board`_.
+  heatsink runs 5–7 °C hotter than the 00414 with the passive heatsink above
+  in open air, and 3–5 °C hotter in the sealed enclosure, under the same
+  loads. See `Reference: NXP FRDM-IMX95 board`_.
 
 For the i.MX 8M Plus (00377):
 
@@ -457,8 +458,9 @@ Reference: NXP FRDM-IMX95 board
 For comparison, we ran the same loads on NXP's FRDM-IMX95 development board.
 It is NXP's board, not a Cargt SOM: an i.MX 95 with 8 GB of LPDDR4X and NXP's
 stock passive heatsink, running NXP's Linux image (kernel 6.18.37) rather
-than the Cargt BSP. It ran in open air on the same desk, with its HDMI output
-enabled and no monitor connected. NXP's image has no Chromium, so the
+than the Cargt BSP. It ran in open air on the same desk and then sealed in
+the same plastic enclosure as the 00414, with its HDMI output enabled and no
+monitor connected. NXP's image has no Chromium, so the
 application test is 1080p30 video with object detection on the NPU, without
 the touchscreen UI.
 
@@ -545,6 +547,89 @@ the touchscreen UI.
   821, and SSD MobileNet at 188 against 194.
 - No test throttled. The hottest die reading was 71.2 °C, in the 4-hour
   worst case.
+
+.. list-table:: Sealed enclosure, FRDM-IMX95 with its stock heatsink
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 26 9 17 12 18 18
+
+   * - Load
+     - CPU cap (MHz)
+     - ΔT, open air → enclosure (°C)
+     - Enclosure air above room (°C)
+     - Maximum ambient, open air → enclosure
+     - ΔT, 00414 with passive heatsink, enclosure (°C)
+   * - CPU + GPU + memory + NPU
+     - 1800
+     - 47.8 → 57.5 (4 hours: 47.3 → 59.9)
+     - 4.6 (4 hours)
+     - 47 → **35 °C** (4 hours)
+     - 56.7 (4 hours)
+   * - CPU + GPU + memory
+     - 1800
+     - 42.6 → 50.7
+     - 3.5
+     - 52 → **44 °C**
+     - 47.0
+   * - CPU + GPU + memory
+     - 1404
+     - 38.6 → 45.8
+     - 3.2
+     - 56 → 49 °C
+     - 41.5
+   * - CPU + GPU + memory
+     - 900
+     - 33.9 → 41.2
+     - 3.2
+     - 61 → 54 °C
+     - 36.2
+   * - CPU, all cores
+     - 1800
+     - 36.8 → 43.4
+     - 3.2
+     - 58 → 52 °C
+     - 38.9
+   * - Image classification on the NPU
+     - 1800
+     - 30.3 → 37.0
+     - 2.9
+     - 65 → 58 °C
+     - 33.2
+   * - 1080p30 video + object detection
+     - 1800
+     - 29.0 → 35.1
+     - 2.6
+     - 66 → 60 °C
+     - –
+   * - GPU only
+     - 1800
+     - 29.8 → 36.0
+     - 2.9
+     - 65 → 59 °C
+     - 32.8
+   * - CPU, all cores at 50 %
+     - 1800
+     - 31.2 → 36.1
+     - 3.0
+     - 64 → 59 °C
+     - 32.0
+   * - Idle
+     - 1800
+     - 22.8 → 26.3
+     - 2.8
+     - 72 → 69 °C
+     - 23.4
+
+- **In the enclosure, the worst case allows 35 °C room air.** CPU, GPU, memory
+  and NPU at 1.8 GHz rose 59.9 °C above the room over 4 hours; the 40-minute
+  test read 57.5 °C. With CPU, GPU and memory only, it allows 44 °C.
+- **The enclosure costs the FRDM-IMX95 3–12 °C of maximum ambient,** a little
+  more than the 6.5–11 °C it costs the 00414. The air inside ran only 2.6–4.6 °C above the
+  room; the rest is the heatsink working less well in still air.
+- **In the enclosure the gap to the 00414 narrows to 3–5 °C,** from 5–7 °C in
+  open air.
+- No enclosure test throttled. The hottest die reading was 84.9 °C, at the end
+  of the 4-hour worst case, 10 °C under the 95 °C design limit.
 - These tests are listed in :doc:`thermal-test-data`, in a reference section
   of their own.
 
