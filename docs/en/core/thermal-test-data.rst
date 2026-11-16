@@ -2803,7 +2803,7 @@ Open air, passive (FRDM-IMX95 stock heatsink) heatsink
      - 67
      - 1226, 11 / 0
      - NPU 188 inferences/s
-   * - Chromium HMI + 1080p30 video + NPU detection (ondemand)
+   * - 1080p30 video + NPU detection (no browser) (ondemand)
      - 1800 / 1000
      - 20
      - 22.4
@@ -2830,3 +2830,148 @@ Open air, passive (FRDM-IMX95 stock heatsink) heatsink
      - 48
      - 1800, 92 / 82
      - cpu 48 ops/s, vm 17172 ops/s, glmark2 64 fps, NPU 672 inferences/s
+
+
+Enclosure (Polycase WA Series WA-42\*16), passive (FRDM-IMX95 stock heatsink) heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C) / enclosure air
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load) (ondemand)
+     - 1800 / 1000
+     - 40
+     - 22.8 / 25.6
+     - 49.1 / 50.4
+     - 26.3
+     - 69
+     - 869, 2 / 0
+     - –
+   * - CPU, all cores at 50% (ondemand)
+     - 1800 / 1000
+     - 40
+     - 22.4 / 25.4
+     - 58.5 / 61.0
+     - 36.1
+     - 59
+     - 1753, 52 / 0
+     - cpu 47 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 900 / 1000
+     - 40
+     - 22.1 / 24.9
+     - 54.8 / 54.9
+     - 32.7
+     - 62
+     - 900, 100 / 0
+     - cpu 48 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1404 / 1000
+     - 40
+     - 22.1 / 24.9
+     - 59.8 / 59.9
+     - 37.7
+     - 57
+     - 1404, 100 / 0
+     - cpu 71 ops/s
+   * - CPU, all cores (matrixprod) (performance)
+     - 1800 / 1000
+     - 40
+     - 21.4 / 24.6
+     - 64.8 / 65.0
+     - 43.4
+     - 52
+     - 1800, 100 / 0
+     - cpu 88 ops/s
+   * - GPU (glmark2 terrain) (ondemand)
+     - 1800 / 1000
+     - 40
+     - 19.9 / 22.8
+     - 55.9 / 56.7
+     - 36.0
+     - 59
+     - 1094, 9 / 50
+     - glmark2 80 fps
+   * - CPU + GPU + memory (performance)
+     - 900 / 1000
+     - 47
+     - 20.9 / 24.1
+     - 62.2 / 63.0
+     - 41.2
+     - 54
+     - 900, 92 / 10
+     - cpu 32 ops/s, vm 22361 ops/s, glmark2 72 fps
+   * - CPU + GPU + memory (performance)
+     - 1404 / 1000
+     - 42
+     - 20.7 / 23.9
+     - 66.5 / 67.3
+     - 45.8
+     - 49
+     - 1404, 91 / 49
+     - cpu 46 ops/s, vm 33701 ops/s, glmark2 75 fps
+   * - CPU + GPU + memory (performance)
+     - 1800 / 1000
+     - 41
+     - 20.2 / 23.7
+     - 70.9 / 72.5
+     - 50.7
+     - 44
+     - 1800, 89 / 49
+     - cpu 55 ops/s, vm 18762 ops/s, glmark2 76 fps
+   * - NPU inference, MobileNet v1 (Neutron) (ondemand)
+     - 1800 / 1000
+     - 40
+     - 19.7 / 22.5
+     - 56.7 / 57.7
+     - 37.0
+     - 58
+     - 1038, 6 / 0
+     - NPU 823 inferences/s
+   * - NPU object detection, SSD MobileNet (Neutron + CPU) (ondemand)
+     - 1800 / 1000
+     - 40
+     - 19.6 / 22.2
+     - 53.6 / 54.3
+     - 34.0
+     - 61
+     - 1202, 11 / 0
+     - NPU 188 inferences/s
+   * - 1080p30 video + NPU detection (no browser) (ondemand)
+     - 1800 / 1000
+     - 40
+     - 19.7 / 22.3
+     - 54.8 / 55.6
+     - 35.1
+     - 60
+     - 1219, 13 / 0
+     - video 30 fps, NPU 183 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1800 / 1000
+     - 40
+     - 20.1 / 23.4
+     - 77.6 / 78.2
+     - 57.5
+     - 38
+     - 1800, 92 / 14
+     - cpu 48 ops/s, vm 17613 ops/s, glmark2 65 fps, NPU 643 inferences/s
+   * - CPU + GPU + memory + NPU (performance)
+     - 1800 / 1000
+     - 240 (4 h soak)
+     - 24.0 / 28.6
+     - 83.9 / 84.9
+     - 59.9
+     - 35
+     - 1800, 92 / 76
+     - cpu 47 ops/s, vm 17477 ops/s, glmark2 65 fps, NPU 646 inferences/s
