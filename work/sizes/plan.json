@@ -1,0 +1,149 @@
+[
+ {
+  "release": "wrynose-rt",
+  "manifest": "cargt-image-rt-imx95-cargt-00414-00365.rootfs.manifest",
+  "machine": "imx95-cargt-00414-00365",
+  "tar": "cargt-image-rt-imx95-cargt-00414-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-01-00365.rootfs.manifest",
+  "machine": "stm32mp25-cargt-00395-01-00365",
+  "tar": "cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-01-00365.rootfs.tar.xz",
+  "kind": "xz"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx8mp-cargt-00377-00365.rootfs.manifest",
+  "machine": "imx8mp-cargt-00377-00365",
+  "tar": "cargt-image-dev-imx8mp-cargt-00377-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx93-cargt-00359-00406.rootfs.manifest",
+  "machine": "imx93-cargt-00359-00406",
+  "tar": "cargt-image-dev-imx93-cargt-00359-00406.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-imx93-cargt-00359-00406.rootfs.manifest",
+  "machine": "imx93-cargt-00359-00406",
+  "tar": "cargt-image-dev-imx93-cargt-00359-00406.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-imx8mp-cargt-00377-00365.rootfs.manifest",
+  "machine": "imx8mp-cargt-00377-00365",
+  "tar": "cargt-image-dev-imx8mp-cargt-00377-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-imx91-cargt-00363-00365.rootfs.manifest",
+  "machine": "imx91-cargt-00363-00365",
+  "tar": "cargt-image-dev-imx91-cargt-00363-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx91-cargt-00363-00365.rootfs.manifest",
+  "machine": "imx91-cargt-00363-00365",
+  "tar": "cargt-image-dev-imx91-cargt-00363-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-02-00365.rootfs.manifest",
+  "machine": "stm32mp25-cargt-00395-02-00365",
+  "tar": "cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-02-00365.rootfs.tar.xz",
+  "kind": "xz"
+ },
+ {
+  "release": "wrynose-rt",
+  "manifest": "cargt-image-rt-imx95-15x15-lpddr4x-frdm.rootfs.manifest",
+  "machine": "imx95-15x15-lpddr4x-frdm",
+  "tar": "cargt-image-rt-imx95-15x15-lpddr4x-frdm.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose-rt",
+  "manifest": "cargt-image-rt-imx95-cargt-00414-00428.rootfs.manifest",
+  "machine": "imx95-cargt-00414-00428",
+  "tar": "cargt-image-rt-imx95-cargt-00414-00428.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-imx93-cargt-00324-00326.rootfs.manifest",
+  "machine": "imx93-cargt-00324-00326",
+  "tar": "cargt-image-dev-imx93-cargt-00324-00326.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-imx93-cargt-00363-00365.rootfs.manifest",
+  "machine": "imx93-cargt-00363-00365",
+  "tar": "cargt-image-dev-imx93-cargt-00363-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "scarthgap",
+  "manifest": "cargt-image-dev-imx93-cargt-00363-00428.rootfs.manifest",
+  "machine": "imx93-cargt-00363-00428",
+  "tar": "cargt-image-dev-imx93-cargt-00363-00428.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx93-cargt-00324-00326.rootfs.manifest",
+  "machine": "imx93-cargt-00324-00326",
+  "tar": "cargt-image-dev-imx93-cargt-00324-00326.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx93-cargt-00363-00428.rootfs.manifest",
+  "machine": "imx93-cargt-00363-00428",
+  "tar": "cargt-image-dev-imx93-cargt-00363-00428.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx93-cargt-00363-00365.rootfs.manifest",
+  "machine": "imx93-cargt-00363-00365",
+  "tar": "cargt-image-dev-imx93-cargt-00363-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx95-19x19-lpddr5-frdm-pro.rootfs.manifest",
+  "machine": "imx95-19x19-lpddr5-frdm-pro",
+  "tar": "cargt-image-dev-imx95-19x19-lpddr5-frdm-pro.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx95-15x15-lpddr4x-frdm.rootfs.manifest",
+  "machine": "imx95-15x15-lpddr4x-frdm",
+  "tar": "cargt-image-dev-imx95-15x15-lpddr4x-frdm.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx95-cargt-00414-00365.rootfs.manifest",
+  "machine": "imx95-cargt-00414-00365",
+  "tar": "cargt-image-dev-imx95-cargt-00414-00365.rootfs.tar.zst",
+  "kind": "zst"
+ },
+ {
+  "release": "wrynose",
+  "manifest": "cargt-image-dev-imx95-cargt-00414-00428.rootfs.manifest",
+  "machine": "imx95-cargt-00414-00428",
+  "tar": "cargt-image-dev-imx95-cargt-00414-00428.rootfs.tar.zst",
+  "kind": "zst"
+ }
+]
