@@ -5,7 +5,7 @@ Cameras
 
 .. rst-class:: cargt-applies-to
 
-**Applies to:** :bdg-primary:`i.MX 95` :bdg-primary:`STM32MP2`
+**Applies to:** :bdg-primary:`i.MX 95` :bdg-primary:`i.MX 93` :bdg-primary:`i.MX 8M Plus` :bdg-primary:`STM32MP2`
 
 This page shows how to use a MIPI CSI-2 camera on a Cargt i.MX board with
 libcamera and GStreamer, and how to capture HDMI input on an STM32MP2 board
@@ -45,8 +45,13 @@ The status column means:
      - 8 MP (3840 x 2160), color, rolling shutter, HDR
      - i.MX 95 00414 on the 00365
      - **Supported** on CSI-1, including a 10-hour stream at 1920 x 1080
-       and 60 fps with no dropped frames. CSI-2 and both connectors at once
-       are not tested yet.
+       and 60 fps with no dropped frames. CSI-2, and two cameras on both
+       connectors at once, also stream.
+   * - OmniVision OS08A20
+     - See above
+     - i.MX 8M Plus 00377 on the 00365
+     - **Tested on hardware:** streams through the i.MX 8M Plus ISP and
+       dewarp engine with GStreamer's ``v4l2src`` (not libcamera).
    * - ST VD56G3
      - 1.5 MP (1124 x 1364), monochrome, global shutter
      - STM32MP2 00395 on the 00365
@@ -67,8 +72,9 @@ The status column means:
    * - ST VD1943
      - 5.1 MP (2560 x 1984), color and near-infrared (RGB-IR)
      - STM32MP2 00395 on the 00365
-     - **In development:** device trees are built, not yet run on a
-       board.
+     - **Tested on hardware** (00395-02): color at 1280 x 720 and 30 fps
+       through the STM32MP2 ISP with libcamera 6.2.1, and raw frames at
+       2560 x 1984. Image tuning is not calibrated yet.
    * - ST VD66GY
      - 1.5 MP (1124 x 1364), color, global shutter
      - STM32MP2 00395 on the 00365
@@ -80,11 +86,25 @@ The status column means:
    * - ST VD1943
      - 5.1 MP (2560 x 1984), color and near-infrared (RGB-IR): color,
        infrared, or both from the same frame
-     - i.MX 95, so far on NXP's FRDM-IMX95 board
-     - **In development:** color, infrared, and color plus infrared run at
-       30 frames per second through the ISP. Image tuning is not
-       calibrated, and there is no device tree for the 00365 carrier yet.
-       See :ref:`the notes below the table <cameras-vd1943-imx95>`.
+     - i.MX 95 00414 on the 00365, and NXP's FRDM-IMX95 board
+     - **Tested on hardware:** on the 00365, 2560 x 1984 at 30 frames per
+       second through the ISP, alone or alongside the VL53L9CX. On the
+       FRDM-IMX95, color, infrared, and color plus infrared run at 30
+       frames per second. Image tuning is not calibrated. See
+       :ref:`the notes below the table <cameras-vd1943-imx95>`.
+   * - ST VL53L9CX (STEVAL-VL53L9 module)
+     - Time-of-flight 3D depth sensor, 2.3k zones, CSI-2 output
+     - i.MX 95 00414 on the 00365
+     - **Tested on hardware:** depth frames at 30 fps on CSI-2 (J22),
+       alongside a VD1943 on CSI-1.
+   * - ST VL53L9CX (STEVAL-VL53L9 module)
+     - See above
+     - i.MX 93 00363 on the 00365
+     - **Tested on hardware:** depth frames at 30 fps on CSI-1 (J21).
+   * - ST VL53L9CX (STEVAL-VL53L9 module)
+     - See above
+     - STM32MP2 00395 on the 00365
+     - **In development**
    * - ST VD5943
      - See above
      - i.MX 95 00414 on the 00365
@@ -118,8 +138,9 @@ through the ISP, color plus infrared included at the full 2560 x 1984. The
 VD1943's 4 x 4 RGB-IR pattern, measured on the sensor, is
 ``G I G I / B G R G / G I G I / R G B G``.
 
-The STM32MP2 has one CSI-2 receiver, so an STM32MP2 board takes one camera
-at a time, in the 00365's CSI_A connector (J21).
+The STM32MP2 and the i.MX 93 each have one CSI-2 receiver, so these boards
+take one camera at a time, in the 00365's CSI_A connector (J21). The
+i.MX 91 has no MIPI CSI-2 receiver.
 
 The OS08A20 device trees, in ``/boot``, are
 ``imx95-cargt-00414-00365-os08a20-csi1.dtb`` (CSI-1, J21),
