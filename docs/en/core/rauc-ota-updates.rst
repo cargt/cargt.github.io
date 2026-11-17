@@ -116,7 +116,12 @@ device order, left to right:
   what most of a bundle's size actually is.
 - **userfs** — a single partition, **not** duplicated. Shared, persistent
   application/user data that survives every OTA update untouched (grown to
-  fill remaining eMMC/SD space on first boot).
+  fill remaining eMMC/SD space on first boot). Mounted at ``/usr/local``.
+  In ``cargt-image-dev``, ``cargt-persist`` also keeps the board's SSH host
+  keys (``/usr/local/etc/ssh``) and NetworkManager connection profiles
+  (``/usr/local/etc/NetworkManager/system-connections``) here, so the
+  board keeps its SSH identity and saved networks, Wi-Fi passwords
+  included, across updates.
 - **u-boot-env** — U-Boot's environment. A single *partition*, but not a
   single copy: U-Boot's environment tooling keeps two environment copies
   at different offsets within that one partition, each tagged with a
@@ -159,9 +164,11 @@ Boot flow and bank selection
    :ref:`rauc-rollback-safety`). RAUC's built-in mark-good service calls
    ``rauc status mark-good`` after a successful boot, which flips the
    bank to Accepted in the FWU metadata, resyncs U-Boot's boot command to
-   match, and disarms the retry limit — whether the bank is good because
-   the fresh install simply booted fine, or because the retry/fallback
-   mechanism already reverted to it automatically.
+   match, and disarms the retry limit. If U-Boot has already fallen back
+   (the trial bank used up its attempts and the boot command points at the
+   other bank), mark-good instead marks the failed trial bank bad and
+   re-accepts the bank that is running. It never switches back to the
+   failed bank.
 
 .. _rauc-rollback-safety:
 
@@ -201,10 +208,21 @@ failed attempt and the fallback look like this:
    Bootlimit (3) exceeded. Using altbootcmd
 
 After the fallback, ``bootcmd`` and ``altbootcmd`` point at the good bank
-again and ``bootcount`` and ``upgrade_available`` are cleared. The
-counter is only tracked while a bank is on trial
-(``upgrade_available=1``), so a watchdog reset during normal operation
-does not affect A/B bookkeeping.
+again and ``bootcount`` and ``upgrade_available`` are cleared. Once Linux
+is up on the good bank, mark-good marks the failed bank bad and accepts
+the running bank again in the FWU metadata, so TF-A also loads the good
+bank's FIP from the next boot on. The counter is only tracked while a bank
+is on trial (``upgrade_available=1``), so a watchdog reset during normal
+operation does not affect A/B bookkeeping.
+
+.. TODO: rollback timing. The Linux watchdog boot timeout has not been
+   chosen yet (CONFIG_WATCHDOG_OPEN_TIMEOUT); it sets how long a hung
+   attempt takes to reset, and so how long the whole fallback takes.
+   Add the time from a failed install to the fallback here once it is
+   set. Don't publish a number before then.
+
+After a rollback, reboot the board once before installing the next update
+(see :ref:`rauc-troubleshooting`).
 
 Update flow
 ~~~~~~~~~~~
@@ -475,9 +493,24 @@ Slot doesn't flip after install+reboot
    any RAUC package, and make sure you are installing the newly built
    bundle.
 
+``rauc install`` fails with ``reboot before installing an update``
+   The full message is
+   ``set-primary: TF-A's trial counter is <n>/4; reboot before installing
+   an update``. TF-A gives a new FIP 4 trial boots, but it only refills
+   that counter when it boots an accepted bank. Right after a rollback,
+   or after an update was accepted with no reboot since, the counter is
+   still low, and an update installed then could lose its FIP trial on
+   the very first boot. The install is refused until the board has
+   rebooted once into the accepted bank. Reboot and run ``rauc install``
+   again.
+
 SSH reports ``REMOTE HOST IDENTIFICATION HAS CHANGED`` after an update
-   Expected: the newly installed bank generates its own SSH host key on
-   first boot. Run ``ssh-keygen -R <DUT>`` before reconnecting.
+   ``cargt-image-dev`` keeps the SSH host keys on ``userfs``, so an update
+   or a rollback no longer changes them (see `Partition layout`_). The
+   warning still appears once, on the first update from an image built
+   without ``cargt-persist``: that image's bank had its own keys. It also
+   appears after a full reflash that rewrites ``userfs``.
+   Run ``ssh-keygen -R <DUT>`` before reconnecting.
 
 Enabling A/B on another machine
 -------------------------------
@@ -550,4 +583,4 @@ All tests below passed on both 00395 boards (``00395-01-00365`` and
      - —
      - Pass.
 
-Last updated October 2026, ``meta-st-cargt`` ``scarthgap`` branch.
+Last updated November 2026, ``meta-st-cargt`` ``scarthgap`` branch.
