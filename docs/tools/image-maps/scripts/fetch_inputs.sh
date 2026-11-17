@@ -27,7 +27,9 @@ wait
 : > "$D/listings/manifests.txt"
 for f in "$D"/listings/m_*.html; do
   k=$(basename "$f" .html); k=${k#m_}; r=${k%%__*}; m=${k#*__}
-  strip < "$f" | awk '{print $1, $2}' | grep '\.rootfs\.manifest' | grep -v initrd | while read -r n d; do echo "$r $m $n $d"; done
+  # A folder with no rootfs manifest (e.g. one holding only flash layouts) is
+  # skipped; without '|| true' grep's exit status would end the script.
+  { strip < "$f" | awk '{print $1, $2}' | grep '\.rootfs\.manifest' | grep -v initrd || true; } | while read -r n d; do echo "$r $m $n $d"; done
 done >> "$D/listings/manifests.txt"
 while read -r r m n d; do
   curl -sS --max-time 300 "$B/images/$r/$m/$n" -o "$D/manifests/${r}__${n}" &
