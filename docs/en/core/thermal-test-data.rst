@@ -2233,6 +2233,97 @@ Open air, no heatsink
      - –, 100 / –
      - cpu 4 ops/s, vm 6400 ops/s
 
+
+Enclosure (Polycase WA Series WA-42\*16), no heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 24 9 7 9 9 6 9 10 20
+
+   * - Load (governor)
+     - CPU / GPU cap (MHz)
+     - Test (min)
+     - Room air (°C) / enclosure air
+     - Die steady / max (°C)
+     - ΔT (°C)
+     - Max ambient (°C)
+     - CPU MHz, CPU / GPU busy %
+     - Performance
+   * - Idle (no load)
+     - – / –
+     - 41
+     - 25.9 / 27.3
+     - 37.7 / 38.8
+     - 11.8
+     - 73
+     - –, 22 / –
+     - –
+   * - CPU, all cores at 50%
+     - – / –
+     - 42
+     - 23.5 / 25.7
+     - 37.7 / 40.1
+     - 14.2
+     - 71
+     - –, 71 / –
+     - cpu 7 ops/s
+   * - CPU, all cores (matrixprod)
+     - – / –
+     - 40
+     - 21.9 / 23.8
+     - 36.9 / 38.0
+     - 15.0
+     - 70
+     - –, 100 / –
+     - cpu 11 ops/s
+   * - Memory (vm, 2 workers, 50% RAM)
+     - – / –
+     - 41
+     - 21.6 / 22.2
+     - 36.2 / 38.1
+     - 14.6
+     - 70
+     - –, 100 / –
+     - vm 12600 ops/s
+   * - CPU + memory
+     - – / –
+     - 41
+     - 21.9 / 23.3
+     - 36.4 / 37.3
+     - 14.6
+     - 70
+     - –, 100 / –
+     - cpu 4 ops/s, vm 6400 ops/s
+   * - CPU + memory
+     - – / –
+     - 41
+     - 21.6 / 23.2
+     - 36.3 / 37.0
+     - 14.7
+     - 70
+     - –, 100 / –
+     - cpu 4 ops/s, vm 6300 ops/s
+   * - Idle (no load)
+     - – / –
+     - 40
+     - 21.4 / 22.9
+     - 33.5 / 34.8
+     - 12.1
+     - 73
+     - –, 22 / –
+     - –
+   * - CPU + memory, verified
+     - – / –
+     - 240 (4 h soak)
+     - 21.1 / 22.7
+     - 35.7 / 37.0
+     - 14.6
+     - 70
+     - –, 100 / –
+     - cpu 4 ops/s, vm 6200 ops/s
+
 STM32MP257F (00395)
 -------------------
 
