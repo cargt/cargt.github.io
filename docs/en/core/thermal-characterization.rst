@@ -31,7 +31,8 @@ without the processor reaching its design limit.
        NPU loads and a 48-hour burn-in
    * - :ref:`00363-91 <00363-91>`
      - i.MX 91
-     - Tested: open air, no heatsink, CPU and memory loads and a 4-hour soak
+     - Tested: open air and enclosure, no heatsink, CPU and memory loads and
+       4-hour soaks
    * - :ref:`00395 <00395>`
      - STM32MP257F
      - Tested: open air and enclosure, no heatsink, CPU, memory, GPU, video
@@ -149,8 +150,10 @@ For the i.MX 91 (00363):
 - **It runs cooler than the i.MX 93**, 13 °C above the room against 20.5 °C
   under the same load, but it also does less work: its single 1.4 GHz core
   does about a third of the i.MX 93's CPU and memory throughput.
+- **In a sealed plastic enclosure it still needs no heatsink.** The enclosure
+  adds only about 2 °C, so full CPU and memory load allows 70 °C room air.
 - **4 hours at full CPU and memory load** with ``stress-ng --verify`` ran with
-  no errors and no throttling.
+  no errors and no throttling, in open air and in the enclosure.
 
 For the STM32MP257F (00395):
 
@@ -1228,7 +1231,8 @@ Test setup
 
    * - Hardware
      - 00363 i.MX 91 OSM-L SOM on the 00365 carrier board, no heatsink, in
-       open air on a desk.
+       open air on a desk and sealed in a Polycase WA-42\*16 plastic
+       enclosure, the same enclosure as the other SOMs.
    * - Software
      - Cargt Linux BSP (NXP lf-6.18.20)
    * - CPU frequency
@@ -1238,7 +1242,8 @@ Test setup
    * - Die temperature
      - The i.MX 91 CPU thermal sensor
    * - Ambient
-     - A Dracal USB-PTH450 sensor in the room, 22–24 °C
+     - Dracal USB-PTH450 sensors: one in the room, 21–26 °C, and, for the
+       enclosure tests, one in the enclosure air
 
 The loads are those used for the i.MX 93, plus memory on its own. Every test
 ran to a steady die temperature and none throttled. CPU + memory and idle were
@@ -1292,6 +1297,55 @@ are slightly warm.
 - **4 hours at full load:** CPU + memory with ``stress-ng --verify`` checking
   the results ran with no errors and no throttling. ΔT was 12.6 °C, against
   13.0 °C in the 20-minute tests, and the hottest die reading was 37.9 °C.
+
+Sealed enclosure, no heatsink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The same loads, with the enclosure rule of 40 minutes or more to a steady die
+temperature, plus a 4-hour CPU + memory test with ``stress-ng --verify``.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 20 16 34
+
+   * - Load
+     - ΔT, open air → enclosure (°C)
+     - Enclosure air above room (°C)
+     - Maximum ambient, open air → enclosure
+   * - CPU, all cores
+     - 12.6 → 15.0
+     - 1.9
+     - 72 → **70 °C**
+   * - CPU + memory
+     - 13.0 → 14.6
+     - 1.5
+     - 72 → **70 °C**
+   * - CPU + memory (4 hours, ``stress-ng --verify``)
+     - 12.6 → 14.6
+     - 1.6
+     - 72 → 70 °C
+   * - Memory
+     - 13.4 → 14.6
+     - 0.6
+     - 72 → 70 °C
+   * - CPU at 50 %
+     - 11.6 → 14.2
+     - 2.2
+     - 73 → 71 °C
+   * - Idle
+     - 10.3 → 12.0
+     - 1.5
+     - 75 → 73 °C
+
+- **The enclosure costs about 2 °C of maximum ambient.** The i.MX 91 draws so
+  little power that the air inside the enclosure ran only 0.6–2.2 °C above
+  the room.
+- **No heatsink is needed in the enclosure either:** the hottest die reading
+  in any test was 40.1 °C, 45 °C under the design limit, and no test
+  throttled.
+- **4 hours at full load:** CPU + memory with ``stress-ng --verify`` ran with
+  no errors. ΔT was 14.6 °C, the same as the 40-minute tests.
 
 .. _thermal-00395:
 
