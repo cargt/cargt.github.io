@@ -361,8 +361,8 @@ Push and install
 
 .. code-block:: sh
 
-   scp update-st-bundle-stm32mp25-cargt-00395-02-00365.raucb root@<DUT>:/usr/local/
-   ssh root@<DUT> 'rauc install /usr/local/update-st-bundle-stm32mp25-cargt-00395-02-00365.raucb'
+   scp update-st-bundle-stm32mp25-cargt-00395-02-00365-stm32mp25-cargt-00395-02-00365.raucb root@<DUT>:/usr/local/
+   ssh root@<DUT> 'rauc install /usr/local/update-st-bundle-stm32mp25-cargt-00395-02-00365-stm32mp25-cargt-00395-02-00365.raucb'
 
 ``rauc install`` targets whichever bank is currently inactive — no need to
 specify which slot.
@@ -423,7 +423,7 @@ a script:
 
 .. code-block:: sh
 
-   curl -s -X POST -F "bundle=@update-st-bundle-stm32mp25-cargt-00395-02-00365.raucb" http://<DUT>:8080/upload
+   curl -s -X POST -F "bundle=@update-st-bundle-stm32mp25-cargt-00395-02-00365-stm32mp25-cargt-00395-02-00365.raucb" http://<DUT>:8080/upload
    curl -s http://<DUT>:8080/reboot   # after checking the install log
 
 .. warning::
@@ -441,8 +441,9 @@ shipped configuration (``config.conf.<board>`` in
 ``recipes-support/rauc-hawkbit-updater``) has placeholder
 ``hawkbit_server`` and ``auth_token`` values. Override them in your own
 layer. The ``docs/hawkbit`` directory of ``meta-st-cargt`` has a Docker
-Compose file for a test server and the REST calls to register a target and
-assign an update.
+Compose file for a test server. The REST calls to register a target and
+assign an update are in section 5 of ``docs/rauc-ota-updates.md`` in the
+same layer.
 
 Cargt uses hawkBit as test infrastructure. Both 00395 boards ran more than
 110 consecutive automatic update cycles (about 18 hours) with no failures,
