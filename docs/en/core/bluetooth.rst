@@ -11,7 +11,10 @@ Cargt SOMs with an NXP IW610 or IW612 module have Bluetooth 5 (Classic and
 Low Energy). On i.MX images, the Wi-Fi driver loads the module's combined
 Wi-Fi and Bluetooth firmware at boot. ``nxp-bluetooth.service`` then loads
 the ``btnxpuart`` Bluetooth driver, which attaches to the running firmware,
-and BlueZ (``bluetoothd``) manages the controller. Use ``bluetoothctl`` to
+and BlueZ (``bluetoothd``) manages the controller. STM32MP2 images work the
+same way, except that their ``nxp-bluetooth.service`` turns the controller
+on with ``hciconfig hci0 up`` instead of through BlueZ; see
+`Pairing on STM32MP2`_. Use ``bluetoothctl`` to
 control it, and ``btmon`` to watch the traffic between BlueZ and the
 controller.
 
@@ -239,6 +242,22 @@ shows whether it is paired, trusted and connected:
    [bluetoothctl]> info <address>
 
 ``remove <address>`` deletes the pairing.
+
+.. _Pairing on STM32MP2:
+
+**Pairing on STM32MP2.** STM32MP2 images turn the controller on at boot with
+``hciconfig hci0 up``, before BlueZ takes it over. The kernel only sets up
+LE pairing (the Security Manager) when BlueZ turns the controller on. On
+i.MX images, turning it on with ``hciconfig`` made LE pairing fail with
+``security requested but not available``, and ``bluetoothd`` logged
+``Failed to set privacy: Rejected``. The i.MX images now turn it on through
+BlueZ. If LE pairing fails this way on an STM32MP2 board, turn the
+controller off and on again from ``bluetoothctl`` before you pair:
+
+.. code-block:: text
+
+   [bluetoothctl]> power off
+   [bluetoothctl]> power on
 
 Bluetooth on Your Own Carrier
 -----------------------------
