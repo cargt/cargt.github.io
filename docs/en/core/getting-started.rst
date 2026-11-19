@@ -131,6 +131,9 @@ Flashing erases everything on the target storage.
 
               uuu -b sd_all imx-boot.tagged cargt-image-dev-imx93-cargt-00363-00365.rootfs.wic.zst
 
+           You can also write the SD card in a card reader on a Linux PC, with no
+           USB connection to the board; see :ref:`sd-card-bmaptool`.
+
         #. Power cycle the board without holding the BOOT button. If you entered
            UUU mode by changing ``bootcmd``, restore it first (see
            `NXP - Enter UUU mode using U-Boot Environment Variable Method`_).
@@ -161,16 +164,8 @@ Flashing erases everything on the target storage.
           need (see :doc:`rauc-ota-updates`). The layouts in ``opteemin/``, and the
           ``-glt*`` display variants in both directories, have a single set of
           partitions, so RAUC updates cannot work on a board flashed with them.
-        - **SD card:** write the ``.wic`` image from a Linux host. ``bmaptool``
-          uses the ``.wic.bmap`` file next to the image and only writes the blocks
-          that contain data:
-
-          .. code-block:: bash
-
-             bmaptool copy cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-02-00365.rootfs.wic.bz2 /dev/sdX
-
-          Replace ``/dev/sdX`` with the SD card device (check with ``lsblk``).
-          Everything on the card is erased.
+        - **SD card:** write the ``.wic.bz2`` image in a card reader on a Linux
+          PC with ``bmaptool``. See :ref:`sd-card-bmaptool`.
 
         A step-by-step STM32CubeProgrammer guide is planned. For the 00395 A/B
         partition layout, see :doc:`rauc-ota-updates`.
@@ -197,6 +192,96 @@ Step 6: Next Steps
 - The Cargt source code is on `GitHub <https://github.com/cargt>`__, and
   images and package feeds are on `yocto.cargt.com <https://yocto.cargt.com>`__;
   :doc:`releases` links them per ``MACHINE``.
+
+.. _sd-card-bmaptool:
+
+Flashing an SD Card with bmaptool
+---------------------------------
+
+On a Linux PC with an SD card reader, ``bmaptool`` writes a Cargt ``.wic``
+image straight to the card. The image is a whole disk: partition table,
+file systems and, on i.MX, the bootloader. The image is about 15 GB, but
+the ``.wic.bmap`` file next to it lists the blocks that hold data (about
+2.2 GB for ``cargt-image-dev``), and ``bmaptool`` writes only those.
+
+#. **Install bmaptool.** On Debian and Ubuntu the package is
+   ``bmap-tools`` (``bmaptool`` on newer releases):
+
+   .. code-block:: bash
+
+      sudo apt install bmap-tools
+
+   bmaptool 3.6, the version in Ubuntu 22.04, reads ``.wic.zst`` and
+   ``.wic.bz2`` directly. If an older version doesn't accept ``.zst``,
+   decompress the image first with ``zstd -d <image>.wic.zst`` and write the
+   ``.wic`` instead.
+
+#. **Download the image and its bmap** from the `Cargt Package Repository
+   Images`_ into one folder:
+
+   - i.MX: ``cargt-image-dev-<machine>.rootfs.wic.zst`` and
+     ``cargt-image-dev-<machine>.rootfs.wic.bmap``
+   - STM32MP2:
+     ``cargt-image-dev-cargt-openstlinux-weston-<machine>.rootfs.wic.bz2``
+     and the ``.rootfs.wic.bmap`` with the same name
+
+#. **Find the card.** Run ``lsblk`` before and after you insert it. The
+   card is the new disk, for example ``/dev/sdb`` or ``/dev/mmcblk0``. Use
+   the whole disk, not a partition (``/dev/sdb``, not ``/dev/sdb1``).
+
+   .. warning::
+
+      ``bmaptool`` overwrites the device you name, with no prompt. If you
+      name the wrong disk, you will erase it, and that could be your PC's
+      own drive. Check the size and model in ``lsblk`` before you go on.
+
+#. **Unmount the card.** Many desktops mount its partitions as soon as you
+   insert it. Unmount every one of them:
+
+   .. code-block:: bash
+
+      sudo umount /dev/sdX?*      # /dev/mmcblk0p* for a built-in reader
+
+#. **Write the image.** Replace ``/dev/sdX`` with the card:
+
+   .. code-block:: bash
+
+      sudo bmaptool copy cargt-image-dev-imx93-cargt-00363-00365.rootfs.wic.zst /dev/sdX
+
+   For an STM32MP2 image:
+
+   .. code-block:: bash
+
+      sudo bmaptool copy cargt-image-dev-cargt-openstlinux-weston-stm32mp25-cargt-00395-02-00365.rootfs.wic.bz2 /dev/sdX
+
+   ``bmaptool`` finds ``<name>.wic.bmap`` by itself when it is next to the
+   image (it reports ``discovered bmap file``). If it is somewhere else,
+   pass it with ``--bmap <file>``. Without a bmap file, add ``--nobmap``;
+   ``bmaptool`` then writes the whole 15 GB, which takes much longer.
+
+#. **Wait for it to finish.** ``bmaptool`` checks each block range against
+   the checksums in the bmap and syncs the card before it exits. Then eject
+   the card (``sudo eject /dev/sdX``) and move it to the board.
+
+Blocks that aren't in the image keep whatever was on the card before. In
+particular, a U-Boot environment saved by an earlier image survives; see
+:ref:`u-boot-environment` if a board boots with unexpected settings.
+
+On Windows or macOS, decompress the image to a ``.wic`` first and write it
+with a tool such as `balenaEtcher <https://etcher.balena.io/>`__. Cargt has
+not tested this; it writes the whole image, not just the mapped blocks.
+
+Troubleshooting:
+
+``Permission denied``
+   Run ``bmaptool`` with ``sudo``.
+``Device or resource busy``
+   A partition on the card is still mounted. Unmount it (step 4) and run
+   ``bmaptool`` again.
+``checksum mismatch for blocks range ...``
+   The bmap file is from a different build than the image. Download both
+   files from the same directory, or pass the matching file with
+   ``--bmap``. The card is only partly written, so write it again.
 
 More About Flashing with UUU
 ----------------------------
