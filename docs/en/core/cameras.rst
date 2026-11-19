@@ -63,7 +63,8 @@ The status column means:
    * - Sony IMX335 (ST B-CAMS-IMX module)
      - 5 MP (2592 x 1944), color, rolling shutter
      - STM32MP2 00395 on the 00365
-     - **Tested on hardware** (00395-02). In the published images; see
+     - **Tested on hardware** (00395-01 and 00395-02). In the published
+       images; see
        :ref:`stm32mp2-imx335`.
    * - Toshiba TC358743 HDMI to CSI-2 bridge
      - HDMI input, tested up to 1080p at 30 frames per second
@@ -468,8 +469,9 @@ IMX335 on STM32MP2 (B-CAMS-IMX)
 The published STM32MP2 00395 images support ST's B-CAMS-IMX camera module
 (Sony IMX335) with no changes. The camera is in the base device tree of
 both the 00395-01 and the 00395-02 on the 00365, so it works with every
-``fdtfile`` choice. Cargt has tested it on the 00395-02. Plug the module into the 00365's CSI_A connector (J21). The
-STM32MP25 has one CSI-2 receiver, and only CSI_A is wired to it, so a
+``fdtfile`` choice, including the panel device trees. Cargt has tested it
+on the 00395-01 and the 00395-02. Plug the module into the 00365's CSI_A
+connector (J21). The STM32MP25 has one CSI-2 receiver, and only CSI_A is wired to it, so a
 camera in CSI_B (J22) is not seen.
 
 Frames go from the CSI-2 receiver into the DCMIPP (the camera interface).
@@ -480,8 +482,14 @@ pipes, and how they are linked:
 
 .. code-block:: bash
 
-   dmesg | grep -i imx335
+   dmesg | grep -iE "imx335|stm32-csi|dcmipp"
+   cat /sys/bus/i2c/devices/*-001a/name
    media-ctl -d platform:48030000.dcmipp -p
+
+The IMX335 driver prints nothing when it probes. On a working board,
+``dmesg`` shows the CSI-2 receiver ("Probed CSI with 2 lanes") and the
+DCMIPP ("Probe done"), and the I²C ``name`` file reads ``imx335``. In the
+``media-ctl`` output, the ``imx335`` entity links to ``48020000.csi``.
 
 Capturing with libcamera
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -495,8 +503,10 @@ the DCMIPP pipeline itself:
    cam -l                          # list cameras
    cam -c 1 --capture=60           # capture 60 frames, print the frame rate
 
-On a 00395-02 on the 00365, ``cam`` captured 1024 x 600 RGB888 frames at 30
-frames per second with no dropped frames.
+On a 00395-01 and a 00395-02 on the 00365, ``cam`` captured 1024 x 600
+RGB888 frames at 30 frames per second with no dropped frames. ``cam``
+may warn about sensor controls that libcamera can't find. The warnings
+are harmless.
 
 To show the camera on the display, run GStreamer as the ``weston`` user, or
 with ``WAYLAND_DISPLAY`` and ``XDG_RUNTIME_DIR`` set for Weston's socket,
@@ -506,6 +516,10 @@ after Weston has finished starting:
 
    gst-launch-1.0 libcamerasrc ! video/x-raw,width=1024,height=600 ! \
        queue ! waylandsink
+
+The 1024 x 600 size works with any panel, because ``waylandsink`` scales
+the window to fit. When the pipeline stops, the DCMIPP may log "Frame #N
+unknown in frameInfo list". It is harmless.
 
 ST's Camera Demo
 ~~~~~~~~~~~~~~~~
