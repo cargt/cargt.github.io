@@ -37,13 +37,17 @@ Displays
 ---------
 
 The image includes device trees for the
-:doc:`10.1" LVDS and 2.8" SPI displays </core/displays>`. Select one with
+:doc:`10.1" and 7" LVDS and 2.8" SPI displays </core/displays>`. Select one with
 the ``fdtfile`` U-Boot variable, for example
 ``fw_setenv fdtfile boot/imx93-cargt-00324-00326-glt1011280800is1.dtb``:
 
 - ``imx93-cargt-00324-00326.dtb`` (no display, default)
 - ``imx93-cargt-00324-00326-glt1011280800is1.dtb``
 - ``imx93-cargt-00324-00326-glt028240320is1.dtb``
+- ``imx93-cargt-00324-00326-glt0701024600is2.dtb`` (7" 1024x600 LVDS)
+
+The image also has ``imx93-cargt-00324-00326-00375.dtb`` for the 00375
+Wi-Fi HaLow (MM6108) M.2 module.
 
 Known Issues
 -------------
