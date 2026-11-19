@@ -372,6 +372,74 @@ example's ``IMAGE_FEATURES:remove`` drops ``tools-sdk``, which installs
 leave it out if your product does not use it. Check your image's
 ``.manifest`` for the rest.
 
+.. _yocto-own-bsp:
+
+Using the Cargt Layer in Your Own Yocto Setup
+---------------------------------------------
+
+The simplest way to build a product is to keep the Cargt setup: add your
+layer next to ``meta-imx-cargt`` and build with a Cargt ``DISTRO`` and
+``MACHINE`` (see :doc:`yocto`). If you move the Cargt machines into your own
+setup instead, for example with your own ``DISTRO`` or starting from NXP's
+images, keep the pieces below. The board still boots without most of them,
+but parts of these docs stop applying, and some faults only show up later.
+
+These are from ``meta-imx-cargt`` (wrynose). For STM32MP2, the same
+pieces are in ``meta-st-cargt`` and ``meta-cargt-stm32mp-addons``.
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Keep
+     - Why
+   * - The Cargt ``u-boot-imx``, with its patches
+     - The boot loader reads the SOM's EEPROM to pick the DDR timing for
+       the SOM variant, and sets up the board's USB-C ports. NXP's
+       U-Boot doesn't know the Cargt boards. See :doc:`identify-som`.
+   * - The Cargt kernel device trees and kernel configuration fragments
+       (``cargt_common_kernel_config_mods.cfg`` and the per-board
+       ``cargt_<board>_kernel_config_mods.cfg``)
+     - The device trees describe the carrier. The fragments turn on the
+       drivers the boards need, such as the display panels and the RTCs.
+   * - ``networkmanager`` in ``DISTRO_FEATURES`` and
+       ``NETWORK_MANAGER = "networkmanager"``
+     - The Cargt distros set both. The Cargt images only install
+       NetworkManager and ``nmcli`` when the feature is on. Without it,
+       :doc:`networking` and :doc:`wifi` don't apply: static addresses,
+       Wi-Fi and access point mode are all set up through NetworkManager.
+   * - ``cargt-network-config``
+     - The ``systemd-networkd`` files that bring up CAN and leave the
+       Ethernet ports to NetworkManager. See :doc:`networking`.
+   * - ``nxp-wifi-systemd`` and ``nxp-bluetooth-systemd``
+     - They load the Wi-Fi driver first and the Bluetooth driver only once
+       Wi-Fi is up. If Bluetooth starts first, it loads its own firmware
+       and every board reports the same placeholder address,
+       ``88:88:88:88:88:88``. See :ref:`bluetooth-address`.
+   * - ``u-boot-fw-utils`` and the machine's ``fw_env.config``
+     - ``fw_printenv`` and ``fw_setenv``, used throughout these docs and by
+       software updates, need the per-machine environment location. See
+       :ref:`u-boot-environment`.
+   * - ``swupdate``, ``swupdate-progress``, ``swupdate-www`` and
+       ``grow-data-part``
+     - The per-machine ``swupdate.cfg`` and the ``/data`` partition that
+       updates are staged on. See :doc:`software-updates` and
+       :doc:`storage`.
+   * - ``board-version``
+     - Writes ``/etc/hwrevision`` (the machine name and hardware revision)
+       and ``/etc/sw-versions``. SWUpdate checks ``/etc/hwrevision``
+       against the ``hardware-compatibility`` list in the update's
+       ``sw-description`` and refuses an update that doesn't match.
+   * - The package feed settings in ``cargt-imx-base.inc``
+     - Each SoC gets its own package architecture, so machines with
+       different ``DISTRO_FEATURES`` (the i.MX 91 and i.MX 93, for example)
+       don't overwrite each other's packages in a shared feed. See
+       :doc:`package-management`.
+
+To see everything else a Cargt image installs, compare your image's
+``.manifest`` with ``cargt-image-core``'s; see `Building Your Own Image`_.
+
 Upgrading a Recipe
 ------------------
 
