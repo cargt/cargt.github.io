@@ -77,6 +77,14 @@ evaluating software before Cargt hardware is available:
 `wrynose images <https://yocto.cargt.com/images/wrynose/imx95-15x15-lpddr4x-frdm/>`__,
 `real-time images <https://yocto.cargt.com/images/wrynose-rt/imx95-15x15-lpddr4x-frdm/>`__.
 
+.. tip::
+
+   The FRDM-IMX95's debug USB-C port (a WCH CH344 USB serial chip) has no
+   Rd pull-down resistors, so it does not connect through a USB-C to USB-C
+   cable on any host. Use a USB-A to USB-C cable, or a USB-C to USB-A
+   adapter on the PC side. The Linux console is the first port, interface
+   00 (usually ``/dev/ttyACM0`` on a Linux PC), at 115200 baud.
+
 Thermal Characterization
 ------------------------
 
