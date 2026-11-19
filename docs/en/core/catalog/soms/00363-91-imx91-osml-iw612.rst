@@ -25,13 +25,69 @@
    :width: 45%
    :title: 00363-91 i.MX 91 OSM-L with IW612 - bottom
 
+Differences from the i.MX 93
+----------------------------
+
+The 00363-91 uses the same board as the :doc:`00363-93-imx93-osml-iw612`,
+with an i.MX 91 processor in place of the i.MX 93. Both use the same
+carrier boards, console (``ttyLP0`` at 115200), Wi-Fi and Bluetooth, Ethernet,
+USB, eMMC and SD card, and the same :doc:`/core/software-updates`.
+These things differ:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 22 39 39
+
+   * -
+     - i.MX 91 (00363-91)
+     - i.MX 93 (00363-93)
+   * - ``MACHINE`` on the 00365
+     - ``imx91-cargt-00363-00365``
+     - ``imx93-cargt-00363-00365``
+   * - Cores
+     - One Cortex-A55, up to 1.4 GHz
+     - One or two Cortex-A55 (depending on the part), up to 1.7 GHz
+   * - Cortex-M33
+     - None, so there are no ``-rpmsg`` device trees
+     - Yes
+   * - NPU
+     - None
+     - Ethos-U65 on the i.MX 9352 (see :doc:`/core/npu`)
+   * - Displays
+     - No MIPI DSI or LVDS. On the 00365, only the 2.8" SPI panel
+       (``imx91-cargt-00363-00365-glt028240320is1.dtb``)
+     - MIPI DSI and LVDS panels, and the 2.8" SPI panel (see
+       :doc:`/core/displays`)
+   * - Cameras
+     - No MIPI CSI-2, so the cameras in :doc:`/core/cameras` don't apply
+     - MIPI CSI-2
+   * - Graphics stack
+     - No Wayland, Weston, OpenGL, Vulkan or X11 in the image. Qt draws
+       straight to the framebuffer (``linuxfb``).
+     - Weston (Wayland)
+   * - CMA (contiguous memory for drivers)
+     - 32 MB
+     - 192 MB
+   * - Package feed architectures
+     - ``cortexa55`` and ``cortexa55-mx91`` (see
+       :doc:`/core/package-management`)
+     - ``armv8a`` and ``armv8a-mx93``
+   * - Flashing
+     - UUU 1.5.177 or later. The USB ID in serial download mode is
+       ``1fc9:0159`` (see :doc:`/core/flashing-troubleshooting`).
+     - UUU 1.4.243 or later, ``1fc9:014e``
+
+To tell the two SOMs apart, read the part number in the SOM's EEPROM. See
+:doc:`/core/identify-som`.
+
 Resources
 ---------
 
-.. Shared with 00363-93 for now - the guide itself is still i.MX 93-only
-   content; it's due to be updated to cover both i.MX 91 and i.MX 93.
-
-- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__
+- `Quick Start Guide <https://downloads.cargt.com/datasheets/qsgs/imx93%20Quick%20Start%20PDF.pdf>`__.
+  It is written for the i.MX 93. Most steps also apply to the i.MX 91: use the
+  ``imx91-cargt-00363-00365`` images and files in place of the
+  ``imx93-cargt-00363-00365`` ones.
 
 Software Releases
 ------------------
