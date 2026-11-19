@@ -228,6 +228,8 @@ Use any of the standard Cargt methods:
      sudo bmaptool copy --bmap cargt-image-rt-imx95-cargt-00414-00365.rootfs.wic.bmap \
          cargt-image-rt-imx95-cargt-00414-00365.rootfs.wic.zst /dev/sdX
 
+  See :ref:`sd-card-bmaptool` for finding the card and unmounting it first.
+
 - **Flash eMMC with UUU.** See :ref:`running-linux`.
 
 Verify the real-time kernel
