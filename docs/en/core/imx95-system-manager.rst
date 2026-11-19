@@ -197,20 +197,28 @@ NXP's `imx-sm <https://github.com/nxp-imx/imx-sm>`_ repository.
 The System Manager Console and Production Builds
 ------------------------------------------------
 
-The System Manager prints to its own debug UART, LPUART2 at 115200 baud,
-not to the Linux console. Cargt images build it with NXP's debug monitor
-in the mode that starts when a character is received on that UART
-(``SYSTEM_MANAGER_MONITOR_MODE = "2"``, the NXP default). The monitor has
+The System Manager can print to its own debug UART, LPUART2 at 115200 baud,
+not to the Linux console. NXP's debug monitor runs on that UART. It has
 commands to show information and the reset reason, and also to reset and
-power off the system. Output from the System Manager console was not
-captured for this page.
+power off the system. NXP states that the monitor changes the System
+Manager's timing and must not be used in a product.
 
-NXP states that the debug monitor changes the System Manager's timing and
-must not be used in a product. For production images, turn it off in your
-layer or distribution configuration:
+Cargt i.MX 95 images build the System Manager without the monitor
+(``SYSTEM_MANAGER_MONITOR_MODE ?= "0"`` in ``imx95-cargt.inc``). In this
+mode the System Manager also prints nothing on LPUART2. This is the right
+setting for production, so there is nothing to change.
+
+For bring-up or debugging, turn the monitor back on in ``local.conf`` or
+your layer. The System Manager then prints its banner and log on LPUART2,
+and the monitor starts when a character arrives on that UART:
 
 .. code-block:: bash
 
-   SYSTEM_MANAGER_MONITOR_MODE = "0"
+   SYSTEM_MANAGER_MONITOR_MODE = "2"
+
+Rebuild the image and flash the board again. A Linux ``reboot`` does not
+reload the System Manager: it keeps running on the Cortex-M33, so a new
+System Manager only starts after a power cycle. Set it back to ``"0"``
+before you build images for a product.
 
 See :doc:`production` for the other steps before production.
