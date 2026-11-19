@@ -308,6 +308,52 @@ Other Options
 ``weston-screenshooter --help`` lists further options, for example
 ``--format`` to save raw YUV data instead of a PNG.
 
+.. _display-text-console:
+
+Text Console on the Display
+---------------------------
+
+On i.MX, the kernel has a text console on the display (the framebuffer
+console, ``fbcon``). Weston covers it while it runs. Weston runs on virtual
+terminal 7 (``tty7``) and switches to it when it starts, and a login prompt
+runs on ``tty1``.
+
+To see the console, stop Weston. The display then shows ``tty7``, and text
+written to ``/dev/tty0`` (the terminal on screen) appears on it:
+
+.. code-block:: bash
+
+   systemctl stop weston
+   echo "Hello from tty0" > /dev/tty0
+
+To get the login prompt on the display, switch to ``tty1``:
+
+.. code-block:: bash
+
+   chvt 1
+
+The console follows the panel orientation from the device tree, so it
+reads the right way up on the 5.5" display. Start Weston again with
+``systemctl start weston``, and start your own Wayland application again
+after it. ``weston.socket`` can also start Weston again when an application
+connects; stop it with ``systemctl stop weston.socket`` to keep Weston
+off. This was checked on an i.MX 93 00363 on the 00365 with the 5.5"
+display.
+
+On STM32MP2, ST's kernel configuration turns off the framebuffer console
+and the DRM driver's framebuffer emulation. There is no text console on the
+display, and text written to ``/dev/tty0`` doesn't appear anywhere.
+``/sys/class/vtconsole`` lists only the ``dummy device``. To add one, turn
+both options on with a kernel configuration fragment for ``linux-stm32mp``
+(see :doc:`yocto-development`):
+
+.. code-block:: text
+
+   CONFIG_DRM_FBDEV_EMULATION=y
+   CONFIG_FRAMEBUFFER_CONSOLE=y
+
+Cargt has not tested this fragment on STM32MP2.
+
 Remote Desktop (RDP)
 --------------------
 

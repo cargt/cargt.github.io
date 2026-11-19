@@ -274,6 +274,118 @@ Ubuntu):
    		power-domains = <0x56>;
    	};
 
+.. _yocto-kernel-outside-bitbake:
+
+Building the Kernel and U-Boot Outside BitBake
+----------------------------------------------
+
+While you work on a driver or a device tree, building the kernel with
+``make`` is quicker than a full ``bitbake linux-imx`` each time. Use
+BitBake for anything you ship: it applies the Cargt patches and
+configuration fragments the same way every time, and it builds the
+packages and update files.
+
+The examples are for an i.MX 93 00363 on the 00365
+(``imx93-cargt-00363-00365``, wrynose). The STM32MP2 steps are the same
+with ``linux-stm32mp`` and ``u-boot-stm32mp``.
+
+The Kernel
+~~~~~~~~~~
+
+1. **Get the Cargt kernel source.** ``devtool modify`` unpacks it into
+   ``workspace/sources/linux-imx`` in your build directory, as a Git
+   repository with each Cargt patch as a commit:
+
+   .. code-block:: bash
+
+      devtool modify linux-imx
+
+   While the recipe is in the devtool workspace, ``bitbake linux-imx`` and
+   image builds use this source too, so your changes go into the next
+   image. ``devtool finish`` turns your commits into patches in your layer
+   when you are done (see `Upgrading a Recipe`_).
+
+2. **Use the cross-compiler from your Yocto build.** It is the one
+   BitBake builds the kernel with. From the build directory:
+
+   .. code-block:: bash
+
+      export PATH=$PWD/tmp/work/imx93_cargt_00363_00365-poky-linux/linux-imx/6.18.20+git/recipe-sysroot-native/usr/bin/aarch64-poky-linux:$PATH
+
+   On a PC without the Yocto build, an SDK built with ``bitbake
+   cargt-image-dev -c populate_sdk`` has the same compiler.
+
+3. **Start from the Cargt configuration.** The ``.config`` from your last
+   ``bitbake linux-imx`` already has the Cargt fragments in it. Build into
+   a separate output directory, so the source tree stays clean:
+
+   .. code-block:: bash
+
+      mkdir -p ~/kernel-out
+      cp tmp/work/imx93_cargt_00363_00365-poky-linux/linux-imx/6.18.20+git/build/.config ~/kernel-out/
+      cd workspace/sources/linux-imx
+      make O=~/kernel-out ARCH=arm64 CROSS_COMPILE=aarch64-poky-linux- olddefconfig
+      make O=~/kernel-out ARCH=arm64 CROSS_COMPILE=aarch64-poky-linux- -j$(nproc) Image dtbs modules
+
+   The first build, with all the modules, took about 11 minutes on a
+   16-core PC. After a change, ``make`` builds only what changed. Leave
+   out ``modules`` when you only change built-in code or a device tree.
+
+   The kernel is ``~/kernel-out/arch/arm64/boot/Image``, and the Cargt
+   device trees are in ``~/kernel-out/arch/arm64/boot/dts/freescale``.
+
+4. **Try it on a board.** The kernel and the device trees are files in
+   ``/boot`` on the root file system, so a test kernel can be copied
+   over the published one. Keep a copy of the original first:
+
+   .. code-block:: bash
+
+      ssh root@<board-ip> cp /boot/Image /boot/Image.orig
+      scp ~/kernel-out/arch/arm64/boot/Image root@<board-ip>:/boot/
+      scp ~/kernel-out/arch/arm64/boot/dts/freescale/imx93-cargt-00363-00365.dtb root@<board-ip>:/boot/
+
+   Your kernel has its own release string (``uname -r``), so it does not
+   load the modules in the image. If you need modules, install them into
+   a directory with ``make O=~/kernel-out ARCH=arm64
+   INSTALL_MOD_PATH=~/kernel-mods modules_install`` and copy
+   ``~/kernel-mods/lib/modules/<release>`` to ``/lib/modules`` on the
+   board.
+
+   If the new kernel doesn't boot, stop at the U-Boot prompt (see
+   :doc:`u-boot`) and boot the original once, without saving anything:
+
+   .. code-block:: text
+
+      setenv image boot/Image.orig
+      boot
+
+   The next software update replaces all of these files.
+
+U-Boot
+~~~~~~
+
+On i.MX, U-Boot alone does not boot. ``imx-mkimage`` packs it into
+``imx-boot`` with the SPL, the DDR training firmware and Arm Trusted
+Firmware, plus the EdgeLock Enclave firmware on the i.MX 9 SoCs and the
+OEI and System Manager on the i.MX 95 (see :doc:`secure-boot`). Let BitBake do the packing, and use ``devtool`` for
+the source:
+
+.. code-block:: bash
+
+   devtool modify u-boot-imx
+   # edit workspace/sources/u-boot-imx
+   bitbake imx-boot
+
+The new boot image is ``tmp/deploy/images/<machine>/imx-boot.tagged``.
+Run it from RAM over USB without writing anything, with ``uuu
+imx-boot``, or write only the boot loader with ``uuu -b emmc
+imx-boot.tagged``; see "Other UUU options" in :doc:`getting-started`.
+On the i.MX 95, use the ``uuu`` script there instead.
+
+On STM32MP2, U-Boot is packed into the FIP with TF-A and OP-TEE; see
+"How STM32MP2 Boards Boot" in :doc:`u-boot`. Use ``devtool modify u-boot-stm32mp`` and
+rebuild the FIP with BitBake in the same way.
+
 Building Your Own Image
 -----------------------
 

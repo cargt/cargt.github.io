@@ -122,6 +122,7 @@ commands and package sizes.
   core/debugging-linux
   core/debugging-applications
   core/real-time-linux
+  core/cortex-m
 
 .. toctree::
   :maxdepth: 1
