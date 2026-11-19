@@ -101,6 +101,30 @@ The status column means:
      - See above
      - i.MX 93 00363 on the 00365
      - **Tested on hardware:** depth frames at 30 fps on CSI-1 (J21).
+       See :ref:`cameras-vl53l9cx`.
+   * - onsemi AP1302 ISP with AR0144 sensor (NXP RPI-CAM-MIPI module)
+     - 1 MP (1280 x 800), color, global shutter; the AP1302 sends
+       processed YUV
+     - i.MX 93 00363 on the 00365
+     - **Tested on hardware, in review:** 1280 x 800 at 60 fps on CSI-1
+       (J21), full frames. The module plugs straight into J21. camweb
+       shows 14 of the AP1302's controls; Scene Mode is hidden because it
+       leaves the AP1302 stuck until a reboot. The AP1302 firmware is
+       onsemi's, under onsemi's license.
+   * - OmniVision OS08A20
+     - See above
+     - i.MX 93 00363 on the 00365
+     - **In development.** The i.MX 93 has one 2-lane CSI-2 receiver, so
+       the OS08A20 runs on 2 lanes. At 800 Mbit/s per lane that carries
+       1920 x 1080 RAW10 at 60 fps, but not 3840 x 2160.
+   * - Sony IMX335 (ST B-CAMS-IMX module)
+     - See above
+     - i.MX 93 00363 on the 00365
+     - **In development, known issue:** streams 2592 x 1944 at about
+       13.6 fps, but only the first row of each frame has image data.
+       This is a limit of the i.MX 93 receiver's path to the ISI with raw
+       Bayer formats; the AP1302's YUV frames arrive whole on the same
+       path.
    * - ST VL53L9CX (STEVAL-VL53L9 module)
      - See above
      - STM32MP2 00395 on the 00365
@@ -124,7 +148,7 @@ The status column means:
 The VD1943 on the i.MX 95 has three output modes, chosen while it runs:
 
 - **Color:** the sensor removes the infrared and sends a Bayer image.
-- **Infrared:** the sensor sends a grey near-infrared image (global shutter
+- **Infrared:** the sensor sends a gray near-infrared image (global shutter
   only).
 - **Color plus infrared:** the sensor sends its native RGB-IR pattern, and
   the i.MX 95's NEO ISP splits each frame into a color stream and an
@@ -436,6 +460,160 @@ receiver can join at any time. Frames received before the first key frame
 decode as a green, smeared picture.
 
 .. _stm32mp2-hdmi-input:
+
+Browser Preview with camweb
+---------------------------
+
+camweb shows a camera's live picture in a web browser, with its controls
+beside it. It is in ``cargt-image-camera-demo``, built from Cargt's camera
+layer, which isn't public yet (`contact Cargt
+<https://www.cargt.com/cargt-about/contact-us>`__ for it). camweb starts
+at boot. Open ``http://<board>:8081/``.
+
+Options go in ``/etc/default/camweb``, for example:
+
+.. code-block:: bash
+
+   CAMWEB_ARGS=--camera 1 --max-fps 30
+
+Restart it after a change with ``systemctl restart camweb``, and read its
+log with ``journalctl -u camweb -f``.
+
+.. _cameras-camweb-usb:
+
+camweb over USB to a Laptop
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``camweb-usb-gadget`` lets you plug a laptop into the board's USB-C port
+and open camweb, with no network setup on either side. It is installed in
+``cargt-image-camera-demo`` but off by default. Turn it on once:
+
+.. code-block:: bash
+
+   systemctl enable --now camweb-usb-gadget
+
+Then plug the laptop into a USB-C port and open ``http://camweb.local/``
+or ``http://192.168.7.1:8081/``.
+
+The laptop sees two things:
+
+- **A USB network adapter** (CDC NCM). Windows 10 and 11, macOS and Linux
+  have the driver built in. The board is 192.168.7.1, and the laptop gets
+  an address from the board by DHCP, with no gateway and no DNS server, so
+  the laptop's own network keeps working.
+- **A small read-only drive** named ``CAMWEB``. Open ``Open camweb.html``
+  on it: the page waits until the board answers and then opens camweb.
+
+The board answers ``camweb.local`` on the USB link only. On Windows, use
+``camweb.local`` or the IP address.
+
+**Captive-portal mode.** A board can't start a browser on the laptop, but
+it can look like a network that needs a sign-in page. Set
+``CAMWEB_USB_CAPTIVE=1`` in ``/etc/default/camweb-usb-gadget`` and restart
+the service. Windows then opens camweb in the browser by itself. Linux
+with NetworkManager should show a "sign in to network" notice, and macOS
+only does this on Wi-Fi, so use the drive there. While it is plugged in,
+the laptop may send its internet traffic to the board, which doesn't
+forward it, so leave this mode off unless you need it.
+
+Settings in ``/etc/default/camweb-usb-gadget``:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 15 55
+
+   * - Variable
+     - Default
+     - Meaning
+   * - ``CAMWEB_USB_CAPTIVE``
+     - ``0``
+     - ``1`` turns on captive-portal mode
+   * - ``CAMWEB_USB_DRIVE``
+     - ``1``
+     - ``0`` leaves out the drive
+   * - ``CAMWEB_USB_UDCS``
+     - all free
+     - USB device controllers to use, from ``ls /sys/class/udc``
+   * - ``CAMWEB_PORT``
+     - ``8081``
+     - camweb's port, for the redirect from port 80
+
+The service only uses USB device controllers that no other gadget uses,
+so it leaves adb or a serial console gadget alone. Run
+``camweb-usb-gadget status`` on the board to see the gadgets, links and
+USB speed.
+
+.. note::
+
+   This was tested on an i.MX 95 00414 on the 00365, from USB-C(A) to a
+   Windows laptop, in both modes. It has not been tested with macOS or
+   Linux laptops, or on the USB-C(C) port, which only becomes a USB device
+   when a laptop is plugged in.
+
+.. _cameras-vl53l9cx:
+
+Time-of-Flight Depth Sensor (VL53L9CX)
+--------------------------------------
+
+The ST VL53L9CX is a 3D time-of-flight sensor with 54 x 42 zones. ST's
+STEVAL-VL53L9 module connects to the 00365's J21 (CSI-1) or J22 (CSI-2)
+with a Raspberry Pi 5 style 22-pin to 22-pin camera cable. Each frame is
+the sensor's result buffer, not an image: the distance, amplitude and
+ambient light for every zone, at 30 frames per second.
+
+Before you connect it:
+
+- **Remove R25 on the STEVAL-VL53L9.** As shipped, the module expects a
+  12 MHz clock from its host on the cable, and the 00365 doesn't send one.
+  Without R25 the module uses its own 12 MHz oscillator. If R25 is still
+  fitted, the sensor never answers on I2C.
+- Fit only one VL53L9CX per carrier. J21 and J22 share its I2C address and
+  its shutdown line.
+- On the i.MX 93, only J21 works: the i.MX 93 has one CSI-2 receiver.
+
+Select its device tree with ``fw_setenv fdtfile`` and reboot (see
+`Selecting the Camera Device Tree`_):
+
+.. list-table::
+   :header-rows: 1
+   :widths: 55 15 30
+
+   * - Device tree (in ``/boot``)
+     - Connector
+     - Notes
+   * - ``imx93-cargt-00363-00365-vl53l9cx.dtb``
+     - J21
+     - Tested
+   * - ``imx95-cargt-00414-00365-headless-vl53l9cx-csi2.dtb``
+     - J22
+     - No display. Tested
+   * - ``imx95-cargt-00414-00365-vl53l9cx-csi2.dtb``
+     - J22
+     - With the 10.1" LVDS display
+   * - ``imx95-cargt-00414-00365-vl53l9cx-csi1.dtb``
+     - J21
+     - With the 10.1" LVDS display. Built, not tested
+
+The device trees are in ``meta-imx-cargt`` (wrynose). The kernel module
+and the tool that sets up the sensor (``vl53l9-ctl``) are in Cargt's
+camera layer. On the i.MX 95, the device tree must not declare a
+camera that isn't fitted: the ISI only shows its devices once every sensor
+in the device tree has been found, so a missing camera hides the
+VL53L9CX too.
+
+To see the depth map, run camweb with the ToF view. In
+``/etc/default/camweb``:
+
+.. code-block:: bash
+
+   CAMWEB_ARGS=--camera tof --size 540x420
+
+Then open ``http://<board>:8081/``. The page shows the depth map in
+color at 30 frames per second, with controls for the distance range,
+the color map and the orientation. It also shows the frame counter, the
+distance at the center, the nearest distance and the number of valid
+zones. Without camweb, ``vl53l9-web`` shows a simpler depth view on port
+8082.
 
 HDMI Input on STM32MP2 (TC358743)
 ---------------------------------
