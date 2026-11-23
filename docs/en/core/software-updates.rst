@@ -90,14 +90,18 @@ file system without ``cargt-ab-boot`` (an image built before it was added)
 is switched to outright, as before, because nothing in it would mark the
 trial boot good.
 
-To check the state, run ``cargt-ab-boot status``. It prints the partition
-that booted, ``mmcpart``, ``upgrade_available``, ``bootcount`` against
-``bootlimit``, the fallback partition (``cargt_ab_good``) and the last
-result:
+To check the state, run ``cargt-ab-boot status``. This is an i.MX 93 00363
+on the 00428 carrier, after an update to partition 2 was marked good:
 
-.. code-block:: bash
+.. code-block:: text
 
-   /usr/libexec/cargt-ab-boot status
+   root@imx93-cargt-00363-00428:~# /usr/libexec/cargt-ab-boot status
+   booted slot:       2
+   mmcpart:           2
+   upgrade_available: 0
+   bootcount:         0/3
+   fallback slot:     1
+   last result:       committed-2
 
 The last result, ``cargt_ab_status``, records the last result: ``trial-<partition>``,
 ``committed-<partition>`` or ``rolled-back-from-<partition>``.
@@ -208,9 +212,21 @@ Install the update. The end of the output:
    get_update_device=/dev/mmcblk0p2
    format_update_device=/dev/mmcblk0p2
    tar --zstd -xf /data/swupdate/update.tar.zst -C /data/swupdate/mnt
-   ******Update complete*********
-   root@imx93-cargt-00363-00428:~# fw_printenv mmcpart
+   running /data/swupdate/update-machine.sh
+   cargt_ab_bootcmd_orig=run distro_bootcmd;run bsp_bootcmd
+   cargt_ab_bootcmd=if test "${upgrade_available}" = 1; then ...
+   cargt_ab_fallback=echo "A/B: falling back to slot ${cargt_ab_good}"; ...
+   bootcmd=run cargt_ab_bootcmd
+   bootlimit=3
+   bootcount=0
+   upgrade_available=1
+   cargt_ab_good=1
+   cargt_ab_status=trial-2
    mmcpart=2
+   ******Update complete*********
+
+The last lines are the U-Boot environment that ``update.sh`` wrote for the
+trial boot (shortened here).
 
 After a reboot, the board runs from partition 2, and partition 1 is mounted
 under ``/run/media``:
