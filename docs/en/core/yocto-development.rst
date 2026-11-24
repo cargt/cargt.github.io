@@ -364,6 +364,39 @@ The Kernel
 U-Boot
 ~~~~~~
 
+There is no separate Cargt U-Boot repository. The i.MX U-Boot is NXP's
+``u-boot-imx``, plus the Cargt patches, board defconfigs and device trees
+in meta-imx-cargt, under ``recipes-bsp/u-boot/``:
+
+- ``u-boot-imx/*.patch``: board code, DDR timing and the Cargt EEPROM
+  support.
+- ``u-boot-imx/files/configs/``: one defconfig per machine, named after
+  it, for example ``imx91-cargt-00363-00365_defconfig``.
+- ``u-boot-imx/files/dts/``: the board device trees.
+
+Use this source, not an NXP or third-party U-Boot tree. The DDR settings
+for Cargt SOMs are in the Cargt patches, so U-Boot without them doesn't
+train the DDR and the board doesn't boot.
+
+``devtool modify u-boot-imx`` gives you the source with the patches as
+commits. The recipe copies the defconfigs and device trees into the tree
+when it configures it, so run ``bitbake u-boot-imx`` once before you look
+for them there.
+
+To check that your changes compile, you can run ``make`` in that tree with
+the cross-compiler from the kernel steps above:
+
+.. code-block:: bash
+
+   cd workspace/sources/u-boot-imx
+   make O=~/uboot-out CROSS_COMPILE=aarch64-poky-linux- imx91-cargt-00363-00365_defconfig
+   make O=~/uboot-out CROSS_COMPILE=aarch64-poky-linux- -j$(nproc)
+
+This builds U-Boot's host tools as well, so the PC needs the usual U-Boot
+build packages, including ``uuid-dev``, ``libgnutls28-dev``,
+``libssl-dev``, ``bison`` and ``flex`` on Ubuntu. The ``u-boot.bin`` it
+makes doesn't boot on its own, as the next paragraph explains.
+
 On i.MX, U-Boot alone does not boot. ``imx-mkimage`` packs it into
 ``imx-boot`` with the SPL, the DDR training firmware and Arm Trusted
 Firmware, plus the EdgeLock Enclave firmware on the i.MX 9 SoCs and the
