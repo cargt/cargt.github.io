@@ -149,7 +149,7 @@ on the 00428 carrier, after an update to partition 2 was marked good:
    fallback slot:     1
    last result:       committed-2
 
-The last result, ``cargt_ab_status``, records the last result: ``trial-<partition>``,
+``cargt_ab_status`` is one of ``trial-<partition>``,
 ``committed-<partition>`` or ``rolled-back-from-<partition>``.
 
 To add your own checks before a trial boot is marked good, put executables
@@ -165,7 +165,7 @@ a new ``OnBootSec=``.
    on trial (``upgrade_available=1``). Otherwise it would overwrite the
    partition the board falls back to. Wait until the boot is marked good.
 
-Two limits remain:
+Four limits remain:
 
 - **The environment has one copy.** A power cut while it is being written
   (at the end of an update, once per trial boot, and when the boot is
@@ -181,6 +181,11 @@ Two limits remain:
   environment, the board keeps running the saved commands, not the new
   U-Boot's defaults. That's true of every variable in a kept environment,
   not only these. Clear the environment when you flash a new U-Boot.
+- **root= must name the partition.** ``update.sh`` and ``cargt-ab-boot``
+  find the running partition from a ``root=/dev/<disk>p1`` or ``p2``
+  kernel argument, which is what every Cargt i.MX U-Boot passes. A board
+  that boots with ``root=PARTUUID=`` or similar refuses updates, and it
+  would never mark a trial boot good. Support for those forms is planned.
 
 Three more limits apply to the published i.MX updates and to the ``-swu``
 recipes they come from:
