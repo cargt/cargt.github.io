@@ -194,6 +194,11 @@ Because the scan runs first, a microSD card or USB stick that carries a
 ``boot.scr`` or an ``extlinux.conf`` takes over the boot. Remove it if a
 board boots something unexpected.
 
+After the first software update, ``bootcmd`` is ``run cargt_ab_bootcmd``.
+That script counts trial boots of the new root partition, then runs the
+original command, which it keeps in ``cargt_ab_bootcmd_orig``. See
+:ref:`swupdate-rollback`.
+
 During the scan U-Boot prints messages such as these; they are normal:
 
 .. code-block:: text
@@ -220,6 +225,10 @@ software version after an update (see :doc:`software-updates`):
 
    setenv mmcpart 1
    boot
+
+If an update is still on trial (``upgrade_available=1``), also run
+``setenv upgrade_available 0`` first. Otherwise the trial boot counter
+saves the environment, and Linux marks partition 1 as the good one.
 
 The kernel command line is built by ``mmcargs``. To add kernel arguments
 for one boot:

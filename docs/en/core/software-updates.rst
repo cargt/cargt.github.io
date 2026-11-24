@@ -41,7 +41,8 @@ hardware revision, then writes the root file system archive to
    ``1``) as ext4.
 3. Extracts the archive into it.
 4. Runs ``update-machine.sh``.
-5. Runs ``fw_setenv mmcpart <new partition>`` so U-Boot boots it next.
+5. Sets ``mmcpart`` to the new partition and starts a trial boot of it
+   (see :ref:`swupdate-rollback`), in one write to the U-Boot environment.
 
 On the i.MX 93 00363 on the 00428 carrier, ``update-machine.sh`` moves
 ``fdtfile`` from the device tree without a display to the 5.5" display's
@@ -49,13 +50,142 @@ device tree, if the board was still using the former.
 
 The new root file system runs after the next reboot. The script logs each
 step to ``/data/swupdate/log.txt``. If any step fails, the update is
-reported as failed and ``mmcpart`` is not changed.
+reported as failed and the U-Boot environment is not changed.
+
+.. _swupdate-rollback:
+
+Trial Boot and Automatic Rollback
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A new root file system runs on trial until it has booted properly. If it
+doesn't get there, the board goes back to the previous root partition by
+itself, without a console.
+
+- **U-Boot counts the trial boots.** ``update.sh`` sets
+  ``upgrade_available=1``, ``bootcount=0`` and ``bootlimit=3``, and points
+  ``bootcmd`` at a short script, ``cargt_ab_bootcmd``. On each boot with
+  ``upgrade_available=1`` the script adds 1 to ``bootcount``. Once
+  ``bootcount`` passes ``bootlimit``, it switches ``mmcpart`` back to the
+  previous partition (``cargt_ab_good``) and boots that. If the new
+  partition has no kernel or device tree, it switches back at once. The
+  variable names are the ones U-Boot's own boot counter uses.
+- **Linux marks a good boot.** ``cargt-ab-commit.service`` runs after
+  ``multi-user.target``. If ``swupdate.service`` is active, it sets
+  ``upgrade_available=0`` and ``bootcount=0``. From then on, the new
+  partition is the one the board keeps.
+- **A trial boot that doesn't finish is restarted.**
+  ``cargt-ab-deadline.timer`` reboots a trial boot that isn't marked good
+  10 minutes after boot, so a hung boot counts as a failed one. A kernel
+  panic reboots after 10 s, and the watchdog (``RuntimeWatchdogSec=30s``)
+  resets a board whose kernel or systemd stops. Each of these counts as a
+  failed trial boot.
+
+With ``bootlimit=3``, a new root file system that never boots properly
+falls back on the fourth boot. Outside a trial, U-Boot never writes its
+environment.
+
+If the environment has no ``script`` variable, ``update.sh`` also sets
+``script=boot.scr``. Without it, U-Boot looks for the boot script under the
+name in ``bootfile``, which a network boot sets and ``saveenv`` keeps. The
+board then fails to run that file as a script and stops at the U-Boot
+prompt on every boot. The serial console shows:
+
+.. code-block:: text
+
+   Running BSP bootcmd ...
+   71919 bytes read in 2 ms (34.3 MiB/s)
+   Running bootscript from mmc ...
+   ## Executing script at 90400000
+   Bad FIT image format
+   u-boot=>
+
+To recover such a board at the U-Boot prompt, clear ``bootfile`` and set
+``script``:
+
+.. code-block:: text
+
+   setenv bootfile
+   setenv script boot.scr
+   saveenv
+   boot
+
+This was tested on each of these boards. Each one recovered by itself from
+a root file system with no init (a kernel panic), from one that hung before
+``multi-user.target``, and from one with no kernel. Each also marked a good
+update as good:
+
+.. list-table::
+   :header-rows: 1
+
+   * - SOM
+     - Carrier
+   * - i.MX 93 00363
+     - 00428 and 00365
+   * - i.MX 91 00363
+     - 00365
+   * - i.MX 93 00359
+     - 00406
+   * - i.MX 95 00414
+     - 00365
+   * - i.MX 8M Plus 00377
+     - 00365
+
+The script lives in the U-Boot environment, so it works with the U-Boot
+already on a board: SWUpdate updates only the root file system. A root
+file system without ``cargt-ab-boot`` (an image built before it was added)
+is switched to outright, as before, because nothing in it would mark the
+trial boot good.
+
+To check the state, run ``cargt-ab-boot status``. This is an i.MX 93 00363
+on the 00428 carrier, after an update to partition 2 was marked good:
+
+.. code-block:: text
+
+   root@imx93-cargt-00363-00428:~# /usr/libexec/cargt-ab-boot status
+   booted slot:       2
+   mmcpart:           2
+   upgrade_available: 0
+   bootcount:         0/3
+   fallback slot:     1
+   last result:       committed-2
+
+``cargt_ab_status`` is one of ``trial-<partition>``,
+``committed-<partition>`` or ``rolled-back-from-<partition>``.
+
+To add your own checks before a trial boot is marked good, put executables
+in ``/etc/cargt-ab-boot/commit.d/``. A check that exits non-zero leaves the
+trial uncommitted. Units that must be active are listed in
+``CARGT_AB_REQUIRED_UNITS`` in ``/etc/default/cargt-ab-boot``. To change
+the 10-minute deadline, add a drop-in for ``cargt-ab-deadline.timer`` with
+a new ``OnBootSec=``.
 
 .. note::
 
-   This scheme does not roll back automatically. If the new root
-   file system boots but does not work, set ``mmcpart`` back to the
-   previous partition from the U-Boot prompt or with ``fw_setenv``.
+   ``update.sh`` refuses to install while the running partition is still
+   on trial (``upgrade_available=1``). Otherwise it would overwrite the
+   partition the board falls back to. Wait until the boot is marked good.
+
+Four limits remain:
+
+- **The environment has one copy.** A power cut while it is being written
+  (at the end of an update, once per trial boot, and when the boot is
+  marked good) can corrupt it. U-Boot then starts from its built-in
+  defaults, which boot partition 1 with no trial. Outside an update the
+  environment is not written.
+- **U-Boot doesn't start the watchdog.** A hang after U-Boot and before
+  systemd starts (a kernel that stops without a panic) waits for a power
+  cycle. The power cycle still counts as a failed trial boot.
+- **A new U-Boot doesn't replace a saved environment.** ``update.sh``
+  saves the board's original boot command once, in
+  ``cargt_ab_bootcmd_orig``. If you flash a new U-Boot but keep the
+  environment, the board keeps running the saved commands, not the new
+  U-Boot's defaults. That's true of every variable in a kept environment,
+  not only these. Clear the environment when you flash a new U-Boot.
+- **root= must name the partition.** ``update.sh`` and ``cargt-ab-boot``
+  find the running partition from a ``root=/dev/<disk>p1`` or ``p2``
+  kernel argument, which is what every Cargt i.MX U-Boot passes. A board
+  that boots with ``root=PARTUUID=`` or similar refuses updates, and it
+  would never mark a trial boot good. Support for those forms is planned.
 
 Three more limits apply to the published i.MX updates and to the ``-swu``
 recipes they come from:
@@ -139,9 +269,21 @@ Install the update. The end of the output:
    get_update_device=/dev/mmcblk0p2
    format_update_device=/dev/mmcblk0p2
    tar --zstd -xf /data/swupdate/update.tar.zst -C /data/swupdate/mnt
-   ******Update complete*********
-   root@imx93-cargt-00363-00428:~# fw_printenv mmcpart
+   running /data/swupdate/update-machine.sh
+   cargt_ab_bootcmd_orig=run distro_bootcmd;run bsp_bootcmd
+   cargt_ab_bootcmd=if test "${upgrade_available}" = 1; then ...
+   cargt_ab_fallback=echo "A/B: falling back to slot ${cargt_ab_good}"; ...
+   bootcmd=run cargt_ab_bootcmd
+   bootlimit=3
+   bootcount=0
+   upgrade_available=1
+   cargt_ab_good=1
+   cargt_ab_status=trial-2
    mmcpart=2
+   ******Update complete*********
+
+The last lines are the U-Boot environment that ``update.sh`` wrote for the
+trial boot (shortened here).
 
 After a reboot, the board runs from partition 2, and partition 1 is mounted
 under ``/run/media``:
@@ -155,10 +297,12 @@ under ``/run/media``:
    |-mmcblk0p2  179:2    0    6G  0 part /
    `-mmcblk0p3  179:3    0    2G  0 part /data
 
-To go back to the previous root file system, select it and reboot:
+To go back to the previous root file system by hand, select it and reboot.
+Clearing ``upgrade_available`` too ends a trial that is still running:
 
 .. code-block:: bash
 
+   fw_setenv upgrade_available 0
    fw_setenv mmcpart 1
    reboot
 
