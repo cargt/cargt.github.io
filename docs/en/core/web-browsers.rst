@@ -634,8 +634,7 @@ in its systemd unit:
    Environment=WEBKIT_FORCE_VBLANK_TIMER=1
 
 With it, 0 of 8 test boots hung, compared with 14 of 28 without it.
-Cargt's WebKit kiosk recipe for STM32MP2 sets it; that recipe is not yet
-merged.
+On wrynose, the Cargt ``cargt-webkit-kiosk`` recipe for STM32MP2 sets it.
 
 Caveats
 -------
