@@ -364,6 +364,63 @@ The Kernel
 U-Boot
 ~~~~~~
 
+There is no separate Cargt U-Boot repository. The i.MX U-Boot is NXP's
+``u-boot-imx``, plus the Cargt patches, board defconfigs and device trees
+in meta-imx-cargt, under ``recipes-bsp/u-boot/``:
+
+- ``u-boot-imx/*.patch``: board code, DDR timing and the Cargt EEPROM
+  support.
+- ``u-boot-imx/files/configs/``: one defconfig per machine, named after
+  it, for example ``imx91-cargt-00363-00365_defconfig``.
+- ``u-boot-imx/files/dts/``: the board device trees.
+
+Use this source, not an NXP or third-party U-Boot tree. The DDR settings
+for Cargt SOMs are in the Cargt patches, so U-Boot without them doesn't
+train the DDR and the board doesn't boot.
+
+``devtool modify u-boot-imx`` gives you the source with the patches as
+commits. With the wrynose BSP, ``bitbake u-boot-imx`` then fails in
+``do_configure`` with ``cp: cannot stat '.../<defconfig>/.config'``. The
+U-Boot class names its build directory ``<defconfig>-sd``, but devtool
+copies the ``.config`` from ``<defconfig>``. Turn off devtool's
+``menuconfig`` support for U-Boot in your build directory's
+``conf/local.conf`` before you use ``devtool``:
+
+.. code-block:: bash
+
+   KCONFIG_CONFIG_ENABLE_MENUCONFIG:pn-u-boot-imx = "false"
+
+A fix in meta-imx-cargt that makes this line unnecessary is in review.
+Once it is in your layer, you can leave the line out.
+
+The recipe copies the defconfigs and device trees into the source tree
+each time it configures it, so run ``bitbake u-boot-imx`` once before you
+look for them there. Git shows them as untracked files. Make lasting changes
+to them in ``recipes-bsp/u-boot/u-boot-imx/files/`` in your layer, because
+the next configure overwrites the copies in the source tree.
+
+To check that your changes compile, you can run ``make`` in that tree
+with the compiler and libraries from the ``u-boot-imx`` recipe. From the
+build directory:
+
+.. code-block:: bash
+
+   W=$PWD/tmp/work/imx91_cargt_00363_00365-poky-linux/u-boot-imx/2026.04
+   export PATH=$W/recipe-sysroot-native/usr/bin/aarch64-poky-linux:$PATH
+   cd workspace/sources/u-boot-imx
+   make O=~/uboot-out CROSS_COMPILE=aarch64-poky-linux- \
+       CC="aarch64-poky-linux-gcc --sysroot=$W/recipe-sysroot" \
+       imx91-cargt-00363-00365_defconfig
+   make O=~/uboot-out CROSS_COMPILE=aarch64-poky-linux- \
+       CC="aarch64-poky-linux-gcc --sysroot=$W/recipe-sysroot" -j$(nproc)
+
+Without ``--sysroot``, the link stops with ``cannot find -lgcc``. On a
+16-core PC the build takes under 10 seconds. It also builds U-Boot's host
+tools, so the PC needs the usual U-Boot build packages, including
+``uuid-dev``, ``libgnutls28-dev``, ``libssl-dev``, ``bison`` and ``flex``
+on Ubuntu. The ``u-boot.bin`` and ``spl/u-boot-spl.bin`` it makes don't
+boot on their own, as the next paragraph explains.
+
 On i.MX, U-Boot alone does not boot. ``imx-mkimage`` packs it into
 ``imx-boot`` with the SPL, the DDR training firmware and Arm Trusted
 Firmware, plus the EdgeLock Enclave firmware on the i.MX 9 SoCs and the
@@ -372,7 +429,7 @@ the source:
 
 .. code-block:: bash
 
-   devtool modify u-boot-imx
+   devtool modify u-boot-imx          # with the local.conf line above
    # edit workspace/sources/u-boot-imx
    bitbake imx-boot
 
