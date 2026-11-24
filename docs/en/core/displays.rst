@@ -354,6 +354,89 @@ both options on with a kernel configuration fragment for ``linux-stm32mp``
 
 Cargt has not tested this fragment on STM32MP2.
 
+.. _display-usb-gud:
+
+USB Displays (GUD)
+------------------
+
+A USB display can be added with the Generic USB Display (GUD) protocol. The
+display is a small board with an LCD that runs GUD gadget firmware, for
+example a Raspberry Pi Zero, an RP2040 or an STM32 development board (see
+the `GUD project <https://github.com/notro/gud/wiki>`__). Linux's ``gud``
+driver shows it as an extra DRM card, such as ``card1``, with a ``USB-1``
+connector. Touch on the display works through the normal HID driver.
+
+On wrynose, ``cargt-image-dev`` installs the ``gud`` module on i.MX and
+STM32MP2. The kernel builds it for every machine, so other images can add
+``kernel-module-gud`` to ``IMAGE_INSTALL``. The module loads on its own when
+a display is plugged in. scarthgap images don't have it.
+
+Check that the display was found:
+
+.. code-block:: bash
+
+   lsmod | grep gud
+   cat /sys/class/drm/card*-USB-*/status     # connected
+   cat /sys/class/drm/card*-USB-*/modes      # for example 800x480
+
+``gud`` binds only to the USB IDs in its own table (``16d0:10a9`` and
+``1d50:614d`` in kernel 6.18). A display with another ID enumerates and its
+touch works, but no DRM card appears. Add its ID by hand until the next
+reboot, for example:
+
+.. code-block:: bash
+
+   echo "1209 4fb3 ff" > /sys/bus/usb/drivers/gud/new_id
+
+Tested displays:
+
+.. list-table::
+   :class: wrap-cells
+   :header-rows: 1
+   :widths: 35 40 25
+
+   * - Host
+     - Display
+     - Result
+   * - i.MX 93 00363 on the 00365
+     - 800x480, USB high speed; 720x1280, USB high speed; 240x240
+       (STM32H573I-DK), USB full speed
+     - Works. The 720x1280 display needed ``new_id``.
+   * - i.MX 91 00363 on the 00365
+     - 240x240, USB full speed, on the carrier's USB-C port
+     - Works
+   * - STM32MP2 00395-01 on the 00365
+     - 1024x600, USB high speed; 800x480 (STM32H747I-DISCO), on a USB 2.0
+       hub
+     - Works
+
+The frame rate depends mostly on the display board, not the host. Content
+that compresses well, such as a user interface, ran at 50 to 130 frames per
+second on an 800x480 display. Content that doesn't compress, such as video
+or noise, is limited by USB to about 25 to 28 MB/s, which is about 30
+frames per second at 800x480. A full-speed display (12 Mbit/s) manages
+under 10 such frames per second at 240x240. Use RGB565 buffers where you
+can: XRGB8888 uses more CPU and lowers the frame rate.
+
+Weston on a USB Display
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- **STM32MP2:** on a board with no panel, Weston uses the USB display as its
+  output on its own, with the GL renderer.
+- **i.MX 93:** Weston starts on ``card0`` with the G2D renderer, which can't
+  drive a USB display, so the USB display stays blank. To run Weston on
+  the USB display instead, with the pixman renderer and RGB565 output:
+
+  .. code-block:: bash
+
+     fw_setenv cargt_weston_display gud
+     reboot
+
+  The setting is in the U-Boot environment, so it survives software
+  updates. A panel on the 2.8" SPI connector takes precedence over it.
+- **i.MX 91:** the images have no Weston. Draw on the USB display's DRM
+  card directly.
+
 Remote Desktop (RDP)
 --------------------
 
@@ -457,3 +540,73 @@ the local end of the tunnel:
 
    ssh -N -L 13389:localhost:3389 root@<board-ip>
    xfreerdp /v:localhost:13389
+
+.. _display-vnc:
+
+Remote View over VNC
+--------------------
+
+Weston can also mirror the panel to a VNC viewer, with mouse and keyboard
+input, while it keeps driving the panel. Unlike RDP, the VNC server checks
+a login: the user Weston runs as, with that user's password, over TLS. Use
+it to see and use a board's display from a computer, for example a board in
+a test rack.
+
+VNC is in wrynose development images only, and only when the build asks
+for it. It opens port 5900 on every network interface. Set this in your
+``local.conf`` and build ``cargt-image-dev``:
+
+.. code-block:: text
+
+   CARGT_WESTON_VNC = "1"
+
+The login:
+
+- **i.MX:** ``root``. **STM32MP2:** ``weston``, because Weston runs as that
+  user there.
+- The user needs a password. Development images have an empty one, which
+  VNC refuses, so set it with ``passwd`` (or ``passwd weston``).
+- After 5 failed logins in 15 minutes, VNC refuses that user for 10
+  minutes. The lockout applies to VNC only, not to the console or SSH, and
+  clears on reboot.
+- ``CARGT_WESTON_VNC_EMPTY_PASSWORD = "1"`` lets the empty password log in.
+  Use it only on a closed network: any password then works, and the lockout
+  never triggers.
+
+Each board makes its own self-signed TLS key pair on first boot, in
+``/data/weston-vnc`` on i.MX and ``/usr/local/weston-vnc`` on STM32MP2.
+Both survive software updates. The certificate's SHA-256 fingerprint is
+logged at every boot, so you can compare it with what the viewer shows:
+
+.. code-block:: bash
+
+   journalctl -b | grep cargt-weston-vnc
+   # cargt-weston-vnc: mirroring DSI-1 on port 5900, certificate sha256 Fingerprint=...
+
+The viewer must support VeNCrypt with X509Plain, the only security type
+offered. TigerVNC's ``vncviewer`` does; noVNC doesn't. Connect to the
+board's IP address and accept the certificate:
+
+.. code-block:: bash
+
+   vncviewer <board-ip>
+
+The VNC output is off until a viewer connects, so an idle board uses
+almost no CPU. While a viewer is connected, Weston sends at most 12 frames
+per second. On an STM32MP2, an animated screen with a viewer connected
+used most of one CPU core for encoding.
+
+Other settings, in the same directory as the key pair:
+
+- Turn VNC off: create a file named ``disabled`` and restart Weston (on
+  STM32MP2, reboot).
+- Mirror a display other than the first connected one: write its connector
+  name, such as ``HDMI-A-1``, to a file named ``output``.
+
+With VNC loaded, ``weston-screenshooter`` needs ``--output=<name>``, for
+example ``--output=DSI-1``. Without it, it waits for the VNC output, which
+is off while no viewer is connected.
+
+This was tested on an i.MX 93 00363 on the 00428 with the 5.5" display
+(G2D renderer) and an STM32MP2 00395-01 on the 00365 with the 5.5" display
+(GL renderer). The i.MX 91 and i.MX 95 haven't been tested.

@@ -607,6 +607,36 @@ small launcher of its own on the same API.
 debugging a page on the board. On DRM, ``cog`` crashes when it is stopped
 with ``SIGTERM``; a product launcher should exit cleanly.
 
+.. _webkit-stm32mp2-dsi-hang:
+
+Known Issue: Hang at Start on the STM32MP2 DSI Panel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On an STM32MP2 00395-01 on the 00365 with the 5.5" MIPI-DSI display
+(wrynose, kernel 6.18), ``cog`` under Weston can hang the board when Weston
+and ``cog`` start together at boot. About half of such boots hung about
+0.7 s after ``cog`` started, with nothing on the console. The watchdog then
+reset the board, and the same thing could happen on the next boot.
+
+The cause: when ``cog`` starts, WebKit asks the display driver for the
+vertical blanking count. If that lands while Weston is still turning the
+DSI panel on, the CPU stalls reading an LTDC display controller register
+(in ``ltdc_crtc_get_scanout_position``). Cargt has reported this to ST
+with a candidate driver fix.
+
+The workaround is to make WebKit pace its frames with a timer, so it never
+touches the display device. Set this in ``cog``'s environment, for example
+in its systemd unit:
+
+.. code-block:: ini
+
+   [Service]
+   Environment=WEBKIT_FORCE_VBLANK_TIMER=1
+
+With it, 0 of 8 test boots hung, compared with 14 of 28 without it.
+Cargt's WebKit kiosk recipe for STM32MP2 sets it; that recipe is not yet
+merged.
+
 Caveats
 -------
 
