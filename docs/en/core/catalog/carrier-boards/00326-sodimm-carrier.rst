@@ -93,5 +93,5 @@ its TX line while the board is off. If the board misbehaves at power-up
 with the adapter attached, connect the adapter after the board is
 powered.
 
-The cable pull-down has not yet been tested on a board. It is based on
-the schematic review.
+A console cable with the 4.7 kΩ pull-down has been tested on the bench:
+the 00324 on the 00326 boots from eMMC with the cable attached.
