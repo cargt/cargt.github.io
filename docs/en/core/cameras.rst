@@ -55,11 +55,13 @@ The status column means:
    * - ST VD56G3
      - 1.5 MP (1124 x 1364), monochrome, global shutter
      - STM32MP2 00395 on the 00365
-     - **Tested on hardware** (00395-02)
+     - **Tested on hardware** (00395-02, scarthgap). On wrynose there are
+       no frames yet; see :ref:`cameras-known-issues`.
    * - ST VD5943
      - 5.1 MP (2560 x 1984), monochrome
      - STM32MP2 00395 on the 00365
-     - **Tested on hardware** (00395-02)
+     - **Tested on hardware** (00395-02, scarthgap). On wrynose there are
+       no frames yet; see :ref:`cameras-known-issues`.
    * - Sony IMX335 (ST B-CAMS-IMX module)
      - 5 MP (2592 x 1944), color, rolling shutter
      - STM32MP2 00395 on the 00365
@@ -80,7 +82,12 @@ The status column means:
    * - ST VD66GY
      - 1.5 MP (1124 x 1364), color, global shutter
      - STM32MP2 00395 on the 00365
-     - **In development**
+     - **Tested on hardware** (00395-01, wrynose): 1120 x 1360 NV12 at
+       60 fps through the ISP, with no dropped frames. It uses the
+       kernel's own ``vd56g3`` driver and the VD66GY tuning file that
+       comes with ST's libcamera 0.7. The published wrynose image doesn't
+       have it yet: it needs ``CONFIG_VIDEO_VD56G3=m`` in the kernel and a
+       device tree overlay for the camera. Image tuning is not calibrated.
    * - ST VD56G3 and VD66GY
      - See above
      - i.MX 95 00414 on the 00365
@@ -123,10 +130,8 @@ The status column means:
      - See above
      - i.MX 93 00363 on the 00365
      - **In development, known issue:** streams 2592 x 1944 at about
-       13.6 fps, but only the first row of each frame has image data.
-       This is a limit of the i.MX 93 receiver's path to the ISI with raw
-       Bayer formats; the AP1302's YUV frames arrive whole on the same
-       path.
+       13.6 fps, but only the first row of each frame has image data. See
+       :ref:`cameras-known-issues`.
    * - ST VL53L9CX (STEVAL-VL53L9 module)
      - See above
      - STM32MP2 00395 on the 00365
@@ -177,6 +182,29 @@ The OS08A20 uses the ``ox05b1s`` kernel driver. On the i.MX 95, frames
 from the camera pass through the image sensing interface (ISI) and, for
 processed images, the NEO image signal processor (ISP), which handles
 demosaicing, auto exposure and white balance.
+
+.. _cameras-known-issues:
+
+Known Issues
+~~~~~~~~~~~~
+
+- **Monochrome sensors on STM32MP2 wrynose images give no frames.** The
+  wrynose kernel's ``stm32-csi`` receiver driver has no entries for the
+  monochrome formats (``MEDIA_BUS_FMT_Y8_1X8`` and ``Y10_1X10``). With a
+  VD56G3 or VD5943, the kernel logs ``stm32-csi: Unsupported code 8193,
+  use default``, and the receiver drops every frame. Color sensors, such
+  as the IMX335 and the VD66GY, are not affected. Cargt has a kernel
+  patch that adds the formats. It is not in a Cargt layer yet.
+- **Raw sensors on the i.MX 93 give only one row per frame.** With an
+  IMX335, frames arrive at the right size and rate with no receiver
+  errors, but only row 0 of each frame has image data. The likely cause
+  is in the ``dwc-mipi-csi2`` driver: it sets up the receiver's line
+  events (in its IPI interface to the ISI) only for its test pattern
+  generator, not for a sensor. A sensor that sends no line-start
+  packets then gives the ISI one line per frame. The AR0144 camera
+  works because its AP1302 ISP sends processed YUV with line packets.
+  Cargt has a test patch for the driver. It hasn't been run on a board
+  yet.
 
 Selecting the Camera Device Tree
 --------------------------------
