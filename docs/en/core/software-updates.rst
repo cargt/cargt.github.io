@@ -84,6 +84,33 @@ With ``bootlimit=3``, a new root file system that never boots properly
 falls back on the fourth boot. Outside a trial, U-Boot never writes its
 environment.
 
+If the environment has no ``script`` variable, ``update.sh`` also sets
+``script=boot.scr``. Without it, U-Boot looks for the boot script under the
+name in ``bootfile``, which a network boot sets and ``saveenv`` keeps. The
+board then fails to run that file as a script and stops at the U-Boot
+prompt on every boot.
+
+This was tested on each of these boards. Each one recovered by itself from
+a root file system with no init (a kernel panic), from one that hung before
+``multi-user.target``, and from one with no kernel. Each also marked a good
+update as good:
+
+.. list-table::
+   :header-rows: 1
+
+   * - SOM
+     - Carrier
+   * - i.MX 93 00363
+     - 00428 and 00365
+   * - i.MX 91 00363
+     - 00365
+   * - i.MX 93 00359
+     - 00406
+   * - i.MX 95 00414
+     - 00365
+   * - i.MX 8M Plus 00377
+     - 00365
+
 The script lives in the U-Boot environment, so it works with the U-Boot
 already on a board: SWUpdate updates only the root file system. A root
 file system without ``cargt-ab-boot`` (an image built before it was added)
