@@ -132,6 +132,15 @@ The status column means:
      - **In development, known issue:** streams 2592 x 1944 at about
        13.6 fps, but only the first row of each frame has image data. See
        :ref:`cameras-known-issues`.
+   * - Sony IMX335 (ST B-CAMS-IMX module)
+     - See above
+     - i.MX 95 00414 on the 00365
+     - **In development, known issue:** with a test device tree that isn't
+       in the image yet, it is detected on CSI-2 (J22) and listed by
+       libcamera, but doesn't stream. The i.MX 95 CSI-2 receiver driver
+       expects the clock lane to go idle when streaming starts, and the
+       IMX335 keeps its clock running, so the start fails. The fix is in
+       the receiver driver or the IMX335's clock setting.
    * - ST VL53L9CX (STEVAL-VL53L9 module)
      - See above
      - STM32MP2 00395 on the 00365
