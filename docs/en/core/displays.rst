@@ -424,9 +424,8 @@ Weston on a USB Display
 - **STM32MP2:** on a board with no panel, Weston uses the USB display as its
   output on its own, with the GL renderer.
 - **i.MX 93:** Weston starts on ``card0`` with the G2D renderer, which can't
-  drive a USB display, so the USB display stays blank. A switch is coming
-  (not yet merged) that runs Weston on the USB display with the pixman
-  renderer and RGB565 output:
+  drive a USB display, so the USB display stays blank. To run Weston on
+  the USB display instead, with the pixman renderer and RGB565 output:
 
   .. code-block:: bash
 
