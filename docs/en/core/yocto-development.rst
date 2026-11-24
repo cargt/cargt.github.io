@@ -390,6 +390,9 @@ copies the ``.config`` from ``<defconfig>``. Turn off devtool's
 
    KCONFIG_CONFIG_ENABLE_MENUCONFIG:pn-u-boot-imx = "false"
 
+A fix in meta-imx-cargt that makes this line unnecessary is in review.
+Once it is in your layer, you can leave the line out.
+
 The recipe copies the defconfigs and device trees into the source tree
 each time it configures it, so run ``bitbake u-boot-imx`` once before you
 look for them there. Git shows them as untracked files. Make lasting changes
