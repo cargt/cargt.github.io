@@ -88,7 +88,26 @@ If the environment has no ``script`` variable, ``update.sh`` also sets
 ``script=boot.scr``. Without it, U-Boot looks for the boot script under the
 name in ``bootfile``, which a network boot sets and ``saveenv`` keeps. The
 board then fails to run that file as a script and stops at the U-Boot
-prompt on every boot.
+prompt on every boot. The serial console shows:
+
+.. code-block:: text
+
+   Running BSP bootcmd ...
+   71919 bytes read in 2 ms (34.3 MiB/s)
+   Running bootscript from mmc ...
+   ## Executing script at 90400000
+   Bad FIT image format
+   u-boot=>
+
+To recover such a board at the U-Boot prompt, clear ``bootfile`` and set
+``script``:
+
+.. code-block:: text
+
+   setenv bootfile
+   setenv script boot.scr
+   saveenv
+   boot
 
 This was tested on each of these boards. Each one recovered by itself from
 a root file system with no init (a kernel panic), from one that hung before
@@ -156,6 +175,12 @@ Two limits remain:
 - **U-Boot doesn't start the watchdog.** A hang after U-Boot and before
   systemd starts (a kernel that stops without a panic) waits for a power
   cycle. The power cycle still counts as a failed trial boot.
+- **A new U-Boot doesn't replace a saved environment.** ``update.sh``
+  saves the board's original boot command once, in
+  ``cargt_ab_bootcmd_orig``. If you flash a new U-Boot but keep the
+  environment, the board keeps running the saved commands, not the new
+  U-Boot's defaults. That's true of every variable in a kept environment,
+  not only these. Clear the environment when you flash a new U-Boot.
 
 Three more limits apply to the published i.MX updates and to the ``-swu``
 recipes they come from:
